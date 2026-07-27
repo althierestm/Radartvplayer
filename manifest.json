@@ -9,10 +9,15 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "https://static.wixstatic.com/media/b5f2df_6b8e3c05c03c48338b0c4f4d19e1ef02~mv2.png",
+      "src": "Logo%20RadarTV%203000x3000.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
+    },
+    {
+      "src": "Logo%20RadarTV%203000x3000.png",
+      "sizes": "192x192",
+      "type": "image/png"
     }
   ]
 }
