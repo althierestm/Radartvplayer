@@ -36,6 +36,7 @@
       flex-direction: column;
       align-items: center;
       padding: 10px;
+      min-height: 100vh;
     }
 
     /* Banner de Instalação PWA */
@@ -211,6 +212,73 @@
       gap: 8px;
     }
 
+    /* Redes Sociais e Rodapé */
+    .footer-container {
+      width: 100%;
+      max-width: 800px;
+      margin-top: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 0 20px 0;
+    }
+
+    .social-links {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .social-btn {
+      flex: 1;
+      max-width: 220px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #ffffff;
+      transition: transform 0.2s, opacity 0.2s;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    .social-btn.instagram {
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    }
+
+    .social-btn.youtube {
+      background: #ff0000;
+    }
+
+    .social-btn:active {
+      transform: scale(0.96);
+    }
+
+    .credits {
+      font-size: 0.8rem;
+      color: #8a8f9d;
+      text-align: center;
+      margin-top: 4px;
+    }
+
+    .credits a {
+      color: #8ebf00;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    .credits a:hover {
+      text-decoration: underline;
+      color: #a3da00;
+    }
+
     /* Modal Programação */
     .modal {
       display: none;
@@ -284,6 +352,7 @@
       .epg-bar { padding: 10px; gap: 8px; }
       .epg-info { flex-direction: row; align-items: center; gap: 6px; flex-wrap: wrap; }
       .epg-title { font-size: 0.85rem; }
+      .footer-container { padding: 15px 10px 25px 10px; }
     }
   </style>
 </head>
@@ -337,6 +406,22 @@
       </button>
     </div>
   </div>
+
+  <!-- Menu de Redes Sociais e Rodapé de Créditos -->
+  <footer class="footer-container">
+    <div class="social-links">
+      <a href="https://instagram.com/radartvmg" target="_blank" rel="noopener noreferrer" class="social-btn instagram">
+        <i class="fa-brands fa-instagram"></i> Instagram
+      </a>
+      <a href="https://youtube.com/@radartvmg" target="_blank" rel="noopener noreferrer" class="social-btn youtube">
+        <i class="fa-brands fa-youtube"></i> YouTube
+      </a>
+    </div>
+
+    <div class="credits">
+      Grupo Radar de Comunicação por <a href="https://instagram.com/althierestm" target="_blank" rel="noopener noreferrer">Althieres Dias</a>
+    </div>
+  </footer>
 
   <!-- Modal Programação Completa -->
   <div class="modal" id="scheduleModal">
