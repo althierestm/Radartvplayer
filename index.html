@@ -257,7 +257,7 @@
     .video-wrapper {
       position: relative;
       width: 100%;
-      padding-top: 56.25%; /* Proporção 16:9 */
+      padding-top: 56.25%;
       background: #000;
     }
 
@@ -296,7 +296,6 @@
       color: #8ebf00;
     }
 
-    /* Janela flutuante ativada apenas no Desktop */
     .desktop-only {
       display: flex;
     }
@@ -314,6 +313,7 @@
       display: flex;
       flex-direction: column;
       gap: 12px;
+      border-bottom: 1px solid #2a2e39;
     }
 
     .epg-card {
@@ -362,6 +362,142 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
+    }
+
+    /* SEÇÃO DE ENQUETE */
+    .poll-section {
+      padding: 18px;
+      background: #12141a;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .poll-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #8ebf00;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+
+    .poll-question {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #ffffff;
+      line-height: 1.4;
+    }
+
+    .poll-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .poll-option-btn {
+      position: relative;
+      background: #212530;
+      border: 1px solid #2a2e39;
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: #ffffff;
+      font-size: 0.88rem;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      overflow: hidden;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .poll-option-btn:hover:not(:disabled) {
+      border-color: #0d47e6;
+      background: #1a202c;
+    }
+
+    .poll-option-btn:disabled {
+      cursor: default;
+    }
+
+    .poll-progress-bar {
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      background: rgba(13, 71, 230, 0.35);
+      width: 0%;
+      transition: width 0.6s ease;
+      z-index: 1;
+    }
+
+    .poll-option-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .poll-percent {
+      font-weight: bold;
+      color: #8ebf00;
+      font-size: 0.85rem;
+    }
+
+    .poll-status-msg {
+      font-size: 0.78rem;
+      color: #8a8f9d;
+      margin-top: 4px;
+    }
+
+    /* Formulário Opcional de Comentário */
+    .poll-comment-box {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+      padding-top: 12px;
+      border-top: 1px dashed #2a2e39;
+    }
+
+    .poll-comment-box label {
+      font-size: 0.82rem;
+      color: #a0a5b5;
+      font-weight: 600;
+    }
+
+    .poll-textarea {
+      width: 100%;
+      background: #181b22;
+      border: 1px solid #2a2e39;
+      border-radius: 8px;
+      padding: 10px;
+      color: #fff;
+      font-size: 0.85rem;
+      resize: vertical;
+      min-height: 60px;
+      outline: none;
+    }
+
+    .poll-textarea:focus {
+      border-color: #0d47e6;
+    }
+
+    .btn-send-comment {
+      align-self: flex-end;
+      background: #0d47e6;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-send-comment:hover {
+      background: #1a56f0;
     }
 
     /* RODAPÉ E REDES SOCIAIS */
@@ -553,7 +689,6 @@
       <!-- VISTA PRINCIPAL: RADAR TV -->
       <main class="view-panel active" id="viewTv">
         <div class="video-wrapper" id="videoWrapper">
-          <!-- playsinline e webkit-playsinline forçam o vídeo a rodar DENTRO da tela do app sem abrir o player padrão do sistema -->
           <video id="hlsPlayer" controls autoplay muted playsinline webkit-playsinline style="display: block;"></video>
           <iframe id="ytPlayer" style="display: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
@@ -595,6 +730,56 @@
             <i class="fa-regular fa-calendar-days"></i> Grade Completa de Hoje
           </button>
         </div>
+
+        <!-- SEÇÃO DE ENQUETE -->
+        <section class="poll-section">
+          <div class="poll-header">
+            <i class="fa-solid fa-square-poll-vertical"></i>
+            <span>Enquete Rápida</span>
+          </div>
+
+          <p class="poll-question">
+            Você curtiu a cobertura do Ruralzão 2026 feita pela RadarTV e Limeira News?
+          </p>
+
+          <div class="poll-options">
+            <button class="poll-option-btn" onclick="votePoll(0)">
+              <div class="poll-progress-bar" id="bar0"></div>
+              <div class="poll-option-content">
+                <span>Sim, foi ótima.</span>
+                <span class="poll-percent" id="percent0"></span>
+              </div>
+            </button>
+
+            <button class="poll-option-btn" onclick="votePoll(1)">
+              <div class="poll-progress-bar" id="bar1"></div>
+              <div class="poll-option-content">
+                <span>Não gostei.</span>
+                <span class="poll-percent" id="percent1"></span>
+              </div>
+            </button>
+
+            <button class="poll-option-btn" onclick="votePoll(2)">
+              <div class="poll-progress-bar" id="bar2"></div>
+              <div class="poll-option-content">
+                <span>Pode melhorar.</span>
+                <span class="poll-percent" id="percent2"></span>
+              </div>
+            </button>
+          </div>
+
+          <div class="poll-status-msg" id="pollStatusMsg">Selecione uma opção acima para votar.</div>
+
+          <!-- Caixa Opcional de Comentário/Sugestão -->
+          <div class="poll-comment-box">
+            <label for="pollComment"><i class="fa-regular fa-comment-dots"></i> Deixe um comentário ou sugestão (opcional):</label>
+            <textarea id="pollComment" class="poll-textarea" placeholder="Digite sua opinião aqui..."></textarea>
+            <button class="btn-send-comment" onclick="sendPollComment()">
+              <i class="fa-paper-plane fa-solid"></i> Enviar para Radar TV
+            </button>
+          </div>
+        </section>
+
       </main>
 
     </div>
@@ -691,7 +876,7 @@
         } else if (elem.webkitRequestFullscreen) {
           elem.webkitRequestFullscreen();
         } else if (hlsVideo.webkitEnterFullscreen) {
-          hlsVideo.webkitEnterFullscreen(); // Suporte específico iOS
+          hlsVideo.webkitEnterFullscreen();
         }
       } else {
         if (document.exitFullscreen) {
@@ -702,7 +887,7 @@
       }
     }
 
-    // EXPANDIR AUTOMATICAMENTE QUANDO O CELULAR FOR GIRADO HORIZONTALMENTE
+    // EXPANDIR AUTOMATICAMENTE AO GIRAR O CELULAR
     function handleAutoRotation() {
       const isLandscape = window.innerWidth > window.innerHeight && window.innerWidth <= 950;
       if (isLandscape) {
@@ -727,7 +912,7 @@
     window.addEventListener('orientationchange', handleAutoRotation);
     window.addEventListener('resize', handleAutoRotation);
 
-    // PICTURE IN PICTURE (JANELA FLUTUANTE) - DESKTOP / SUPORTADOS
+    // PICTURE IN PICTURE
     async function togglePiP() {
       try {
         if (document.pictureInPictureElement) {
@@ -774,6 +959,71 @@
       } else {
         alert('Seu navegador não suporta notificações.');
       }
+    }
+
+    // LÓGICA DA ENQUETE (Com limite de 10 minutos)
+    const COOLDOWN_TIME = 10 * 60 * 1000; // 10 minutos em milissegundos
+    let pollVotes = JSON.parse(localStorage.getItem('radar_poll_votes')) || [184, 12, 45];
+
+    function renderPollResults() {
+      const totalVotes = pollVotes.reduce((a, b) => a + b, 0);
+      
+      pollVotes.forEach((votes, index) => {
+        const percentage = totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0;
+        document.getElementById(`percent${index}`).innerText = `${percentage}%`;
+        document.getElementById(`bar${index}`).style.width = `${percentage}%`;
+      });
+    }
+
+    function checkPollState() {
+      const lastVote = localStorage.getItem('radar_last_vote_timestamp');
+      const now = Date.now();
+      const optionBtns = document.querySelectorAll('.poll-option-btn');
+
+      if (lastVote && (now - parseInt(lastVote, 10)) < COOLDOWN_TIME) {
+        const remainingMinutes = Math.ceil((COOLDOWN_TIME - (now - parseInt(lastVote, 10))) / 60000);
+        document.getElementById('pollStatusMsg').innerText = `Obrigado pelo seu voto! Você poderá votar novamente em ~${remainingMinutes} min.`;
+        optionBtns.forEach(btn => btn.disabled = true);
+      } else {
+        document.getElementById('pollStatusMsg').innerText = `Selecione uma opção para registrar seu voto.`;
+        optionBtns.forEach(btn => btn.disabled = false);
+      }
+
+      renderPollResults();
+    }
+
+    function votePoll(optionIndex) {
+      const lastVote = localStorage.getItem('radar_last_vote_timestamp');
+      const now = Date.now();
+
+      if (lastVote && (now - parseInt(lastVote, 10)) < COOLDOWN_TIME) {
+        alert("Você já votou recentemente. Aguarde 10 minutos para votar novamente!");
+        return;
+      }
+
+      // Adiciona o voto e salva no localStorage
+      pollVotes[optionIndex]++;
+      localStorage.setItem('radar_poll_votes', JSON.stringify(pollVotes));
+      localStorage.setItem('radar_last_vote_timestamp', now.toString());
+
+      checkPollState();
+    }
+
+    // ENVIAR COMENTÁRIO/SUGESTÃO VIA EMAIL (radartvmg@gmail.com)
+    function sendPollComment() {
+      const comment = document.getElementById('pollComment').value.trim();
+      if (!comment) {
+        alert("Por favor, escreva uma sugestão ou comentário antes de enviar.");
+        return;
+      }
+
+      const subject = encodeURIComponent("Opinião/Sugestão Ruralzão 2026 - App Radar TV");
+      const body = encodeURIComponent(`Olá equipe Radar TV / Limeira News,\n\nSegue meu comentário sobre a cobertura do Ruralzão 2026:\n\n"${comment}"`);
+      
+      // Abre o app/serviço de e-mail do usuário apontando para radartvmg@gmail.com
+      window.location.href = `mailto:radartvmg@gmail.com?subject=${subject}&body=${body}`;
+
+      document.getElementById('pollComment').value = '';
     }
 
     // INICIALIZADORES PLAYER HLS & YOUTUBE
@@ -857,8 +1107,10 @@
     // EVENTOS INICIAIS
     initHLS();
     updateEPG();
+    checkPollState();
     requestWakeLock();
     setInterval(updateEPG, 60000);
+    setInterval(checkPollState, 30000); // Atualiza os minutos restantes da enquete
     checkYouTubeLive();
     setInterval(checkYouTubeLive, 30000);
 
