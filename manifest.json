@@ -1,0 +1,18 @@
+{
+  "name": "Radar TV Ao Vivo",
+  "short_name": "Radar TV",
+  "description": "Assista à programação ao vivo da Radar TV",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0f1115",
+  "theme_color": "#0d47e6",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://static.wixstatic.com/media/b5f2df_6b8e3c05c03c48338b0c4f4d19e1ef02~mv2.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Radar TV - Ao Vivo</title>
+
+  <!-- Tags PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0d47e6">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Radar TV">
+  <link rel="apple-touch-icon" href="https://static.wixstatic.com/media/b5f2df_6b8e3c05c03c48338b0c4f4d19e1ef02~mv2.png">
+
+  <!-- HLS.js para reprodução do sinal m3u8 -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <!-- Ícones FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #0f1115;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px;
+    }
+
+    /* Banner / Botão de Instalação PWA */
+    .install-banner {
+      display: none;
+      width: 100%;
+      max-width: 800px;
+      background: linear-gradient(90deg, #0d47e6, #082b8a);
+      color: #fff;
+      padding: 10px 15px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 15px rgba(13, 71, 230, 0.3);
+    }
+
+    .install-banner span {
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-install {
+      background: #8ebf00;
+      color: #000;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .btn-install:active {
+      transform: scale(0.95);
+    }
+
+    .player-container {
+      width: 100%;
+      max-width: 800px;
+      background: #181b22;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      border: 1px solid #2a2e39;
+    }
+
+    /* Cabeçalho */
+    .player-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 18px;
+      background: #12141a;
+      border-bottom: 1px solid #2a2e39;
+    }
+
+    .brand img {
+      height: 38px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .live-badge {
+      background-color: #0d47e6;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: bold;
+      padding: 5px 12px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      animation: pulse 2s infinite;
+    }
+
+    .live-badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background-color: #8ebf00;
+      border-radius: 50%;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.6; }
+      100% { opacity: 1; }
+    }
+
+    /* Video Player */
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%;
+      background: #000;
+    }
+
+    .video-wrapper video,
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      object-fit: contain;
+    }
+
+    /* EPG / Guia de Programação */
+    .epg-bar {
+      padding: 16px;
+      background: #181b22;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .epg-card {
+      background: #212530;
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      border-left: 4px solid #0d47e6;
+    }
+
+    .epg-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .epg-tag {
+      font-size: 0.65rem;
+      font-weight: bold;
+      padding: 3px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .tag-now { background: #0d47e6; color: #fff; }
+    .tag-next { background: #3a3f50; color: #a0a5b5; }
+
+    .epg-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .epg-time { font-size: 0.78rem; color: #8a8f9d; }
+    .epg-title { font-size: 0.95rem; font-weight: 600; color: #ffffff; }
+
+    .btn-schedule {
+      width: 100%;
+      background: #2b3040;
+      color: #ffffff;
+      border: 1px solid #3a3f51;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* Modal Programação */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+    }
+
+    .modal-content {
+      background: #181b22;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 500px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #2a2e39;
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 12px 16px;
+      background: #12141a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #2a2e39;
+    }
+
+    .close-btn {
+      background: none; border: none;
+      color: #8a8f9d; font-size: 1.4rem;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      padding: 15px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .schedule-item {
+      padding: 10px;
+      background: #212530;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.88rem;
+    }
+
+    .schedule-item.active {
+      border: 1px solid #0d47e6;
+      background: #101c3d;
+    }
+
+    .schedule-time { font-weight: bold; color: #4d82ff; }
+
+    /* Ajuste Compacto Mobile */
+    @media (max-width: 600px) {
+      body { padding: 0; }
+      .player-container { border-radius: 0; border: none; }
+      .brand img { height: 28px; }
+      .epg-bar { padding: 10px; gap: 8px; }
+      .epg-info { flex-direction: row; align-items: center; gap: 6px; flex-wrap: wrap; }
+      .epg-title { font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Banner de Instalação PWA -->
+  <div class="install-banner" id="pwaBanner">
+    <span><i class="fa-solid fa-mobile-screen-button"></i> Instalar App Radar TV</span>
+    <button class="btn-install" id="btnInstall">INSTALAR</button>
+  </div>
+
+  <div class="player-container">
+    <!-- Cabeçalho com Logo Responsiva -->
+    <div class="player-header">
+      <div class="brand">
+        <img src="https://static.wixstatic.com/media/b5f2df_6b8e3c05c03c48338b0c4f4d19e1ef02~mv2.png" alt="Radar TV">
+      </div>
+      <div class="live-badge" id="liveTag">AO VIVO</div>
+    </div>
+
+    <!-- Área de Vídeo -->
+    <div class="video-wrapper">
+      <video id="hlsPlayer" controls autoplay muted style="display: block;"></video>
+      <iframe id="ytPlayer" style="display: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+
+    <!-- Guia de Programação Inicial (EPG) -->
+    <div class="epg-bar">
+      <div class="epg-card">
+        <div class="epg-item">
+          <span class="epg-tag tag-now">NO AR</span>
+          <div class="epg-info">
+            <span class="epg-time" id="nowTime">--:-- - --:--</span>
+            <span class="epg-title" id="nowTitle">Carregando...</span>
+          </div>
+        </div>
+
+        <hr style="border: 0; border-top: 1px solid #2a2e39;">
+
+        <div class="epg-item">
+          <span class="epg-tag tag-next">EM SEGUIDA</span>
+          <div class="epg-info">
+            <span class="epg-time" id="nextTime">--:-- - --:--</span>
+            <span class="epg-title" id="nextTitle">--</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-schedule" onclick="openSchedule()">
+        <i class="fa-regular fa-calendar-days"></i> Grade Completa de Hoje
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal Programação Completa -->
+  <div class="modal" id="scheduleModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-list-ul"></i> Programação do Dia</h3>
+        <button class="close-btn" onclick="closeSchedule()">&times;</button>
+      </div>
+      <div class="modal-body" id="fullScheduleList"></div>
+    </div>
+  </div>
+
+  <script>
+    // ================= CONFIGURAÇÕES SINAL E CANAL =================
+    const HLS_URL = 'https://video01.logicahost.com.br/fcvtv/fcvtv/playlist.m3u8';
+    const YOUTUBE_CHANNEL_ID = 'UC7wHmjY4RNruABZ9An1crBA'; 
+    const YOUTUBE_API_KEY = 'AIzaSyDaVlWRVlFrq9Qur-Dzv779pIIi3v_XD0g'; 
+
+    // ================= GRADE DE PROGRAMAÇÃO DE INÍCIO =================
+    const schedule = [
+      { start: "00:00", end: "02:00", name: "Corujão Radar TV", startH: 0, endH: 2 },
+      { start: "02:00", end: "04:00", name: "Madrugada Sertaneja", startH: 2, endH: 4 },
+      { start: "04:00", end: "06:00", name: "Amanhecer no Campo", startH: 4, endH: 6 },
+      { start: "06:00", end: "08:00", name: "Radar Notícias Manhã", startH: 6, endH: 8 },
+      { start: "08:00", end: "10:00", name: "Manhã Especial & Viola", startH: 8, endH: 10 },
+      { start: "10:00", end: "12:00", name: "Radar Esporte Regional", startH: 10, endH: 12 },
+      { start: "12:00", end: "14:00", name: "Jornal Radar TV - 1ª Edição", startH: 12, endH: 14 },
+      { start: "14:00", end: "16:00", name: "Tarde de Prêmios & Shows", startH: 14, endH: 16 },
+      { start: "16:00", end: "18:00", name: "Transmissão Esportiva Ao Vivo", startH: 16, endH: 18 },
+      { start: "18:00", end: "20:00", name: "Resenha Esportiva", startH: 18, endH: 20 },
+      { start: "20:00", end: "22:00", name: "Jornal Radar TV - 2ª Edição", startH: 20, endH: 22 },
+      { start: "22:00", end: "00:00", name: "Radar Night", startH: 22, endH: 24 }
+    ];
+
+    // ================= SCRIPT DO PLAYER =================
+    const hlsVideo = document.getElementById('hlsPlayer');
+    const ytIframe = document.getElementById('ytPlayer');
+    let hlsInstance = null;
+    let isYtLiveActive = false;
+
+    function initHLS() {
+      if (Hls.isSupported()) {
+        hlsInstance = new Hls();
+        hlsInstance.loadSource(HLS_URL);
+        hlsInstance.attachMedia(hlsVideo);
+      } else if (hlsVideo.canPlayType('application/vnd.apple.mpegurl')) {
+        hlsVideo.src = HLS_URL;
+      }
+    }
+
+    async function checkYouTubeLive() {
+      try {
+        const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${YOUTUBE_CHANNEL_ID}&type=video&eventType=live&key=${YOUTUBE_API_KEY}`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.items && data.items.length > 0) {
+          const videoId = data.items[0].id.videoId;
+          if (!isYtLiveActive) enableYouTubeLive(videoId);
+        } else {
+          if (isYtLiveActive) disableYouTubeLive();
+        }
+      } catch (err) {
+        console.error("Erro YouTube:", err);
+      }
+    }
+
+    function enableYouTubeLive(videoId) {
+      isYtLiveActive = true;
+      hlsVideo.pause();
+      hlsVideo.style.display = 'none';
+      ytIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&live=1`;
+      ytIframe.style.display = 'block';
+      document.getElementById('liveTag').innerText = 'AO VIVO - YOUTUBE';
+    }
+
+    function disableYouTubeLive() {
+      isYtLiveActive = false;
+      ytIframe.src = '';
+      ytIframe.style.display = 'none';
+      hlsVideo.style.display = 'block';
+      hlsVideo.play();
+      document.getElementById('liveTag').innerText = 'AO VIVO';
+    }
+
+    function updateEPG() {
+      const now = new Date();
+      const currentHour = now.getHours();
+
+      let currentIndex = schedule.findIndex(item => currentHour >= item.startH && currentHour < item.endH);
+      if (currentIndex === -1) currentIndex = 0;
+
+      let nextIndex = (currentIndex + 1) % schedule.length;
+
+      document.getElementById('nowTime').innerText = `${schedule[currentIndex].start} - ${schedule[currentIndex].end}`;
+      document.getElementById('nowTitle').innerText = schedule[currentIndex].name;
+
+      document.getElementById('nextTime').innerText = `${schedule[nextIndex].start} - ${schedule[nextIndex].end}`;
+      document.getElementById('nextTitle').innerText = schedule[nextIndex].name;
+    }
+
+    function openSchedule() {
+      const currentHour = (new Date()).getHours();
+      const container = document.getElementById('fullScheduleList');
+      container.innerHTML = '';
+
+      schedule.forEach(item => {
+        const isCurrent = (currentHour >= item.startH && currentHour < item.endH);
+        const div = document.createElement('div');
+        div.className = `schedule-item ${isCurrent ? 'active' : ''}`;
+        div.innerHTML = `
+          <span>${item.name} ${isCurrent ? '🔵 (No Ar)' : ''}</span>
+          <span class="schedule-time">${item.start} - ${item.end}</span>
+        `;
+        container.appendChild(div);
+      });
+
+      document.getElementById('scheduleModal').style.display = 'flex';
+    }
+
+    function closeSchedule() {
+      document.getElementById('scheduleModal').style.display = 'none';
+    }
+
+    initHLS();
+    updateEPG();
+    setInterval(updateEPG, 60000);
+    checkYouTubeLive();
+    setInterval(checkYouTubeLive, 30000);
+
+    // ================= SCRIPT DE INSTALAÇÃO PWA =================
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('Service Worker Registrado'))
+        .catch(err => console.error('Erro SW:', err));
+    }
+
+    let deferredPrompt;
+    const pwaBanner = document.getElementById('pwaBanner');
+    const btnInstall = document.getElementById('btnInstall');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      pwaBanner.style.display = 'flex';
+    });
+
+    btnInstall.addEventListener('click', () => {
+      pwaBanner.style.display = 'none';
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('Usuário instalou o PWA');
+          }
+          deferredPrompt = null;
+        });
+      }
+    });
+  </script>
+</body>
+</html>
