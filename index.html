@@ -1,65 +1,1229 @@
-/* TELA DE ABERTURA (SPLASH SCREEN) */
-.splash-screen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  /* Gradiente marcante da identidade da marca */
-  background: linear-gradient(135deg, #0d47e6 0%, #082b8a 100%);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  padding: 40px 20px;
-  z-index: 9999;
-  transition: opacity 0.6s ease, visibility 0.6s ease;
-}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+  <title>Radar TV</title>
 
-.splash-screen.hidden {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-}
+  <!-- Tags PWA e Cor da Barra de Status do Celular -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0d47e6">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Radar TV">
 
-.splash-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 24px;
-  margin: auto; /* Centraliza a logo e o spinner na tela */
-}
+  <!-- OneSignal Web Push SDK -->
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({
+        appId: "60d53fcf-1f37-405f-8fde-c6c8061e17df",
+      });
+    });
+  </script>
 
-.splash-logo {
-  max-width: 200px;
-  height: auto;
-  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
-  animation: pulseLogo 1.5s infinite alternate ease-in-out;
-}
+  <!-- Ícone para Navegador e Celulares (Android/iOS) -->
+  <link rel="icon" type="image/png" href="Logo%20RadarTV%201080x1080.png">
+  <link rel="apple-touch-icon" href="Logo%20RadarTV%201080x1080.png">
 
-.splash-spinner {
-  width: 36px;
-  height: 36px;
-  border: 3px solid rgba(255, 255, 255, 0.2);
-  border-top-color: #8ebf00; /* Verde de destaque */
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
+  <!-- HLS.js para reprodução do sinal m3u8 -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <!-- Ícones FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-.splash-footer-credits {
-  font-size: 0.85rem;
-  color: #ffffff;
-  text-align: center;
-  font-weight: 500;
-  letter-spacing: 0.5px;
-  opacity: 0.9;
-}
+  <!-- Firebase SDK (Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-@keyframes pulseLogo {
-  0% { transform: scale(0.96); opacity: 0.9; }
-  100% { transform: scale(1.04); opacity: 1; }
-}
+    body {
+      background-color: #0f1115;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      touch-action: manipulation;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    /* TELA DE ABERTURA (SPLASH SCREEN COM DEGRADÊ) */
+    .splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: linear-gradient(135deg, #0d47e6 0%, #082b8a 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 40px 20px;
+      z-index: 9999;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
+
+    .splash-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .splash-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      margin: auto;
+    }
+
+    .splash-logo {
+      max-width: 200px;
+      height: auto;
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+      animation: pulseLogo 1.5s infinite alternate ease-in-out;
+    }
+
+    .splash-spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      border-top-color: #8ebf00;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    .splash-footer-credits {
+      font-size: 0.85rem;
+      color: #ffffff;
+      text-align: center;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      opacity: 0.95;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes pulseLogo {
+      0% { transform: scale(0.96); opacity: 0.9; }
+      100% { transform: scale(1.04); opacity: 1; }
+    }
+
+    /* MENU LATERAL / DRAWER */
+    .menu-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .menu-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .side-menu {
+      position: fixed;
+      top: 0; left: -280px;
+      width: 280px; height: 100vh;
+      background: #12141a;
+      border-right: 1px solid #2a2e39;
+      z-index: 2001;
+      display: flex;
+      flex-direction: column;
+      transition: left 0.3s ease;
+      box-shadow: 5px 0 25px rgba(0,0,0,0.6);
+    }
+
+    .side-menu.active {
+      left: 0;
+    }
+
+    .menu-header {
+      padding: 20px;
+      background: #0d47e6;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .menu-header img {
+      height: 36px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .close-menu-btn {
+      background: none; border: none;
+      color: #fff; font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .menu-items {
+      display: flex;
+      flex-direction: column;
+      padding: 15px 0;
+      gap: 5px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 20px;
+      color: #e0e0e0;
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-left: 4px solid transparent;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .menu-item:hover, .menu-item.active {
+      background: #1c212d;
+      color: #8ebf00;
+      border-left-color: #8ebf00;
+    }
+
+    .menu-item i {
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    .menu-divider {
+      height: 1px;
+      background: #2a2e39;
+      margin: 10px 0;
+    }
+
+    /* Banner de Instalação PWA */
+    .install-banner {
+      display: none;
+      width: 100%;
+      max-width: 800px;
+      background: linear-gradient(90deg, #0d47e6, #082b8a);
+      color: #fff;
+      padding: 10px 15px;
+      margin-top: 10px;
+      border-radius: 10px;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 15px rgba(13, 71, 230, 0.3);
+    }
+
+    .install-banner span {
+      font-size: 0.85rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-install {
+      background: #8ebf00;
+      color: #000;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+
+    /* Container Principal */
+    .app-wrapper {
+      width: 100%;
+      max-width: 800px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .player-container {
+      width: 100%;
+      background: #181b22;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      border: 1px solid #2a2e39;
+    }
+
+    /* Cabeçalho */
+    .player-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 18px;
+      background: #0d47e6;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .hamburger-btn {
+      background: none; border: none;
+      color: #ffffff; font-size: 1.4rem;
+      cursor: pointer;
+    }
+
+    .brand img {
+      height: 36px;
+      width: auto;
+      object-fit: contain;
+      display: block;
+    }
+
+    .live-badge {
+      background-color: #8ebf00;
+      color: #000000;
+      font-size: 0.75rem;
+      font-weight: bold;
+      padding: 5px 12px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      animation: pulse 2s infinite;
+    }
+
+    .live-badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background-color: #ff0000;
+      border-radius: 50%;
+    }
+
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.7; }
+      100% { opacity: 1; }
+    }
+
+    /* Video Player */
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%;
+      background: #000;
+    }
+
+    .video-wrapper video,
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: 0;
+      object-fit: contain;
+    }
+
+    /* Barra de Ações Rápidas */
+    .quick-actions {
+      display: flex;
+      justify-content: space-around;
+      background: #12141a;
+      padding: 10px;
+      border-bottom: 1px solid #2a2e39;
+    }
+
+    .action-btn {
+      background: none;
+      border: none;
+      color: #a0a5b5;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .action-btn:hover {
+      color: #8ebf00;
+    }
+
+    .desktop-only {
+      display: flex;
+    }
+
+    @media (max-width: 768px) {
+      .desktop-only {
+        display: none !important;
+      }
+    }
+
+    /* EPG / Guia de Programação */
+    .epg-bar {
+      padding: 16px;
+      background: #181b22;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      border-bottom: 1px solid #2a2e39;
+    }
+
+    .epg-card {
+      background: #212530;
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      border-left: 4px solid #0d47e6;
+    }
+
+    .epg-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .epg-tag {
+      font-size: 0.65rem;
+      font-weight: bold;
+      padding: 3px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .tag-now { background: #0d47e6; color: #fff; }
+    .tag-next { background: #3a3f50; color: #a0a5b5; }
+
+    .epg-info { display: flex; flex-direction: column; }
+    .epg-time { font-size: 0.78rem; color: #8a8f9d; }
+    .epg-title { font-size: 0.95rem; font-weight: 600; color: #ffffff; }
+
+    .btn-schedule {
+      width: 100%;
+      background: #2b3040;
+      color: #ffffff;
+      border: 1px solid #3a3f51;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* SEÇÃO DE ENQUETE */
+    .poll-section {
+      padding: 18px;
+      background: #12141a;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .poll-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #8ebf00;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+
+    .poll-question {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #ffffff;
+      line-height: 1.4;
+    }
+
+    .poll-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .poll-option-btn {
+      position: relative;
+      background: #212530;
+      border: 1px solid #2a2e39;
+      border-radius: 8px;
+      padding: 12px 14px;
+      color: #ffffff;
+      font-size: 0.88rem;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      overflow: hidden;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .poll-option-btn:hover:not(:disabled) {
+      border-color: #0d47e6;
+      background: #1a202c;
+    }
+
+    .poll-option-btn:disabled {
+      cursor: default;
+    }
+
+    .poll-progress-bar {
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      background: rgba(13, 71, 230, 0.35);
+      width: 0%;
+      transition: width 0.6s ease;
+      z-index: 1;
+    }
+
+    .poll-option-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .poll-percent {
+      font-weight: bold;
+      color: #8ebf00;
+      font-size: 0.85rem;
+    }
+
+    .poll-status-msg {
+      font-size: 0.78rem;
+      color: #8a8f9d;
+      margin-top: 4px;
+    }
+
+    .poll-comment-box {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 8px;
+      padding-top: 12px;
+      border-top: 1px dashed #2a2e39;
+    }
+
+    .poll-comment-box label {
+      font-size: 0.82rem;
+      color: #a0a5b5;
+      font-weight: 600;
+    }
+
+    .poll-textarea {
+      width: 100%;
+      background: #181b22;
+      border: 1px solid #2a2e39;
+      border-radius: 8px;
+      padding: 10px;
+      color: #fff;
+      font-size: 0.85rem;
+      resize: vertical;
+      min-height: 60px;
+      outline: none;
+    }
+
+    .poll-textarea:focus {
+      border-color: #0d47e6;
+    }
+
+    .btn-send-comment {
+      align-self: flex-end;
+      background: #0d47e6;
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 0.82rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-send-comment:hover {
+      background: #1a56f0;
+    }
+
+    /* RODAPÉ E REDES SOCIAIS */
+    .app-footer {
+      width: 100%;
+      max-width: 800px;
+      margin-top: 20px;
+      padding: 15px 10px 30px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      border-top: 1px solid #2a2e39;
+    }
+
+    .social-buttons {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .social-btn {
+      flex: 1;
+      max-width: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 0.9rem;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      transition: transform 0.2s;
+    }
+
+    .social-btn.instagram {
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    }
+
+    .social-btn.youtube { background: #ff0000; }
+    .social-btn:active { transform: scale(0.96); }
+
+    .footer-credits {
+      font-size: 0.85rem;
+      color: #8a8f9d;
+      text-align: center;
+    }
+
+    .footer-credits a {
+      color: #8ebf00;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    /* Modal Programação */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      z-index: 3000;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+    }
+
+    .modal-content {
+      background: #181b22;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 500px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #2a2e39;
+      overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 12px 16px;
+      background: #12141a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #2a2e39;
+    }
+
+    .close-btn {
+      background: none; border: none;
+      color: #8a8f9d; font-size: 1.4rem;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      padding: 15px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .schedule-item {
+      padding: 10px;
+      background: #212530;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.88rem;
+    }
+
+    .schedule-item.active {
+      border: 1px solid #0d47e6;
+      background: #101c3d;
+    }
+
+    .schedule-time { font-weight: bold; color: #4d82ff; }
+
+    @media (max-width: 600px) {
+      .app-wrapper { padding: 0; }
+      .player-container { border-radius: 0; border: none; }
+      .brand img { height: 28px; }
+      .epg-bar { padding: 10px; gap: 8px; }
+      .epg-info { flex-direction: row; align-items: center; gap: 6px; flex-wrap: wrap; }
+      .epg-title { font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TELA DE ABERTURA (SPLASH SCREEN COM DEGRADÊ E CRÉDITOS) -->
+  <div id="splashScreen" class="splash-screen">
+    <div></div>
+    
+    <div class="splash-content">
+      <img src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1920.png" alt="Radar TV" class="splash-logo">
+      <div class="splash-spinner"></div>
+    </div>
+
+    <div class="splash-footer-credits">
+      Grupo Radar de Comunicação por Althieres Dias
+    </div>
+  </div>
+
+  <!-- Overlay e Menu Lateral -->
+  <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+  
+  <aside class="side-menu" id="sideMenu">
+    <div class="menu-header">
+      <img src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1920.png" alt="Radar TV">
+      <button class="close-menu-btn" onclick="closeMenu()">&times;</button>
+    </div>
+    
+    <nav class="menu-items">
+      <div class="menu-item active">
+        <i class="fa-solid fa-tv"></i> Radar TV Ao Vivo
+      </div>
+
+      <div class="menu-divider"></div>
+
+      <a href="https://wa.me/5532999000000?text=Ol%C3%A1%21%20Estou%20assistindo%20pelo%20App%20Radar%20TV%21" target="_blank" rel="noopener noreferrer" class="menu-item">
+        <i class="fa-brands fa-whatsapp" style="color: #25d366;"></i> WhatsApp no Ar
+      </a>
+
+      <div class="menu-item" onclick="requestNotificationPermission()">
+        <i class="fa-solid fa-bell"></i> Ativar Notificações
+      </div>
+
+      <div class="menu-item" onclick="shareApp()">
+        <i class="fa-solid fa-share-nodes"></i> Compartilhar App
+      </div>
+    </nav>
+  </aside>
+
+  <!-- Conteúdo Principal -->
+  <div class="app-wrapper">
+
+    <!-- Banner PWA -->
+    <div class="install-banner" id="pwaBanner">
+      <span><i class="fa-solid fa-mobile-screen-button"></i> Instalar App Radar TV</span>
+      <button class="btn-install" id="btnInstall">INSTALAR</button>
+    </div>
+
+    <div class="player-container">
+      <header class="player-header">
+        <div class="header-left">
+          <button class="hamburger-btn" onclick="openMenu()">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="brand">
+            <img src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1920.png" alt="Radar TV">
+          </div>
+        </div>
+        <div class="live-badge" id="liveTag">AO VIVO</div>
+      </header>
+
+      <main class="view-panel active" id="viewTv">
+        <div class="video-wrapper" id="videoWrapper">
+          <video id="hlsPlayer" controls autoplay muted playsinline webkit-playsinline style="display: block;"></video>
+          <iframe id="ytPlayer" style="display: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+
+        <div class="quick-actions">
+          <button class="action-btn" onclick="toggleFullscreen()">
+            <i class="fa-solid fa-expand"></i> Expandir
+          </button>
+          <button class="action-btn desktop-only" id="pipBtn" onclick="togglePiP()">
+            <i class="fa-solid fa-clone"></i> Janela Flutuante (PiP)
+          </button>
+          <button class="action-btn" onclick="shareApp()">
+            <i class="fa-solid fa-share-nodes"></i> Compartilhar
+          </button>
+        </div>
+
+        <!-- Guia EPG -->
+        <div class="epg-bar">
+          <div class="epg-card">
+            <div class="epg-item">
+              <span class="epg-tag tag-now">NO AR</span>
+              <div class="epg-info">
+                <span class="epg-time" id="nowTime">--:-- - --:--</span>
+                <span class="epg-title" id="nowTitle">Carregando...</span>
+              </div>
+            </div>
+            <hr style="border: 0; border-top: 1px solid #2a2e39;">
+            <div class="epg-item">
+              <span class="epg-tag tag-next">EM SEGUIDA</span>
+              <div class="epg-info">
+                <span class="epg-time" id="nextTime">--:-- - --:--</span>
+                <span class="epg-title" id="nextTitle">--</span>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn-schedule" onclick="openSchedule()">
+            <i class="fa-regular fa-calendar-days"></i> Grade Completa de Hoje
+          </button>
+        </div>
+
+        <!-- SEÇÃO DE ENQUETE -->
+        <section class="poll-section">
+          <div class="poll-header">
+            <i class="fa-solid fa-square-poll-vertical"></i>
+            <span>Enquete Rápida (Tempo Real)</span>
+          </div>
+
+          <p class="poll-question">
+            Você curtiu a cobertura do Ruralzão 2026 feita pela RadarTV e Limeira News?
+          </p>
+
+          <div class="poll-options">
+            <button class="poll-option-btn" onclick="votePoll(0)">
+              <div class="poll-progress-bar" id="bar0"></div>
+              <div class="poll-option-content">
+                <span>Sim, foi ótima.</span>
+                <span class="poll-percent" id="percent0">0% (0 votos)</span>
+              </div>
+            </button>
+
+            <button class="poll-option-btn" onclick="votePoll(1)">
+              <div class="poll-progress-bar" id="bar1"></div>
+              <div class="poll-option-content">
+                <span>Não gostei.</span>
+                <span class="poll-percent" id="percent1">0% (0 votos)</span>
+              </div>
+            </button>
+
+            <button class="poll-option-btn" onclick="votePoll(2)">
+              <div class="poll-progress-bar" id="bar2"></div>
+              <div class="poll-option-content">
+                <span>Pode melhorar.</span>
+                <span class="poll-percent" id="percent2">0% (0 votos)</span>
+              </div>
+            </button>
+          </div>
+
+          <div class="poll-status-msg" id="pollStatusMsg">Conectando à enquete...</div>
+
+          <div class="poll-comment-box">
+            <label for="pollComment"><i class="fa-regular fa-comment-dots"></i> Deixe um comentário ou sugestão (opcional):</label>
+            <textarea id="pollComment" class="poll-textarea" placeholder="Digite sua opinião aqui..."></textarea>
+            <button class="btn-send-comment" onclick="sendPollComment()">
+              <i class="fa-paper-plane fa-solid"></i> Enviar para Radar TV
+            </button>
+          </div>
+        </section>
+
+      </main>
+
+    </div>
+
+    <!-- RODAPÉ -->
+    <footer class="app-footer">
+      <div class="social-buttons">
+        <a href="https://instagram.com/radartvmg" target="_blank" rel="noopener noreferrer" class="social-btn instagram">
+          <i class="fa-brands fa-instagram"></i> Instagram
+        </a>
+        <a href="https://youtube.com/@radartvmg" target="_blank" rel="noopener noreferrer" class="social-btn youtube">
+          <i class="fa-brands fa-youtube"></i> YouTube
+        </a>
+      </div>
+
+      <div class="footer-credits">
+        Grupo Radar de Comunicação por <a href="https://instagram.com/althierestm" target="_blank" rel="noopener noreferrer">Althieres Dias</a>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Modal Programação -->
+  <div class="modal" id="scheduleModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-list-ul"></i> Programação do Dia</h3>
+        <button class="close-btn" onclick="closeSchedule()">&times;</button>
+      </div>
+      <div class="modal-body" id="fullScheduleList"></div>
+    </div>
+  </div>
+
+  <script>
+    // CONTROLE DA TELA DE ABERTURA (SPLASH SCREEN)
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const splash = document.getElementById('splashScreen');
+        if (splash) {
+          splash.classList.add('hidden');
+        }
+      }, 2200);
+    });
+
+    // TRAVAS ANTI-ZOOM
+    document.addEventListener('gesturestart', function (e) {
+      e.preventDefault();
+    });
+
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function (e) {
+      const now = (new Date()).getTime();
+      if (now - lastTouchEnd <= 300) {
+        e.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, false);
+
+    // CONFIGURAÇÃO DO FIREBASE
+    const firebaseConfig = {
+      apiKey: "AIzaSyAgqs3SmViiQYiK7JW9_Z2wZgygjgAKiTE",
+      authDomain: "enqueteruralzao26.firebaseapp.com",
+      databaseURL: "https://enqueteruralzao26-default-rtdb.firebaseio.com",
+      projectId: "enqueteruralzao26",
+      storageBucket: "enqueteruralzao26.firebasestorage.app",
+      messagingSenderId: "729715390131",
+      appId: "1:729715390131:web:51b084d27bd722b02ae2c6",
+      measurementId: "G-GZ5REQEST9"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const pollRef = db.ref('enquete_ruralzao_2026');
+
+    // SINAIS DE TRANSMISSÃO
+    const HLS_URL = 'https://video01.logicahost.com.br/fcvtv/fcvtv/playlist.m3u8';
+    const YOUTUBE_CHANNEL_ID = 'UC7wHmjY4RNruABZ9An1crBA'; 
+    const YOUTUBE_API_KEY = 'AIzaSyDaVlWRVlFrq9Qur-Dzv779pIIi3v_XD0g'; 
+
+    // GRADE DE PROGRAMAÇÃO
+    const schedule = [
+      { start: "00:00", end: "02:00", name: "Corujão Radar TV", startH: 0, endH: 2 },
+      { start: "02:00", end: "04:00", name: "Madrugada Sertaneja", startH: 2, endH: 4 },
+      { start: "04:00", end: "06:00", name: "Amanhecer no Campo", startH: 4, endH: 6 },
+      { start: "06:00", end: "08:00", name: "Radar Notícias Manhã", startH: 6, endH: 8 },
+      { start: "08:00", end: "10:00", name: "Manhã Especial & Viola", startH: 8, endH: 10 },
+      { start: "10:00", end: "12:00", name: "Radar Esporte Regional", startH: 10, endH: 12 },
+      { start: "12:00", end: "14:00", name: "Jornal Radar TV - 1ª Edição", startH: 12, endH: 14 },
+      { start: "14:00", end: "16:00", name: "Tarde de Prêmios & Shows", startH: 14, endH: 16 },
+      { start: "16:00", end: "18:00", name: "Transmissão Esportiva Ao Vivo", startH: 16, endH: 18 },
+      { start: "18:00", end: "20:00", name: "Resenha Esportiva", startH: 18, endH: 20 },
+      { start: "20:00", end: "22:00", name: "Jornal Radar TV - 2ª Edição", startH: 20, endH: 22 },
+      { start: "22:00", end: "00:00", name: "Radar Night", startH: 22, endH: 24 }
+    ];
+
+    const hlsVideo = document.getElementById('hlsPlayer');
+    const ytIframe = document.getElementById('ytPlayer');
+    const videoWrapper = document.getElementById('videoWrapper');
+    let hlsInstance = null;
+    let isYtLiveActive = false;
+    let pollVotes = [0, 0, 0];
+
+    // LÓGICA DA ENQUETE FIREBASE
+    const COOLDOWN_TIME = 10 * 60 * 1000;
+
+    function renderPollResults() {
+      const totalVotes = pollVotes.reduce((a, b) => a + b, 0);
+      pollVotes.forEach((votes, index) => {
+        const percentage = totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0;
+        document.getElementById(`percent${index}`).innerText = `${percentage}% (${votes} ${votes === 1 ? 'voto' : 'votos'})`;
+        document.getElementById(`bar${index}`).style.width = `${percentage}%`;
+      });
+    }
+
+    function checkPollCooldown() {
+      const lastVote = localStorage.getItem('radar_last_vote_timestamp');
+      const now = Date.now();
+      const optionBtns = document.querySelectorAll('.poll-option-btn');
+
+      if (lastVote && (now - parseInt(lastVote, 10)) < COOLDOWN_TIME) {
+        const remainingMinutes = Math.ceil((COOLDOWN_TIME - (now - parseInt(lastVote, 10))) / 60000);
+        document.getElementById('pollStatusMsg').innerText = `Obrigado pelo seu voto! Você poderá votar novamente em ~${remainingMinutes} min.`;
+        optionBtns.forEach(btn => btn.disabled = true);
+      } else {
+        document.getElementById('pollStatusMsg').innerText = `Selecione uma opção para registrar seu voto.`;
+        optionBtns.forEach(btn => btn.disabled = false);
+      }
+    }
+
+    pollRef.on('value', (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        pollVotes = [data.op0 || 0, data.op1 || 0, data.op2 || 0];
+      } else {
+        pollVotes = [0, 0, 0];
+        pollRef.set({ op0: 0, op1: 0, op2: 0 });
+      }
+      renderPollResults();
+      checkPollCooldown();
+    });
+
+    function votePoll(optionIndex) {
+      const lastVote = localStorage.getItem('radar_last_vote_timestamp');
+      const now = Date.now();
+
+      if (lastVote && (now - parseInt(lastVote, 10)) < COOLDOWN_TIME) {
+        alert("Você já votou recentemente. Aguarde 10 minutos para votar novamente!");
+        return;
+      }
+
+      const field = `op${optionIndex}`;
+      pollRef.child(field).transaction((currentVotes) => {
+        return (currentVotes || 0) + 1;
+      }, (error, committed) => {
+        if (committed) {
+          localStorage.setItem('radar_last_vote_timestamp', now.toString());
+          checkPollCooldown();
+        }
+      });
+    }
+
+    function sendPollComment() {
+      const comment = document.getElementById('pollComment').value.trim();
+      if (!comment) {
+        alert("Por favor, escreva uma sugestão ou comentário antes de enviar.");
+        return;
+      }
+
+      const subject = encodeURIComponent("Opinião/Sugestão Ruralzão 2026 - App Radar TV");
+      const body = encodeURIComponent(`Olá equipe Radar TV / Limeira News,\n\nSegue meu comentário sobre a cobertura do Ruralzão 2026:\n\n"${comment}"`);
+      
+      window.location.href = `mailto:radartvmg@gmail.com?subject=${subject}&body=${body}`;
+      document.getElementById('pollComment').value = '';
+    }
+
+    // DEMAIS FUNÇÕES DO APP
+    function openMenu() {
+      document.getElementById('sideMenu').classList.add('active');
+      document.getElementById('menuOverlay').classList.add('active');
+    }
+
+    function closeMenu() {
+      document.getElementById('sideMenu').classList.remove('active');
+      document.getElementById('menuOverlay').classList.remove('active');
+    }
+
+    async function requestWakeLock() {
+      try {
+        if ('wakeLock' in navigator) await navigator.wakeLock.request('screen');
+      } catch (err) {}
+    }
+
+    function toggleFullscreen() {
+      const elem = videoWrapper;
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        if (elem.requestFullscreen) elem.requestFullscreen();
+        else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+        else if (hlsVideo.webkitEnterFullscreen) hlsVideo.webkitEnterFullscreen();
+      } else {
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+      }
+    }
+
+    function handleAutoRotation() {
+      const isLandscape = window.innerWidth > window.innerHeight && window.innerWidth <= 950;
+      if (isLandscape) {
+        if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+          if (videoWrapper.requestFullscreen) videoWrapper.requestFullscreen().catch(() => {});
+          else if (hlsVideo.webkitEnterFullscreen) hlsVideo.webkitEnterFullscreen();
+        }
+      } else {
+        if (document.fullscreenElement || document.webkitFullscreenElement) {
+          if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+          else if (document.webkitExitFullscreen) document.webkitExitFullscreen().catch(() => {});
+        }
+      }
+    }
+
+    window.addEventListener('orientationchange', handleAutoRotation);
+    window.addEventListener('resize', handleAutoRotation);
+
+    async function togglePiP() {
+      try {
+        if (document.pictureInPictureElement) await document.exitPictureInPicture();
+        else if (document.pictureInPictureEnabled && hlsVideo.style.display !== 'none') await hlsVideo.requestPictureInPicture();
+        else alert('A janela flutuante não é suportada neste dispositivo.');
+      } catch (err) {
+        console.error('Erro PiP:', err);
+      }
+    }
+
+    function shareApp() {
+      if (navigator.share) {
+        navigator.share({
+          title: 'Radar TV',
+          text: 'Assista à programação ao vivo da Radar TV!',
+          url: window.location.href
+        }).catch(console.error);
+      } else {
+        navigator.clipboard.writeText(window.location.href);
+        alert('Link copiado para a área de transferência!');
+      }
+    }
+
+    function requestNotificationPermission() {
+      closeMenu();
+      if ('Notification' in window) {
+        Notification.requestPermission().then(permission => {
+          if (permission === 'granted') alert('Notificações ativadas com sucesso!');
+          else alert('As notificações foram negadas.');
+        });
+      } else {
+        alert('Seu navegador não suporta notificações.');
+      }
+    }
+
+    function initHLS() {
+      if (Hls.isSupported()) {
+        hlsInstance = new Hls();
+        hlsInstance.loadSource(HLS_URL);
+        hlsInstance.attachMedia(hlsVideo);
+      } else if (hlsVideo.canPlayType('application/vnd.apple.mpegurl')) {
+        hlsVideo.src = HLS_URL;
+      }
+    }
+
+    async function checkYouTubeLive() {
+      try {
+        const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${YOUTUBE_CHANNEL_ID}&type=video&eventType=live&key=${YOUTUBE_API_KEY}`;
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.items && data.items.length > 0) {
+          const videoId = data.items[0].id.videoId;
+          if (!isYtLiveActive) enableYouTubeLive(videoId);
+        } else {
+          if (isYtLiveActive) disableYouTubeLive();
+        }
+      } catch (err) {
+        console.error("Erro YouTube:", err);
+      }
+    }
+
+    function enableYouTubeLive(videoId) {
+      isYtLiveActive = true;
+      hlsVideo.pause();
+      hlsVideo.style.display = 'none';
+      ytIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&live=1`;
+      ytIframe.style.display = 'block';
+    }
+
+    function disableYouTubeLive() {
+      isYtLiveActive = false;
+      ytIframe.src = '';
+      ytIframe.style.display = 'none';
+      hlsVideo.style.display = 'block';
+    }
+
+    function updateEPG() {
+      const currentHour = (new Date()).getHours();
+      let currentIndex = schedule.findIndex(item => currentHour >= item.startH && currentHour < item.endH);
+      if (currentIndex === -1) currentIndex = 0;
+      let nextIndex = (currentIndex + 1) % schedule.length;
+
+      document.getElementById('nowTime').innerText = `${schedule[currentIndex].start} - ${schedule[currentIndex].end}`;
+      document.getElementById('nowTitle').innerText = schedule[currentIndex].name;
+      document.getElementById('nextTime').innerText = `${schedule[nextIndex].start} - ${schedule[nextIndex].end}`;
+      document.getElementById('nextTitle').innerText = schedule[nextIndex].name;
+    }
+
+    function openSchedule() {
+      const currentHour = (new Date()).getHours();
+      const container = document.getElementById('fullScheduleList');
+      container.innerHTML = '';
+
+      schedule.forEach(item => {
+        const isCurrent = (currentHour >= item.startH && currentHour < item.endH);
+        const div = document.createElement('div');
+        div.className = `schedule-item ${isCurrent ? 'active' : ''}`;
+        div.innerHTML = `
+          <span>${item.name} ${isCurrent ? '🔵 (No Ar)' : ''}</span>
+          <span class="schedule-time">${item.start} - ${item.end}</span>
+        `;
+        container.appendChild(div);
+      });
+
+      document.getElementById('scheduleModal').style.display = 'flex';
+    }
+
+    function closeSchedule() {
+      document.getElementById('scheduleModal').style.display = 'none';
+    }
+
+    // EXECUÇÃO INICIAL
+    initHLS();
+    updateEPG();
+    requestWakeLock();
+    setInterval(updateEPG, 60000);
+    setInterval(checkPollCooldown, 30000);
+    checkYouTubeLive();
+    setInterval(checkYouTubeLive, 30000);
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(console.error);
+    }
+
+    let deferredPrompt;
+    const pwaBanner = document.getElementById('pwaBanner');
+    const btnInstall = document.getElementById('btnInstall');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      pwaBanner.style.display = 'flex';
+    });
+
+    btnInstall.addEventListener('click', () => {
+      pwaBanner.style.display = 'none';
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
+      }
+    });
+  </script>
+</body>
+</html>
