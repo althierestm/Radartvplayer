@@ -435,10 +435,71 @@
       gap: 8px;
     }
 
+    /* SEÇÃO DE PRÓXIMAS COBERTURAS (AGENDA) */
+    .coverage-section {
+      padding: 18px;
+      background: #12141a;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      border-bottom: 1px solid #2a2e39;
+    }
+
+    .coverage-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #8ebf00;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+
+    .coverage-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .coverage-item {
+      background: #181b22;
+      border: 1px solid #2a2e39;
+      border-radius: 8px;
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .coverage-item:hover {
+      border-color: #0d47e6;
+      background: #1c212d;
+    }
+
+    .coverage-date-badge {
+      background: #0d47e6;
+      color: #ffffff;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: bold;
+      white-space: nowrap;
+      text-align: center;
+      min-width: 85px;
+      box-shadow: 0 2px 8px rgba(13, 71, 230, 0.3);
+    }
+
+    .coverage-title {
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: #e0e0e0;
+      line-height: 1.3;
+    }
+
     /* SEÇÃO DE ENQUETE */
     .poll-section {
       padding: 18px;
-      background: #12141a;
+      background: #181b22;
       display: flex;
       flex-direction: column;
       gap: 14px;
@@ -536,7 +597,7 @@
 
     .poll-textarea {
       width: 100%;
-      background: #181b22;
+      background: #12141a;
       border: 1px solid #2a2e39;
       border-radius: 8px;
       padding: 10px;
@@ -698,6 +759,8 @@
       .epg-bar { padding: 10px; gap: 8px; }
       .epg-info { flex-direction: row; align-items: center; gap: 6px; flex-wrap: wrap; }
       .epg-title { font-size: 0.85rem; }
+      .coverage-date-badge { min-width: 75px; font-size: 0.72rem; padding: 5px 8px; }
+      .coverage-title { font-size: 0.82rem; }
     }
   </style>
 </head>
@@ -811,6 +874,31 @@
             <i class="fa-regular fa-calendar-days"></i> Grade Completa de Hoje
           </button>
         </div>
+
+        <!-- SEÇÃO DE PRÓXIMAS COBERTURAS (AGENDA) -->
+        <section class="coverage-section">
+          <div class="coverage-header">
+            <i class="fa-solid fa-calendar-check"></i>
+            <span>Próximas Coberturas</span>
+          </div>
+
+          <div class="coverage-list">
+            <div class="coverage-item">
+              <span class="coverage-date-badge">25 de Julho</span>
+              <span class="coverage-title">Cobertura 40 Anos do Sindicato dos Trabalhadores Rurais de Muriaé</span>
+            </div>
+
+            <div class="coverage-item">
+              <span class="coverage-date-badge">05 de Agosto</span>
+              <span class="coverage-title">Expô Limeira em Rosário da Limeira</span>
+            </div>
+
+            <div class="coverage-item">
+              <span class="coverage-date-badge">03 de Setembro</span>
+              <span class="coverage-title">Expô Muriaé</span>
+            </div>
+          </div>
+        </section>
 
         <!-- SEÇÃO DE ENQUETE -->
         <section class="poll-section">
