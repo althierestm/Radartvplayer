@@ -12,7 +12,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Radar TV & FM">
   
-  <!-- Ícone para Navegador e Celulares (Android/iOS) -->
+  <!-- Ícone para Navegador e Celulares (Android/iOS) - MANTIDO ICONE ORIGINAL -->
   <link rel="icon" type="image/png" href="Logo%20RadarTV%201080x1080.png">
   <link rel="apple-touch-icon" href="Logo%20RadarTV%201080x1080.png">
 
@@ -84,7 +84,9 @@
     }
 
     .menu-header img {
-      height: 32px;
+      height: 36px;
+      width: auto;
+      object-fit: contain;
     }
 
     .close-menu-btn {
@@ -305,14 +307,16 @@
       gap: 20px;
     }
 
+    /* Ajuste da logo da Rádio com fundo transparente */
     .radio-cover {
       width: 150px;
       height: 150px;
       border-radius: 50%;
       border: 4px solid #0d47e6;
-      padding: 5px;
+      padding: 15px;
+      background: #12141a;
       box-shadow: 0 0 20px rgba(13, 71, 230, 0.4);
-      object-fit: cover;
+      object-fit: contain;
     }
 
     .radio-info h2 {
@@ -533,7 +537,7 @@
   
   <aside class="side-menu" id="sideMenu">
     <div class="menu-header">
-      <img src="Logo%20RadarTV%201080x1080.png" alt="Radar TV">
+      <img src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1920.png" alt="Radar TV">
       <button class="close-menu-btn" onclick="closeMenu()">&times;</button>
     </div>
     
@@ -578,7 +582,7 @@
             <i class="fa-solid fa-bars"></i>
           </button>
           <div class="brand">
-            <img src="Logo%20RadarTV%201080x1080.png" alt="Radar TV">
+            <img src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1920.png" alt="Radar TV">
           </div>
         </div>
         <div class="live-badge" id="liveTag">AO VIVO</div>
@@ -630,14 +634,15 @@
       <!-- VISTA 2: RADAR FM -->
       <main class="view-panel" id="viewFm">
         <div class="radio-card">
-          <img src="Logo%20RadarTV%201080x1080.png" alt="Radar FM" class="radio-cover">
+          <!-- Logo Transparente da Radar FM -->
+          <img src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/radarfm.png" alt="Radar FM" class="radio-cover">
           <div class="radio-info">
             <h2>Radar FM</h2>
             <p><i class="fa-solid fa-wave-square"></i> TRANSMISSÃO AO VIVO</p>
           </div>
           <div class="audio-player-custom">
-            <!-- Insira o link do stream MP3/AAC da rádio na propriedade src abaixo -->
-            <audio id="fmAudioPlayer" controls preload="none" src="https://stream.exemplo.com/radarfm.mp3"></audio>
+            <!-- URL do stream atualizada para https://proic1.evspt.com/radar_aac -->
+            <audio id="fmAudioPlayer" controls preload="none" src="https://proic1.evspt.com/radar_aac"></audio>
           </div>
         </div>
       </main>
