@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Radar TV - Ao Vivo</title>
+  <title>Grupo Radar de Comunicação</title>
 
-  <!-- Tags PWA e Ícones do App -->
+  <!-- Tags PWA e Cor da Barra de Status do Celular -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0d47e6">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Radar TV">
+  <meta name="apple-mobile-web-app-title" content="Radar TV & FM">
   
   <!-- Ícone para Navegador e Celulares (Android/iOS) -->
   <link rel="icon" type="image/png" href="Logo%20RadarTV%201080x1080.png">
@@ -35,8 +35,101 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 10px;
+      padding: 0;
       min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* MENU LATERAL / DRAWER */
+    .menu-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .menu-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .side-menu {
+      position: fixed;
+      top: 0; left: -280px;
+      width: 280px; height: 100vh;
+      background: #12141a;
+      border-right: 1px solid #2a2e39;
+      z-index: 2001;
+      display: flex;
+      flex-direction: column;
+      transition: left 0.3s ease;
+      box-shadow: 5px 0 25px rgba(0,0,0,0.6);
+    }
+
+    .side-menu.active {
+      left: 0;
+    }
+
+    .menu-header {
+      padding: 20px;
+      background: #0d47e6;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .menu-header img {
+      height: 32px;
+    }
+
+    .close-menu-btn {
+      background: none; border: none;
+      color: #fff; font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .menu-items {
+      display: flex;
+      flex-direction: column;
+      padding: 15px 0;
+      gap: 5px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 20px;
+      color: #e0e0e0;
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-left: 4px solid transparent;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .menu-item:hover, .menu-item.active {
+      background: #1c212d;
+      color: #8ebf00;
+      border-left-color: #8ebf00;
+    }
+
+    .menu-item i {
+      font-size: 1.1rem;
+      width: 24px;
+      text-align: center;
+    }
+
+    .menu-divider {
+      height: 1px;
+      background: #2a2e39;
+      margin: 10px 0;
     }
 
     /* Banner de Instalação PWA */
@@ -47,8 +140,8 @@
       background: linear-gradient(90deg, #0d47e6, #082b8a);
       color: #fff;
       padding: 10px 15px;
+      margin-top: 10px;
       border-radius: 10px;
-      margin-bottom: 12px;
       justify-content: space-between;
       align-items: center;
       box-shadow: 0 4px 15px rgba(13, 71, 230, 0.3);
@@ -71,16 +164,20 @@
       font-weight: bold;
       font-size: 0.8rem;
       cursor: pointer;
-      transition: transform 0.2s;
     }
 
-    .btn-install:active {
-      transform: scale(0.95);
+    /* Container Principal */
+    .app-wrapper {
+      width: 100%;
+      max-width: 800px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .player-container {
       width: 100%;
-      max-width: 800px;
       background: #181b22;
       border-radius: 16px;
       overflow: hidden;
@@ -94,20 +191,31 @@
       align-items: center;
       justify-content: space-between;
       padding: 12px 18px;
-      background: #12141a;
-      border-bottom: 1px solid #2a2e39;
+      background: #0d47e6;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .hamburger-btn {
+      background: none; border: none;
+      color: #ffffff; font-size: 1.4rem;
+      cursor: pointer;
     }
 
     .brand img {
-      height: 38px;
+      height: 36px;
       width: auto;
       object-fit: contain;
       display: block;
     }
 
     .live-badge {
-      background-color: #0d47e6;
-      color: white;
+      background-color: #8ebf00;
+      color: #000000;
       font-size: 0.75rem;
       font-weight: bold;
       padding: 5px 12px;
@@ -122,17 +230,27 @@
       content: '';
       width: 8px;
       height: 8px;
-      background-color: #8ebf00;
+      background-color: #ff0000;
       border-radius: 50%;
     }
 
     @keyframes pulse {
       0% { opacity: 1; }
-      50% { opacity: 0.6; }
+      50% { opacity: 0.7; }
       100% { opacity: 1; }
     }
 
-    /* Video Player */
+    /* Vistas (TV x Rádio) */
+    .view-panel {
+      display: none;
+      width: 100%;
+    }
+
+    .view-panel.active {
+      display: block;
+    }
+
+    /* Video Player (TV) */
     .video-wrapper {
       position: relative;
       width: 100%;
@@ -143,12 +261,81 @@
     .video-wrapper video,
     .video-wrapper iframe {
       position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
       border: 0;
       object-fit: contain;
+    }
+
+    /* Barra de Ações Rápidas (TV) */
+    .quick-actions {
+      display: flex;
+      justify-content: space-around;
+      background: #12141a;
+      padding: 10px;
+      border-bottom: 1px solid #2a2e39;
+    }
+
+    .action-btn {
+      background: none;
+      border: none;
+      color: #a0a5b5;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .action-btn:hover {
+      color: #8ebf00;
+    }
+
+    /* Player Rádio FM */
+    .radio-card {
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(180deg, #181b22 0%, #101217 100%);
+      text-align: center;
+      gap: 20px;
+    }
+
+    .radio-cover {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      border: 4px solid #0d47e6;
+      padding: 5px;
+      box-shadow: 0 0 20px rgba(13, 71, 230, 0.4);
+      object-fit: cover;
+    }
+
+    .radio-info h2 {
+      font-size: 1.4rem;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+
+    .radio-info p {
+      font-size: 0.85rem;
+      color: #8ebf00;
+      font-weight: bold;
+    }
+
+    .audio-player-custom {
+      width: 100%;
+      max-width: 350px;
+      margin-top: 10px;
+    }
+
+    audio {
+      width: 100%;
+      border-radius: 30px;
     }
 
     /* EPG / Guia de Programação */
@@ -188,11 +375,7 @@
     .tag-now { background: #0d47e6; color: #fff; }
     .tag-next { background: #3a3f50; color: #a0a5b5; }
 
-    .epg-info {
-      display: flex;
-      flex-direction: column;
-    }
-
+    .epg-info { display: flex; flex-direction: column; }
     .epg-time { font-size: 0.78rem; color: #8a8f9d; }
     .epg-title { font-size: 0.95rem; font-weight: 600; color: #ffffff; }
 
@@ -253,13 +436,8 @@
       background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
     }
 
-    .social-btn.youtube {
-      background: #ff0000;
-    }
-
-    .social-btn:active {
-      transform: scale(0.96);
-    }
+    .social-btn.youtube { background: #ff0000; }
+    .social-btn:active { transform: scale(0.96); }
 
     .footer-credits {
       font-size: 0.85rem;
@@ -273,10 +451,6 @@
       font-weight: bold;
     }
 
-    .footer-credits a:hover {
-      text-decoration: underline;
-    }
-
     /* Modal Programação */
     .modal {
       display: none;
@@ -284,7 +458,7 @@
       top: 0; left: 0;
       width: 100%; height: 100%;
       background: rgba(0,0,0,0.85);
-      z-index: 1000;
+      z-index: 3000;
       justify-content: center;
       align-items: center;
       padding: 15px;
@@ -342,9 +516,8 @@
 
     .schedule-time { font-weight: bold; color: #4d82ff; }
 
-    /* Ajuste Mobile */
     @media (max-width: 600px) {
-      body { padding: 0; }
+      .app-wrapper { padding: 0; }
       .player-container { border-radius: 0; border: none; }
       .brand img { height: 28px; }
       .epg-bar { padding: 10px; gap: 8px; }
@@ -355,74 +528,141 @@
 </head>
 <body>
 
-  <!-- Banner de Instalação PWA -->
-  <div class="install-banner" id="pwaBanner">
-    <span><i class="fa-solid fa-mobile-screen-button"></i> Instalar App Radar TV</span>
-    <button class="btn-install" id="btnInstall">INSTALAR</button>
-  </div>
-
-  <div class="player-container">
-    <!-- Cabeçalho com Logo Responsiva -->
-    <div class="player-header">
-      <div class="brand">
-        <img src="Logo%20RadarTV%201080x1080.png" alt="Radar TV">
+  <!-- Overlay e Menu Lateral (Drawer) -->
+  <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
+  
+  <aside class="side-menu" id="sideMenu">
+    <div class="menu-header">
+      <img src="Logo%20RadarTV%201080x1080.png" alt="Radar TV">
+      <button class="close-menu-btn" onclick="closeMenu()">&times;</button>
+    </div>
+    
+    <nav class="menu-items">
+      <div class="menu-item active" id="navTv" onclick="switchTab('tv')">
+        <i class="fa-solid fa-tv"></i> Principal RadarTV
       </div>
-      <div class="live-badge" id="liveTag">AO VIVO</div>
-    </div>
-
-    <!-- Área de Vídeo -->
-    <div class="video-wrapper">
-      <video id="hlsPlayer" controls autoplay muted style="display: block;"></video>
-      <iframe id="ytPlayer" style="display: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-    </div>
-
-    <!-- Guia de Programação Inicial (EPG) -->
-    <div class="epg-bar">
-      <div class="epg-card">
-        <div class="epg-item">
-          <span class="epg-tag tag-now">NO AR</span>
-          <div class="epg-info">
-            <span class="epg-time" id="nowTime">--:-- - --:--</span>
-            <span class="epg-title" id="nowTitle">Carregando...</span>
-          </div>
-        </div>
-
-        <hr style="border: 0; border-top: 1px solid #2a2e39;">
-
-        <div class="epg-item">
-          <span class="epg-tag tag-next">EM SEGUIDA</span>
-          <div class="epg-info">
-            <span class="epg-time" id="nextTime">--:-- - --:--</span>
-            <span class="epg-title" id="nextTitle">--</span>
-          </div>
-        </div>
+      <div class="menu-item" id="navFm" onclick="switchTab('fm')">
+        <i class="fa-solid fa-radio"></i> Radar FM
       </div>
 
-      <button class="btn-schedule" onclick="openSchedule()">
-        <i class="fa-regular fa-calendar-days"></i> Grade Completa de Hoje
-      </button>
+      <div class="menu-divider"></div>
+
+      <a href="https://wa.me/5532999000000?text=Ol%C3%A1%21%20Estou%20ouvindo%2FAssistindo%20pelo%20App%20Radar%21" target="_blank" rel="noopener noreferrer" class="menu-item">
+        <i class="fa-brands fa-whatsapp" style="color: #25d366;"></i> WhatsApp no Ar
+      </a>
+
+      <div class="menu-item" onclick="requestNotificationPermission()">
+        <i class="fa-solid fa-bell"></i> Ativar Notificações
+      </div>
+
+      <div class="menu-item" onclick="shareApp()">
+        <i class="fa-solid fa-share-nodes"></i> Compartilhar App
+      </div>
+    </nav>
+  </aside>
+
+  <!-- Conteúdo Principal -->
+  <div class="app-wrapper">
+
+    <!-- Banner PWA -->
+    <div class="install-banner" id="pwaBanner">
+      <span><i class="fa-solid fa-mobile-screen-button"></i> Instalar App Radar TV</span>
+      <button class="btn-install" id="btnInstall">INSTALAR</button>
     </div>
+
+    <div class="player-container">
+      <!-- Cabeçalho -->
+      <header class="player-header">
+        <div class="header-left">
+          <button class="hamburger-btn" onclick="openMenu()">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div class="brand">
+            <img src="Logo%20RadarTV%201080x1080.png" alt="Radar TV">
+          </div>
+        </div>
+        <div class="live-badge" id="liveTag">AO VIVO</div>
+      </header>
+
+      <!-- VISTA 1: RADAR TV -->
+      <main class="view-panel active" id="viewTv">
+        <div class="video-wrapper">
+          <video id="hlsPlayer" controls autoplay muted style="display: block;"></video>
+          <iframe id="ytPlayer" style="display: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+
+        <!-- Ações Rápidas -->
+        <div class="quick-actions">
+          <button class="action-btn" onclick="togglePiP()">
+            <i class="fa-solid fa-clone"></i> Janela Flutuante (PiP)
+          </button>
+          <button class="action-btn" onclick="shareApp()">
+            <i class="fa-solid fa-share-nodes"></i> Compartilhar
+          </button>
+        </div>
+
+        <!-- Guia EPG -->
+        <div class="epg-bar">
+          <div class="epg-card">
+            <div class="epg-item">
+              <span class="epg-tag tag-now">NO AR</span>
+              <div class="epg-info">
+                <span class="epg-time" id="nowTime">--:-- - --:--</span>
+                <span class="epg-title" id="nowTitle">Carregando...</span>
+              </div>
+            </div>
+            <hr style="border: 0; border-top: 1px solid #2a2e39;">
+            <div class="epg-item">
+              <span class="epg-tag tag-next">EM SEGUIDA</span>
+              <div class="epg-info">
+                <span class="epg-time" id="nextTime">--:-- - --:--</span>
+                <span class="epg-title" id="nextTitle">--</span>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn-schedule" onclick="openSchedule()">
+            <i class="fa-regular fa-calendar-days"></i> Grade Completa de Hoje
+          </button>
+        </div>
+      </main>
+
+      <!-- VISTA 2: RADAR FM -->
+      <main class="view-panel" id="viewFm">
+        <div class="radio-card">
+          <img src="Logo%20RadarTV%201080x1080.png" alt="Radar FM" class="radio-cover">
+          <div class="radio-info">
+            <h2>Radar FM</h2>
+            <p><i class="fa-solid fa-wave-square"></i> TRANSMISSÃO AO VIVO</p>
+          </div>
+          <div class="audio-player-custom">
+            <!-- Insira o link do stream MP3/AAC da rádio na propriedade src abaixo -->
+            <audio id="fmAudioPlayer" controls preload="none" src="https://stream.exemplo.com/radarfm.mp3"></audio>
+          </div>
+        </div>
+      </main>
+
+    </div>
+
+    <!-- RODAPÉ DA PÁGINA -->
+    <footer class="app-footer">
+      <div class="social-buttons">
+        <a href="https://instagram.com/radartvmg" target="_blank" rel="noopener noreferrer" class="social-btn instagram">
+          <i class="fa-brands fa-instagram"></i> Instagram
+        </a>
+        <a href="https://youtube.com/@radartvmg" target="_blank" rel="noopener noreferrer" class="social-btn youtube">
+          <i class="fa-brands fa-youtube"></i> YouTube
+        </a>
+      </div>
+
+      <div class="footer-credits">
+        Grupo Radar de Comunicação por <a href="https://instagram.com/althierestm" target="_blank" rel="noopener noreferrer">Althieres Dias</a>
+      </div>
+    </footer>
+
   </div>
 
-  <!-- RODAPÉ COMPARTILHÁVEL DA PÁGINA -->
-  <footer class="app-footer">
-    <!-- Redes Sociais no Topo do Rodapé -->
-    <div class="social-buttons">
-      <a href="https://instagram.com/radartvmg" target="_blank" rel="noopener noreferrer" class="social-btn instagram">
-        <i class="fa-brands fa-instagram"></i> Instagram
-      </a>
-      <a href="https://youtube.com/@radartvmg" target="_blank" rel="noopener noreferrer" class="social-btn youtube">
-        <i class="fa-brands fa-youtube"></i> YouTube
-      </a>
-    </div>
-
-    <!-- Assinatura do Grupo Radar Abaixo -->
-    <div class="footer-credits">
-      Grupo Radar de Comunicação por <a href="https://instagram.com/althierestm" target="_blank" rel="noopener noreferrer">Althieres Dias</a>
-    </div>
-  </footer>
-
-  <!-- Modal Programação Completa -->
+  <!-- Modal Programação -->
   <div class="modal" id="scheduleModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -434,12 +674,12 @@
   </div>
 
   <script>
-    // ================= CONFIGURAÇÕES SINAL E CANAL =================
+    // CONFIGURAÇÕES SINAIS
     const HLS_URL = 'https://video01.logicahost.com.br/fcvtv/fcvtv/playlist.m3u8';
     const YOUTUBE_CHANNEL_ID = 'UC7wHmjY4RNruABZ9An1crBA'; 
     const YOUTUBE_API_KEY = 'AIzaSyDaVlWRVlFrq9Qur-Dzv779pIIi3v_XD0g'; 
 
-    // ================= GRADE DE PROGRAMAÇÃO DE INÍCIO =================
+    // GRADE DE PROGRAMAÇÃO
     const schedule = [
       { start: "00:00", end: "02:00", name: "Corujão Radar TV", startH: 0, endH: 2 },
       { start: "02:00", end: "04:00", name: "Madrugada Sertaneja", startH: 2, endH: 4 },
@@ -455,12 +695,107 @@
       { start: "22:00", end: "00:00", name: "Radar Night", startH: 22, endH: 24 }
     ];
 
-    // ================= SCRIPT DO PLAYER =================
+    // ELEMENTOS
     const hlsVideo = document.getElementById('hlsPlayer');
     const ytIframe = document.getElementById('ytPlayer');
+    const fmAudio = document.getElementById('fmAudioPlayer');
     let hlsInstance = null;
     let isYtLiveActive = false;
 
+    // MENU LATERAL
+    function openMenu() {
+      document.getElementById('sideMenu').classList.add('active');
+      document.getElementById('menuOverlay').classList.add('active');
+    }
+
+    function closeMenu() {
+      document.getElementById('sideMenu').classList.remove('active');
+      document.getElementById('menuOverlay').classList.remove('active');
+    }
+
+    // ALTERNÂNCIA TV / FM
+    function switchTab(tab) {
+      closeMenu();
+      
+      document.getElementById('navTv').classList.remove('active');
+      document.getElementById('navFm').classList.remove('active');
+      document.getElementById('viewTv').classList.remove('active');
+      document.getElementById('viewFm').classList.remove('active');
+
+      if (tab === 'tv') {
+        document.getElementById('navTv').classList.add('active');
+        document.getElementById('viewTv').classList.add('active');
+        document.getElementById('liveTag').innerText = 'AO VIVO - TV';
+        fmAudio.pause();
+        if(!isYtLiveActive) hlsVideo.play();
+      } else if (tab === 'fm') {
+        document.getElementById('navFm').classList.add('active');
+        document.getElementById('viewFm').classList.add('active');
+        document.getElementById('liveTag').innerText = 'AO VIVO - FM';
+        hlsVideo.pause();
+        if(ytIframe.src) ytIframe.src = ytIframe.src; // Pausa Iframe
+        fmAudio.play();
+      }
+    }
+
+    // MANTER TELA LIGADA (Wake Lock)
+    async function requestWakeLock() {
+      try {
+        if ('wakeLock' in navigator) {
+          await navigator.wakeLock.request('screen');
+        }
+      } catch (err) {
+        console.log('Wake Lock Error:', err);
+      }
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') requestWakeLock();
+    });
+
+    // PICTURE IN PICTURE
+    async function togglePiP() {
+      try {
+        if (document.pictureInPictureElement) {
+          await document.exitPictureInPicture();
+        } else if (document.pictureInPictureEnabled && hlsVideo.style.display !== 'none') {
+          await hlsVideo.requestPictureInPicture();
+        }
+      } catch (err) {
+        alert('Modo Flutuante indisponível no momento.');
+      }
+    }
+
+    // COMPARTILHAR APP
+    function shareApp() {
+      if (navigator.share) {
+        navigator.share({
+          title: 'Radar TV & FM',
+          text: 'Assista e ouça a programação ao vivo do Grupo Radar de Comunicação!',
+          url: window.location.href
+        }).catch(console.error);
+      } else {
+        navigator.clipboard.writeText(window.location.href);
+        alert('Link copiado para a área de transferência!');
+      }
+    }
+
+    // PERMISSÃO NOTIFICAÇÕES
+    function requestNotificationPermission() {
+      closeMenu();
+      if ('Notification' in window) {
+        Notification.requestPermission().then(permission => {
+          if (permission === 'granted') {
+            alert('Notificações ativadas com sucesso!');
+          } else {
+            alert('As notificações foram negadas.');
+          }
+        });
+      } else {
+        alert('Seu navegador não suporta notificações.');
+      }
+    }
+
+    // INICIALIZADORES PLAYER HLS & YOUTUBE
     function initHLS() {
       if (Hls.isSupported()) {
         hlsInstance = new Hls();
@@ -494,7 +829,6 @@
       hlsVideo.style.display = 'none';
       ytIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&live=1`;
       ytIframe.style.display = 'block';
-      document.getElementById('liveTag').innerText = 'AO VIVO - YOUTUBE';
     }
 
     function disableYouTubeLive() {
@@ -502,22 +836,16 @@
       ytIframe.src = '';
       ytIframe.style.display = 'none';
       hlsVideo.style.display = 'block';
-      hlsVideo.play();
-      document.getElementById('liveTag').innerText = 'AO VIVO';
     }
 
     function updateEPG() {
-      const now = new Date();
-      const currentHour = now.getHours();
-
+      const currentHour = (new Date()).getHours();
       let currentIndex = schedule.findIndex(item => currentHour >= item.startH && currentHour < item.endH);
       if (currentIndex === -1) currentIndex = 0;
-
       let nextIndex = (currentIndex + 1) % schedule.length;
 
       document.getElementById('nowTime').innerText = `${schedule[currentIndex].start} - ${schedule[currentIndex].end}`;
       document.getElementById('nowTitle').innerText = schedule[currentIndex].name;
-
       document.getElementById('nextTime').innerText = `${schedule[nextIndex].start} - ${schedule[nextIndex].end}`;
       document.getElementById('nextTitle').innerText = schedule[nextIndex].name;
     }
@@ -545,17 +873,19 @@
       document.getElementById('scheduleModal').style.display = 'none';
     }
 
+    // EVENTOS INICIAIS
     initHLS();
     updateEPG();
+    requestWakeLock();
     setInterval(updateEPG, 60000);
     checkYouTubeLive();
     setInterval(checkYouTubeLive, 30000);
 
-    // ================= SCRIPT DE INSTALAÇÃO PWA =================
+    // SCRIPT DE INSTALAÇÃO PWA
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('sw.js')
-        .then(() => console.log('Service Worker Registrado com sucesso'))
-        .catch(err => console.error('Erro ao registrar SW:', err));
+        .then(() => console.log('Service Worker Registrado'))
+        .catch(err => console.error('Erro SW:', err));
     }
 
     let deferredPrompt;
@@ -572,12 +902,7 @@
       pwaBanner.style.display = 'none';
       if (deferredPrompt) {
         deferredPrompt.prompt();
-        deferredPrompt.userChoice.then((choiceResult) => {
-          if (choiceResult.outcome === 'accepted') {
-            console.log('App instalado!');
-          }
-          deferredPrompt = null;
-        });
+        deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
       }
     });
   </script>
