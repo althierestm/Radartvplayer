@@ -1,430 +1,212 @@
-html_content = """<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Player de Rádio Web - Ao Vivo</title>
-    <!-- Link para os ícones do Instagram e Redes Sociais (FontAwesome 6) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <title>Radar Player - TV e FM</title>
     <style>
-        /* Container Principal - Fundo Branco com Ondas Concêntricas */
-        #custom-radio-player {
-            position: fixed;
-            bottom: 0;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f0f12;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* =======================================
+           1. ESTRUTURA DO PLAYER DE TV
+           ======================================= */
+        .tv-card {
+            background-color: #18181c;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+        }
+
+        .tv-player-wrapper {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* Proporção 16:9 */
+            background-color: #000000;
+        }
+
+        .tv-player-wrapper iframe,
+        .tv-player-wrapper video {
+            position: absolute;
+            top: 0;
             left: 0;
             width: 100%;
-            height: 71px;
-            background-color: #ffffff;
-            background-image: 
-                radial-gradient(circle, transparent 30%, rgba(0, 0, 0, 0.03) 31%, rgba(0, 0, 0, 0.03) 33%, transparent 34%),
-                radial-gradient(circle, transparent 45%, rgba(0, 0, 0, 0.03) 46%, rgba(0, 0, 0, 0.03) 48%, transparent 49%),
-                radial-gradient(circle, transparent 60%, rgba(0, 0, 0, 0.03) 61%, rgba(0, 0, 0, 0.03) 63%, transparent 64%),
-                radial-gradient(circle, transparent 75%, rgba(0, 0, 0, 0.03) 76%, rgba(0, 0, 0, 0.03) 78%, transparent 79%);
-            background-size: 800px 800px;
-            background-position: center;
-            border-top: 1px solid #e0e0e0;
-            color: #0000CD;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            z-index: 9999;
+            height: 100%;
+            border: none;
+        }
+
+        /* Overlay da Logo Radar TV (Fundo Transparente & Adaptação) */
+        .tv-logo-overlay {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            height: 65px; /* Altura ajustada da logo na TV */
+            width: auto;
+            object-fit: contain; /* Preserva as proporções originais (1080x1920) */
+            background: transparent !important;
+            z-index: 10;
+            pointer-events: none; /* Permite interagir com o vídeo atrás da logo */
+            filter: drop-shadow(0px 2px 6px rgba(0, 0, 0, 0.7));
+        }
+
+        /* =======================================
+           2. ESTRUTURA DO PLAYER DE RÁDIO (RADAR FM)
+           ======================================= */
+        .fm-card {
+            background-color: #18181c;
+            border-radius: 12px;
+            padding: 16px 24px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 40px;
-            box-sizing: border-box;
-            box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.08);
-            transition: all 0.2s ease-in-out;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            flex-wrap: wrap;
+            gap: 16px;
         }
 
-        /* Área de Controle: Play/Pause e Volume */
-        .player-left {
+        .fm-info {
             display: flex;
             align-items: center;
-            gap: 15px;
-            flex-shrink: 0;
+            gap: 16px;
         }
 
-        /* Botão de Play Azul Circular com Borda Dupla */
-        .play-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background-color: #0000CD;
-            border: 3px solid #ffffff;
-            box-shadow: 0 0 0 3px #0000CD;
-            color: #ffffff;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            outline: none;
-            transition: transform 0.15s ease, background-color 0.2s ease;
-            flex-shrink: 0;
+        /* Logo Radar FM (Fundo Transparente & Adaptação) */
+        .fm-logo {
+            height: 48px; /* Altura ajustada da logo no player de áudio */
+            width: auto;
+            object-fit: contain;
+            background: transparent !important;
+            filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.4));
         }
 
-        .play-btn:hover {
-            background-color: #0000a0;
-            transform: scale(1.03);
-        }
-
-        .play-btn:active {
-            transform: scale(0.95);
-        }
-
-        .play-btn svg {
-            width: 20px;
-            height: 20px;
-            fill: currentColor;
-        }
-
-        #play-icon {
-            margin-left: 3px;
-        }
-
-        /* Controle de Volume Horizontal com Gradiente Dinâmico */
-        .volume-container {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .volume-container svg {
-            width: 18px;
-            height: 18px;
-            fill: #0000CD;
-            flex-shrink: 0;
-        }
-
-        .volume-slider {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 80px;
-            height: 6px;
-            border-radius: 3px;
-            background: linear-gradient(to right, #0000CD 100%, #e0e0e0 100%);
-            outline: none;
-            cursor: pointer;
-        }
-
-        .volume-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: #0000CD;
-            border: 2px solid #ffffff;
-            cursor: pointer;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.3);
-            transition: transform 0.1s ease;
-        }
-
-        .volume-slider::-webkit-slider-thumb:hover {
-            transform: scale(1.2);
-        }
-
-        .volume-slider::-moz-range-thumb {
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: #0000CD;
-            border: 2px solid #ffffff;
-            cursor: pointer;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.3);
-        }
-
-        /* Área Central: Metadados e Equalizador Animado */
-        .player-center {
-            flex-grow: 1;
-            margin-left: 35px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .status-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .status-label {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #0000CD;
-            opacity: 0.85;
-        }
-
-        /* Equalizador gráfico animado */
-        .equalizer {
-            display: inline-flex;
-            align-items: flex-end;
-            gap: 2px;
-            height: 10px;
-            margin-top: -1px;
-        }
-
-        .equalizer span {
-            width: 2px;
-            height: 3px;
-            background-color: #0000CD;
-            border-radius: 1px;
-            opacity: 0.4;
-            transition: height 0.2s ease, opacity 0.2s ease;
-        }
-
-        .equalizer.active span {
-            opacity: 1;
-            animation: eqBounce 0.8s ease-in-out infinite alternate;
-        }
-
-        .equalizer.active span:nth-child(1) { animation-delay: 0.1s; }
-        .equalizer.active span:nth-child(2) { animation-delay: 0.3s; }
-        .equalizer.active span:nth-child(3) { animation-delay: 0.2s; }
-
-        @keyframes eqBounce {
-            0% { height: 2px; }
-            100% { height: 11px; }
-        }
-
-        .music-title {
-            font-size: 13px;
+        .fm-details h3 {
+            font-size: 1.1rem;
             font-weight: 600;
-            color: #0000CD;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 100%;
-            margin-top: 2px;
+            color: #ffffff;
         }
 
-        /* Lado Direito: Redes Sociais */
-        .player-right {
+        .fm-details p {
+            font-size: 0.85rem;
+            color: #8e8e93;
+        }
+
+        .fm-controls {
             display: flex;
             align-items: center;
-            gap: 20px;
-            flex-shrink: 0;
         }
 
-        .social-links {
-            display: flex;
-            gap: 18px;
-        }
-
-        .social-icon {
-            color: #0000CD;
-            font-size: 22px;
-            text-decoration: none;
-            transition: opacity 0.2s ease, transform 0.2s ease;
+        .btn-play-fm {
+            background-color: #e50914;
+            border: none;
+            color: #ffffff;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: transform 0.2s ease, background-color 0.2s ease;
         }
 
-        .social-icon:hover {
-            opacity: 0.75;
-            transform: translateY(-2px);
+        .btn-play-fm:hover {
+            background-color: #ff0f1a;
+            transform: scale(1.05);
         }
 
-        /* RESPONSIVIDADE PARA CELULARES */
-        @media (max-width: 768px) {
-            #custom-radio-player {
-                height: 58px;
-                padding: 0 15px;
-                gap: 12px;
-                background-size: 300px 300px;
-                justify-content: flex-start;
-            }
-
-            .play-btn {
-                width: 40px;
-                height: 40px;
-                box-shadow: 0 0 0 2px #0000CD;
-            }
-
-            .play-btn svg {
-                width: 15px;
-                height: 15px;
-            }
-
-            .volume-container {
-                display: none; /* Usa botões físicos do celular */
-            }
-
-            .player-center {
-                margin-left: 0;
-                text-align: left;
-            }
-
-            .status-label {
-                font-size: 9px;
-            }
-
-            .music-title {
-                font-size: 11px;
-            }
-
-            .player-right {
-                display: none; /* Oculta redes sociais em telas menores para focar na música */
-            }
+        .btn-play-fm svg {
+            width: 22px;
+            height: 22px;
+            fill: #ffffff;
         }
     </style>
 </head>
 <body>
 
-    <!-- Widget do Player de Rádio -->
-    <div id="custom-radio-player">
+    <div class="container">
 
-        <!-- Área Esquerda: Play/Pause e Slider de Volume -->
-        <div class="player-left">
-            <button class="play-btn" id="audio-control-btn" title="Ouvir rádio / Pausar">
-                <svg id="play-icon" viewBox="0 0 24 24">
-                    <path d="M8 5v14l11-7z"/>
-                </svg>
-                <svg id="pause-icon" viewBox="0 0 24 24" style="display: none;">
-                    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-                </svg>
-            </button>
+        <!-- PLAYER DE TV -->
+        <div class="tv-card">
+            <div class="tv-player-wrapper">
+                <!-- Marca d'água / Logo Radar TV com fundo transparente -->
+                <img src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1920.png" 
+                     alt="Radar TV Logo" 
+                     class="tv-logo-overlay">
 
-            <div class="volume-container">
-                <svg viewBox="0 0 24 24">
-                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
-                </svg>
-                <input type="range" class="volume-slider" id="volume-control" min="0" max="1" step="0.02" value="1" title="Volume">
+                <!-- Exemplo de Player de Vídeo/Stream (Substitua a URL do iframe pelo seu link) -->
+                <iframe src="https://www.youtube.com/embed/live_stream?channel=SEU_CANAL" allowfullscreen></iframe>
             </div>
         </div>
 
-        <!-- Área Central: Metadados da Programação e Visualizador -->
-        <div class="player-center">
-            <div class="status-wrapper">
-                <span class="status-label">Tocando Agora</span>
-                <div class="equalizer" id="radio-equalizer">
-                    <span></span><span></span><span></span>
+        <!-- PLAYER DE RÁDIO (RADAR FM) -->
+        <div class="fm-card">
+            <div class="fm-info">
+                <!-- Logo Radar FM com fundo transparente -->
+                <img src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/radarfm.png" 
+                     alt="Radar FM Logo" 
+                     class="fm-logo">
+                
+                <div class="fm-details">
+                    <h3>Radar FM</h3>
+                    <p>Transmitindo ao vivo</p>
                 </div>
             </div>
-            <div class="music-title" id="player-music-text">Carregando programação...</div>
-        </div>
 
-        <!-- Área Direita: Links Sociais -->
-        <div class="player-right">
-            <div class="social-links">
-                <a href="https://instagram.com/limeiranews_" target="_blank" rel="noopener noreferrer" class="social-icon" title="Instagram Limeira News">
-                    <i class="fab fa-instagram"></i>
-                </a>
-                <a href="https://instagram.com/radartvmg" target="_blank" rel="noopener noreferrer" class="social-icon" title="Instagram Radar TV">
-                    <i class="fab fa-instagram"></i>
-                </a>
+            <div class="fm-controls">
+                <button class="btn-play-fm" id="fm-play-btn" title="Ouvir / Pausar">
+                    <!-- Ícone Play -->
+                    <svg id="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    <!-- Ícone Pause -->
+                    <svg id="icon-pause" viewBox="0 0 24 24" style="display: none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                </button>
+                <!-- URL da transmissão de áudio -->
+                <audio id="fm-audio-element" src="SUA_URL_DE_STREAM_AQUI"></audio>
             </div>
         </div>
 
     </div>
 
-    <!-- Elemento de Áudio Oculto -->
-    <audio id="radio-audio" preload="none" style="display:none;"></audio>
-
-    <!-- Script de Funcionamento Otimizado -->
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const streamUrl = "https://proic1.evspt.com/radar_aac";
-            const metaUrl = "https://radarlisboa.fm/avaplayer/radiotext.txt";
+        // Lógica de Play/Pause da Rádio FM
+        const audioElement = document.getElementById('fm-audio-element');
+        const playBtn = document.getElementById('fm-play-btn');
+        const iconPlay = document.getElementById('icon-play');
+        const iconPause = document.getElementById('icon-pause');
 
-            const audio = document.getElementById("radio-audio");
-            const playBtn = document.getElementById("audio-control-btn");
-            const playIcon = document.getElementById("play-icon");
-            const pauseIcon = document.getElementById("pause-icon");
-            const musicText = document.getElementById("player-music-text");
-            const volumeControl = document.getElementById("volume-control");
-            const equalizer = document.getElementById("radio-equalizer");
-
-            let isPlaying = false;
-
-            // Função para atualizar o preenchimento do slider de volume
-            function updateVolumeSlider() {
-                const percentage = volumeControl.value * 100;
-                volumeControl.style.background = `linear-gradient(to right, #0000CD ${percentage}%, #e0e0e0 ${percentage}%)`;
+        playBtn.addEventListener('click', () => {
+            if (audioElement.paused) {
+                audioElement.play();
+                iconPlay.style.display = 'none';
+                iconPause.style.display = 'block';
+            } else {
+                audioElement.pause();
+                iconPlay.style.display = 'block';
+                iconPause.style.display = 'none';
             }
-
-            // Inicialização do volume
-            audio.volume = volumeControl.value;
-            updateVolumeSlider();
-
-            volumeControl.addEventListener("input", function(e) {
-                audio.volume = e.target.value;
-                updateVolumeSlider();
-            });
-
-            // Controle de Play / Pause com correção para iOS Safari e streaming ao vivo
-            playBtn.addEventListener("click", function() {
-                if (!isPlaying) {
-                    // Atribui o stream e inicia imediatamente no gesto do usuário (Compatível com iOS/Safari)
-                    audio.src = streamUrl;
-                    audio.type = 'audio/aac';
-                    
-                    const playPromise = audio.play();
-                    
-                    if (playPromise !== undefined) {
-                        playPromise.then(() => {
-                            isPlaying = true;
-                            playIcon.style.display = "none";
-                            pauseIcon.style.display = "block";
-                            equalizer.classList.add("active");
-                        }).catch(err => {
-                            console.error("Erro ao iniciar áudio:", err);
-                            isPlaying = false;
-                            playIcon.style.display = "block";
-                            pauseIcon.style.display = "none";
-                            equalizer.classList.remove("active");
-                        });
-                    }
-                } else {
-                    // Ao pausar, limpamos o src para não acumular buffer de transmissão ao vivo
-                    audio.pause();
-                    audio.removeAttribute('src');
-                    audio.load();
-                    isPlaying = false;
-                    playIcon.style.display = "block";
-                    pauseIcon.style.display = "none";
-                    equalizer.classList.remove("active");
-                }
-            });
-
-            // Requisição de Metadados (Nome da Música / Programa)
-            function obterMusicaAtual() {
-                fetch(metaUrl + "?t=" + Date.now())
-                    .then(response => {
-                        if (!response.ok) throw new Error("Erro na rede ao buscar metadados");
-                        return response.text();
-                    })
-                    .then(data => {
-                        if (data && data.trim() !== "") {
-                            let musica = data.trim();
-                            if (musica.toUpperCase() === "RADAR LISBOA" || musica.toUpperCase().includes("RADAR LISBOA")) {
-                                musicText.innerText = "Programação Geral - Ao Vivo";
-                            } else {
-                                musicText.innerText = musica;
-                            }
-                        } else {
-                            musicText.innerText = "Programação Ao Vivo";
-                        }
-                    })
-                    .catch(err => {
-                        musicText.innerText = "Programação Ao Vivo";
-                    });
-            }
-
-            // Busca inicial e atualização periódica a cada 10 segundos
-            obterMusicaAtual();
-            setInterval(obterMusicaAtual, 10000);
         });
     </script>
+
 </body>
 </html>
-"""
-
-with open("player_radio_completo.html", "w", encoding="utf-8") as f:
-    f.write(html_content)
-
-print("Arquivo player_radio_completo.html gerado com sucesso!")
