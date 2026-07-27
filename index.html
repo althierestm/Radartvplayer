@@ -32,6 +32,10 @@
   <!-- Ícones FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+  <!-- Firebase SDK (Compat) -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
   <style>
     * {
       box-sizing: border-box;
@@ -253,7 +257,7 @@
       100% { opacity: 1; }
     }
 
-    /* Video Player (TV) Fixo no Layout */
+    /* Video Player */
     .video-wrapper {
       position: relative;
       width: 100%;
@@ -448,7 +452,6 @@
       margin-top: 4px;
     }
 
-    /* Formulário Opcional de Comentário */
     .poll-comment-box {
       display: flex;
       flex-direction: column;
@@ -633,7 +636,7 @@
 </head>
 <body>
 
-  <!-- Overlay e Menu Lateral (Drawer) -->
+  <!-- Overlay e Menu Lateral -->
   <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
   
   <aside class="side-menu" id="sideMenu">
@@ -673,7 +676,6 @@
     </div>
 
     <div class="player-container">
-      <!-- Cabeçalho -->
       <header class="player-header">
         <div class="header-left">
           <button class="hamburger-btn" onclick="openMenu()">
@@ -686,14 +688,12 @@
         <div class="live-badge" id="liveTag">AO VIVO</div>
       </header>
 
-      <!-- VISTA PRINCIPAL: RADAR TV -->
       <main class="view-panel active" id="viewTv">
         <div class="video-wrapper" id="videoWrapper">
           <video id="hlsPlayer" controls autoplay muted playsinline webkit-playsinline style="display: block;"></video>
           <iframe id="ytPlayer" style="display: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
 
-        <!-- Ações Rápidas -->
         <div class="quick-actions">
           <button class="action-btn" onclick="toggleFullscreen()">
             <i class="fa-solid fa-expand"></i> Expandir
@@ -735,7 +735,7 @@
         <section class="poll-section">
           <div class="poll-header">
             <i class="fa-solid fa-square-poll-vertical"></i>
-            <span>Enquete Rápida</span>
+            <span>Enquete Rápida (Tempo Real)</span>
           </div>
 
           <p class="poll-question">
@@ -747,7 +747,7 @@
               <div class="poll-progress-bar" id="bar0"></div>
               <div class="poll-option-content">
                 <span>Sim, foi ótima.</span>
-                <span class="poll-percent" id="percent0"></span>
+                <span class="poll-percent" id="percent0">0% (0 votos)</span>
               </div>
             </button>
 
@@ -755,7 +755,7 @@
               <div class="poll-progress-bar" id="bar1"></div>
               <div class="poll-option-content">
                 <span>Não gostei.</span>
-                <span class="poll-percent" id="percent1"></span>
+                <span class="poll-percent" id="percent1">0% (0 votos)</span>
               </div>
             </button>
 
@@ -763,14 +763,13 @@
               <div class="poll-progress-bar" id="bar2"></div>
               <div class="poll-option-content">
                 <span>Pode melhorar.</span>
-                <span class="poll-percent" id="percent2"></span>
+                <span class="poll-percent" id="percent2">0% (0 votos)</span>
               </div>
             </button>
           </div>
 
-          <div class="poll-status-msg" id="pollStatusMsg">Selecione uma opção acima para votar.</div>
+          <div class="poll-status-msg" id="pollStatusMsg">Conectando à enquete...</div>
 
-          <!-- Caixa Opcional de Comentário/Sugestão -->
           <div class="poll-comment-box">
             <label for="pollComment"><i class="fa-regular fa-comment-dots"></i> Deixe um comentário ou sugestão (opcional):</label>
             <textarea id="pollComment" class="poll-textarea" placeholder="Digite sua opinião aqui..."></textarea>
@@ -784,7 +783,7 @@
 
     </div>
 
-    <!-- RODAPÉ DA PÁGINA -->
+    <!-- RODAPÉ -->
     <footer class="app-footer">
       <div class="social-buttons">
         <a href="https://instagram.com/radartvmg" target="_blank" rel="noopener noreferrer" class="social-btn instagram">
@@ -814,7 +813,26 @@
   </div>
 
   <script>
-    // CONFIGURAÇÕES SINAIS
+    // ========================================================
+    // CONFIGURAÇÃO DO FIREBASE (Sua conta EnqueteRuralzao26)
+    // ========================================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyAgqs3SmViiQYiK7JW9_Z2wZgygjgAKiTE",
+      authDomain: "enqueteruralzao26.firebaseapp.com",
+      databaseURL: "https://enqueteruralzao26-default-rtdb.firebaseio.com",
+      projectId: "enqueteruralzao26",
+      storageBucket: "enqueteruralzao26.firebasestorage.app",
+      messagingSenderId: "729715390131",
+      appId: "1:729715390131:web:51b084d27bd722b02ae2c6",
+      measurementId: "G-GZ5REQEST9"
+    };
+
+    // Inicializa o Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const pollRef = db.ref('enquete_ruralzao_2026');
+
+    // SINAIS DE TRANSMISSÃO
     const HLS_URL = 'https://video01.logicahost.com.br/fcvtv/fcvtv/playlist.m3u8';
     const YOUTUBE_CHANNEL_ID = 'UC7wHmjY4RNruABZ9An1crBA'; 
     const YOUTUBE_API_KEY = 'AIzaSyDaVlWRVlFrq9Qur-Dzv779pIIi3v_XD0g'; 
@@ -835,14 +853,89 @@
       { start: "22:00", end: "00:00", name: "Radar Night", startH: 22, endH: 24 }
     ];
 
-    // ELEMENTOS
     const hlsVideo = document.getElementById('hlsPlayer');
     const ytIframe = document.getElementById('ytPlayer');
     const videoWrapper = document.getElementById('videoWrapper');
     let hlsInstance = null;
     let isYtLiveActive = false;
+    let pollVotes = [0, 0, 0];
 
-    // MENU LATERAL
+    // LÓGICA DA ENQUETE FIREBASE EM TEMPO REAL
+    const COOLDOWN_TIME = 10 * 60 * 1000; // 10 Minutos
+
+    function renderPollResults() {
+      const totalVotes = pollVotes.reduce((a, b) => a + b, 0);
+      pollVotes.forEach((votes, index) => {
+        const percentage = totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0;
+        document.getElementById(`percent${index}`).innerText = `${percentage}% (${votes} ${votes === 1 ? 'voto' : 'votos'})`;
+        document.getElementById(`bar${index}`).style.width = `${percentage}%`;
+      });
+    }
+
+    function checkPollCooldown() {
+      const lastVote = localStorage.getItem('radar_last_vote_timestamp');
+      const now = Date.now();
+      const optionBtns = document.querySelectorAll('.poll-option-btn');
+
+      if (lastVote && (now - parseInt(lastVote, 10)) < COOLDOWN_TIME) {
+        const remainingMinutes = Math.ceil((COOLDOWN_TIME - (now - parseInt(lastVote, 10))) / 60000);
+        document.getElementById('pollStatusMsg').innerText = `Obrigado pelo seu voto! Você poderá votar novamente em ~${remainingMinutes} min.`;
+        optionBtns.forEach(btn => btn.disabled = true);
+      } else {
+        document.getElementById('pollStatusMsg').innerText = `Selecione uma opção para registrar seu voto.`;
+        optionBtns.forEach(btn => btn.disabled = false);
+      }
+    }
+
+    // Ouvinte em Tempo Real do Firebase Database
+    pollRef.on('value', (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        pollVotes = [data.op0 || 0, data.op1 || 0, data.op2 || 0];
+      } else {
+        pollVotes = [0, 0, 0];
+        pollRef.set({ op0: 0, op1: 0, op2: 0 }); // Inicializa do ZERO
+      }
+      renderPollResults();
+      checkPollCooldown();
+    });
+
+    function votePoll(optionIndex) {
+      const lastVote = localStorage.getItem('radar_last_vote_timestamp');
+      const now = Date.now();
+
+      if (lastVote && (now - parseInt(lastVote, 10)) < COOLDOWN_TIME) {
+        alert("Você já votou recentemente. Aguarde 10 minutos para votar novamente!");
+        return;
+      }
+
+      // Transação Atômica no Firebase
+      const field = `op${optionIndex}`;
+      pollRef.child(field).transaction((currentVotes) => {
+        return (currentVotes || 0) + 1;
+      }, (error, committed) => {
+        if (committed) {
+          localStorage.setItem('radar_last_vote_timestamp', now.toString());
+          checkPollCooldown();
+        }
+      });
+    }
+
+    function sendPollComment() {
+      const comment = document.getElementById('pollComment').value.trim();
+      if (!comment) {
+        alert("Por favor, escreva uma sugestão ou comentário antes de enviar.");
+        return;
+      }
+
+      const subject = encodeURIComponent("Opinião/Sugestão Ruralzão 2026 - App Radar TV");
+      const body = encodeURIComponent(`Olá equipe Radar TV / Limeira News,\n\nSegue meu comentário sobre a cobertura do Ruralzão 2026:\n\n"${comment}"`);
+      
+      window.location.href = `mailto:radartvmg@gmail.com?subject=${subject}&body=${body}`;
+      document.getElementById('pollComment').value = '';
+    }
+
+    // DEMAIS FUNÇÕES DO APP
     function openMenu() {
       document.getElementById('sideMenu').classList.add('active');
       document.getElementById('menuOverlay').classList.add('active');
@@ -853,58 +946,35 @@
       document.getElementById('menuOverlay').classList.remove('active');
     }
 
-    // MANTER TELA LIGADA (Wake Lock)
     async function requestWakeLock() {
       try {
-        if ('wakeLock' in navigator) {
-          await navigator.wakeLock.request('screen');
-        }
-      } catch (err) {
-        console.log('Wake Lock Error:', err);
-      }
+        if ('wakeLock' in navigator) await navigator.wakeLock.request('screen');
+      } catch (err) {}
     }
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') requestWakeLock();
-    });
 
-    // AMPLIAR / TELA CHEIA MANUAL
     function toggleFullscreen() {
       const elem = videoWrapper;
       if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-        if (elem.requestFullscreen) {
-          elem.requestFullscreen();
-        } else if (elem.webkitRequestFullscreen) {
-          elem.webkitRequestFullscreen();
-        } else if (hlsVideo.webkitEnterFullscreen) {
-          hlsVideo.webkitEnterFullscreen();
-        }
+        if (elem.requestFullscreen) elem.requestFullscreen();
+        else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+        else if (hlsVideo.webkitEnterFullscreen) hlsVideo.webkitEnterFullscreen();
       } else {
-        if (document.exitFullscreen) {
-          document.exitFullscreen();
-        } else if (document.webkitExitFullscreen) {
-          document.webkitExitFullscreen();
-        }
+        if (document.exitFullscreen) document.exitFullscreen();
+        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
       }
     }
 
-    // EXPANDIR AUTOMATICAMENTE AO GIRAR O CELULAR
     function handleAutoRotation() {
       const isLandscape = window.innerWidth > window.innerHeight && window.innerWidth <= 950;
       if (isLandscape) {
         if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-          if (videoWrapper.requestFullscreen) {
-            videoWrapper.requestFullscreen().catch(() => {});
-          } else if (hlsVideo.webkitEnterFullscreen) {
-            hlsVideo.webkitEnterFullscreen();
-          }
+          if (videoWrapper.requestFullscreen) videoWrapper.requestFullscreen().catch(() => {});
+          else if (hlsVideo.webkitEnterFullscreen) hlsVideo.webkitEnterFullscreen();
         }
       } else {
         if (document.fullscreenElement || document.webkitFullscreenElement) {
-          if (document.exitFullscreen) {
-            document.exitFullscreen().catch(() => {});
-          } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen().catch(() => {});
-          }
+          if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
+          else if (document.webkitExitFullscreen) document.webkitExitFullscreen().catch(() => {});
         }
       }
     }
@@ -912,26 +982,16 @@
     window.addEventListener('orientationchange', handleAutoRotation);
     window.addEventListener('resize', handleAutoRotation);
 
-    // PICTURE IN PICTURE
     async function togglePiP() {
       try {
-        if (document.pictureInPictureElement) {
-          await document.exitPictureInPicture();
-        } else if (document.pictureInPictureEnabled && hlsVideo.style.display !== 'none') {
-          await hlsVideo.requestPictureInPicture();
-        } else if (hlsVideo.webkitSupportsPresentationMode && typeof hlsVideo.webkitSetPresentationMode === 'function') {
-          hlsVideo.webkitSetPresentationMode(
-            hlsVideo.webkitPresentationMode === 'picture-in-picture' ? 'inline' : 'picture-in-picture'
-          );
-        } else {
-          alert('A janela flutuante não é suportada neste dispositivo.');
-        }
+        if (document.pictureInPictureElement) await document.exitPictureInPicture();
+        else if (document.pictureInPictureEnabled && hlsVideo.style.display !== 'none') await hlsVideo.requestPictureInPicture();
+        else alert('A janela flutuante não é suportada neste dispositivo.');
       } catch (err) {
         console.error('Erro PiP:', err);
       }
     }
 
-    // COMPARTILHAR APP
     function shareApp() {
       if (navigator.share) {
         navigator.share({
@@ -945,88 +1005,18 @@
       }
     }
 
-    // PERMISSÃO NOTIFICAÇÕES
     function requestNotificationPermission() {
       closeMenu();
       if ('Notification' in window) {
         Notification.requestPermission().then(permission => {
-          if (permission === 'granted') {
-            alert('Notificações ativadas com sucesso!');
-          } else {
-            alert('As notificações foram negadas.');
-          }
+          if (permission === 'granted') alert('Notificações ativadas com sucesso!');
+          else alert('As notificações foram negadas.');
         });
       } else {
         alert('Seu navegador não suporta notificações.');
       }
     }
 
-    // LÓGICA DA ENQUETE (Com limite de 10 minutos)
-    const COOLDOWN_TIME = 10 * 60 * 1000; // 10 minutos em milissegundos
-    let pollVotes = JSON.parse(localStorage.getItem('radar_poll_votes')) || [184, 12, 45];
-
-    function renderPollResults() {
-      const totalVotes = pollVotes.reduce((a, b) => a + b, 0);
-      
-      pollVotes.forEach((votes, index) => {
-        const percentage = totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0;
-        document.getElementById(`percent${index}`).innerText = `${percentage}%`;
-        document.getElementById(`bar${index}`).style.width = `${percentage}%`;
-      });
-    }
-
-    function checkPollState() {
-      const lastVote = localStorage.getItem('radar_last_vote_timestamp');
-      const now = Date.now();
-      const optionBtns = document.querySelectorAll('.poll-option-btn');
-
-      if (lastVote && (now - parseInt(lastVote, 10)) < COOLDOWN_TIME) {
-        const remainingMinutes = Math.ceil((COOLDOWN_TIME - (now - parseInt(lastVote, 10))) / 60000);
-        document.getElementById('pollStatusMsg').innerText = `Obrigado pelo seu voto! Você poderá votar novamente em ~${remainingMinutes} min.`;
-        optionBtns.forEach(btn => btn.disabled = true);
-      } else {
-        document.getElementById('pollStatusMsg').innerText = `Selecione uma opção para registrar seu voto.`;
-        optionBtns.forEach(btn => btn.disabled = false);
-      }
-
-      renderPollResults();
-    }
-
-    function votePoll(optionIndex) {
-      const lastVote = localStorage.getItem('radar_last_vote_timestamp');
-      const now = Date.now();
-
-      if (lastVote && (now - parseInt(lastVote, 10)) < COOLDOWN_TIME) {
-        alert("Você já votou recentemente. Aguarde 10 minutos para votar novamente!");
-        return;
-      }
-
-      // Adiciona o voto e salva no localStorage
-      pollVotes[optionIndex]++;
-      localStorage.setItem('radar_poll_votes', JSON.stringify(pollVotes));
-      localStorage.setItem('radar_last_vote_timestamp', now.toString());
-
-      checkPollState();
-    }
-
-    // ENVIAR COMENTÁRIO/SUGESTÃO VIA EMAIL (radartvmg@gmail.com)
-    function sendPollComment() {
-      const comment = document.getElementById('pollComment').value.trim();
-      if (!comment) {
-        alert("Por favor, escreva uma sugestão ou comentário antes de enviar.");
-        return;
-      }
-
-      const subject = encodeURIComponent("Opinião/Sugestão Ruralzão 2026 - App Radar TV");
-      const body = encodeURIComponent(`Olá equipe Radar TV / Limeira News,\n\nSegue meu comentário sobre a cobertura do Ruralzão 2026:\n\n"${comment}"`);
-      
-      // Abre o app/serviço de e-mail do usuário apontando para radartvmg@gmail.com
-      window.location.href = `mailto:radartvmg@gmail.com?subject=${subject}&body=${body}`;
-
-      document.getElementById('pollComment').value = '';
-    }
-
-    // INICIALIZADORES PLAYER HLS & YOUTUBE
     function initHLS() {
       if (Hls.isSupported()) {
         hlsInstance = new Hls();
@@ -1104,21 +1094,17 @@
       document.getElementById('scheduleModal').style.display = 'none';
     }
 
-    // EVENTOS INICIAIS
+    // EXECUÇÃO INICIAL
     initHLS();
     updateEPG();
-    checkPollState();
     requestWakeLock();
     setInterval(updateEPG, 60000);
-    setInterval(checkPollState, 30000); // Atualiza os minutos restantes da enquete
+    setInterval(checkPollCooldown, 30000);
     checkYouTubeLive();
     setInterval(checkYouTubeLive, 30000);
 
-    // SCRIPT DE INSTALAÇÃO PWA
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js')
-        .then(() => console.log('Service Worker Registrado'))
-        .catch(err => console.error('Erro SW:', err));
+      navigator.serviceWorker.register('sw.js').catch(console.error);
     }
 
     let deferredPrompt;
