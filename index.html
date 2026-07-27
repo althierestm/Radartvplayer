@@ -253,11 +253,11 @@
       100% { opacity: 1; }
     }
 
-    /* Video Player (TV) */
+    /* Video Player (TV) Fixo no Layout */
     .video-wrapper {
       position: relative;
       width: 100%;
-      padding-top: 56.25%;
+      padding-top: 56.25%; /* Proporção 16:9 */
       background: #000;
     }
 
@@ -294,6 +294,17 @@
 
     .action-btn:hover {
       color: #8ebf00;
+    }
+
+    /* Janela flutuante ativada apenas no Desktop */
+    .desktop-only {
+      display: flex;
+    }
+
+    @media (max-width: 768px) {
+      .desktop-only {
+        display: none !important;
+      }
     }
 
     /* EPG / Guia de Programação */
@@ -541,14 +552,18 @@
 
       <!-- VISTA PRINCIPAL: RADAR TV -->
       <main class="view-panel active" id="viewTv">
-        <div class="video-wrapper">
-          <video id="hlsPlayer" controls autoplay muted style="display: block;"></video>
+        <div class="video-wrapper" id="videoWrapper">
+          <!-- playsinline e webkit-playsinline forçam o vídeo a rodar DENTRO da tela do app sem abrir o player padrão do sistema -->
+          <video id="hlsPlayer" controls autoplay muted playsinline webkit-playsinline style="display: block;"></video>
           <iframe id="ytPlayer" style="display: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
 
         <!-- Ações Rápidas -->
         <div class="quick-actions">
-          <button class="action-btn" onclick="togglePiP()">
+          <button class="action-btn" onclick="toggleFullscreen()">
+            <i class="fa-solid fa-expand"></i> Expandir
+          </button>
+          <button class="action-btn desktop-only" id="pipBtn" onclick="togglePiP()">
             <i class="fa-solid fa-clone"></i> Janela Flutuante (PiP)
           </button>
           <button class="action-btn" onclick="shareApp()">
@@ -638,6 +653,7 @@
     // ELEMENTOS
     const hlsVideo = document.getElementById('hlsPlayer');
     const ytIframe = document.getElementById('ytPlayer');
+    const videoWrapper = document.getElementById('videoWrapper');
     let hlsInstance = null;
     let isYtLiveActive = false;
 
@@ -666,16 +682,67 @@
       if (document.visibilityState === 'visible') requestWakeLock();
     });
 
-    // PICTURE IN PICTURE
+    // AMPLIAR / TELA CHEIA MANUAL
+    function toggleFullscreen() {
+      const elem = videoWrapper;
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        if (elem.requestFullscreen) {
+          elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) {
+          elem.webkitRequestFullscreen();
+        } else if (hlsVideo.webkitEnterFullscreen) {
+          hlsVideo.webkitEnterFullscreen(); // Suporte específico iOS
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+    }
+
+    // EXPANDIR AUTOMATICAMENTE QUANDO O CELULAR FOR GIRADO HORIZONTALMENTE
+    function handleAutoRotation() {
+      const isLandscape = window.innerWidth > window.innerHeight && window.innerWidth <= 950;
+      if (isLandscape) {
+        if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+          if (videoWrapper.requestFullscreen) {
+            videoWrapper.requestFullscreen().catch(() => {});
+          } else if (hlsVideo.webkitEnterFullscreen) {
+            hlsVideo.webkitEnterFullscreen();
+          }
+        }
+      } else {
+        if (document.fullscreenElement || document.webkitFullscreenElement) {
+          if (document.exitFullscreen) {
+            document.exitFullscreen().catch(() => {});
+          } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen().catch(() => {});
+          }
+        }
+      }
+    }
+
+    window.addEventListener('orientationchange', handleAutoRotation);
+    window.addEventListener('resize', handleAutoRotation);
+
+    // PICTURE IN PICTURE (JANELA FLUTUANTE) - DESKTOP / SUPORTADOS
     async function togglePiP() {
       try {
         if (document.pictureInPictureElement) {
           await document.exitPictureInPicture();
         } else if (document.pictureInPictureEnabled && hlsVideo.style.display !== 'none') {
           await hlsVideo.requestPictureInPicture();
+        } else if (hlsVideo.webkitSupportsPresentationMode && typeof hlsVideo.webkitSetPresentationMode === 'function') {
+          hlsVideo.webkitSetPresentationMode(
+            hlsVideo.webkitPresentationMode === 'picture-in-picture' ? 'inline' : 'picture-in-picture'
+          );
+        } else {
+          alert('A janela flutuante não é suportada neste dispositivo.');
         }
       } catch (err) {
-        alert('Modo Flutuante indisponível no momento.');
+        console.error('Erro PiP:', err);
       }
     }
 
