@@ -212,19 +212,20 @@
       gap: 8px;
     }
 
-    /* Redes Sociais e Rodapé */
-    .footer-container {
+    /* RODAPÉ E REDES SOCIAIS */
+    .app-footer {
       width: 100%;
       max-width: 800px;
-      margin-top: 15px;
+      margin-top: 20px;
+      padding: 15px 10px 30px 10px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 14px;
-      padding: 10px 0 20px 0;
+      gap: 16px;
+      border-top: 1px solid #2a2e39;
     }
 
-    .social-links {
+    .social-buttons {
       display: flex;
       gap: 12px;
       width: 100%;
@@ -233,7 +234,7 @@
 
     .social-btn {
       flex: 1;
-      max-width: 220px;
+      max-width: 200px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -241,11 +242,11 @@
       padding: 12px 16px;
       border-radius: 10px;
       text-decoration: none;
-      font-weight: 600;
+      font-weight: bold;
       font-size: 0.9rem;
       color: #ffffff;
-      transition: transform 0.2s, opacity 0.2s;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      transition: transform 0.2s;
     }
 
     .social-btn.instagram {
@@ -260,23 +261,20 @@
       transform: scale(0.96);
     }
 
-    .credits {
-      font-size: 0.8rem;
+    .footer-credits {
+      font-size: 0.85rem;
       color: #8a8f9d;
       text-align: center;
-      margin-top: 4px;
     }
 
-    .credits a {
+    .footer-credits a {
       color: #8ebf00;
       text-decoration: none;
-      font-weight: 600;
-      transition: color 0.2s;
+      font-weight: bold;
     }
 
-    .credits a:hover {
+    .footer-credits a:hover {
       text-decoration: underline;
-      color: #a3da00;
     }
 
     /* Modal Programação */
@@ -344,7 +342,7 @@
 
     .schedule-time { font-weight: bold; color: #4d82ff; }
 
-    /* Ajuste Compacto Mobile */
+    /* Ajuste Mobile */
     @media (max-width: 600px) {
       body { padding: 0; }
       .player-container { border-radius: 0; border: none; }
@@ -352,7 +350,6 @@
       .epg-bar { padding: 10px; gap: 8px; }
       .epg-info { flex-direction: row; align-items: center; gap: 6px; flex-wrap: wrap; }
       .epg-title { font-size: 0.85rem; }
-      .footer-container { padding: 15px 10px 25px 10px; }
     }
   </style>
 </head>
@@ -407,9 +404,10 @@
     </div>
   </div>
 
-  <!-- Menu de Redes Sociais e Rodapé de Créditos -->
-  <footer class="footer-container">
-    <div class="social-links">
+  <!-- RODAPÉ COMPARTILHÁVEL DA PÁGINA -->
+  <footer class="app-footer">
+    <!-- Redes Sociais no Topo do Rodapé -->
+    <div class="social-buttons">
       <a href="https://instagram.com/radartvmg" target="_blank" rel="noopener noreferrer" class="social-btn instagram">
         <i class="fa-brands fa-instagram"></i> Instagram
       </a>
@@ -418,7 +416,8 @@
       </a>
     </div>
 
-    <div class="credits">
+    <!-- Assinatura do Grupo Radar Abaixo -->
+    <div class="footer-credits">
       Grupo Radar de Comunicação por <a href="https://instagram.com/althierestm" target="_blank" rel="noopener noreferrer">Althieres Dias</a>
     </div>
   </footer>
