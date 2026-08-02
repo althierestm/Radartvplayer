@@ -341,6 +341,21 @@
       object-fit: contain;
     }
 
+    /* Logo Transparente / Marca d'água sobre o vídeo */
+    .watermark-logo {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 14%;
+      max-width: 80px;
+      min-width: 45px;
+      height: auto;
+      z-index: 10;
+      pointer-events: none;
+      opacity: 0.85;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+    }
+
     /* Barra de Ações Rápidas */
     .quick-actions {
       display: flex;
@@ -836,6 +851,9 @@
         <div class="video-wrapper" id="videoWrapper">
           <video id="hlsPlayer" controls autoplay muted playsinline webkit-playsinline style="display: block;"></video>
           <iframe id="ytPlayer" style="display: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          
+          <!-- Logo Transparente Estilo Marca d'água de Emissora -->
+          <img src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/logo%20png%20RadarTV.png" alt="Marca D'água Radar TV" class="watermark-logo">
         </div>
 
         <div class="quick-actions">
