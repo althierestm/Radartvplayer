@@ -162,12 +162,12 @@
       z-index: 2001;
       display: flex;
       flex-direction: column;
-      transition: left 0.3s ease;
-      box-shadow: 5px 0 25px rgba(0,0,0,0.6);
+      transition: left 0.3s ease, box-shadow 0.3s ease; /* Transição para a sombra também */
     }
 
     .side-menu.active {
       left: 0;
+      box-shadow: 5px 0 25px rgba(0,0,0,0.6); /* A sombra só existe quando o menu está aberto */
     }
 
     .menu-header {
