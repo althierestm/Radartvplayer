@@ -11,6 +11,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Radar TV">
 
+  <!-- OneSignal -->
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   <script>
     window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -20,6 +21,9 @@
       });
     });
   </script>
+
+  <!-- Google Cast SDK -->
+  <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
 
   <link rel="icon" type="image/png" href="Logo%20RadarTV%201080x1080.png">
   <link rel="apple-touch-icon" href="Logo%20RadarTV%201080x1080.png">
@@ -49,6 +53,13 @@
       overflow-x: hidden;
       touch-action: manipulation;
       -webkit-text-size-adjust: 100%;
+    }
+
+    /* Ocultar barra de progresso no player nativo (Chrome/Safari) */
+    video::-webkit-media-controls-timeline,
+    video::-webkit-media-controls-current-time-display,
+    video::-webkit-media-controls-time-remaining-display {
+        display: none !important;
     }
 
     .splash-screen {
@@ -254,9 +265,20 @@
       width: 100%;
       background: #181b22;
       border-radius: 16px;
-      overflow: hidden;
+      /* Removido o overflow hidden para permitir o sticky funcionar livremente */
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       border: 1px solid #2a2e39;
+    }
+
+    /* Novo Wrapper para fixar o player no topo */
+    .sticky-player-area {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: #181b22;
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
 
     .player-header {
@@ -265,6 +287,8 @@
       justify-content: space-between;
       padding: 12px 18px;
       background: #0d47e6;
+      border-top-left-radius: 16px;
+      border-top-right-radius: 16px;
     }
 
     .header-left {
@@ -343,10 +367,12 @@
 
     .quick-actions {
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-around;
       background: #12141a;
       padding: 10px;
       border-bottom: 1px solid #2a2e39;
+      gap: 10px;
     }
 
     .action-btn {
@@ -366,6 +392,12 @@
       color: #8ebf00;
     }
 
+    .cast-btn-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
     .desktop-only {
       display: flex;
     }
@@ -383,6 +415,8 @@
       flex-direction: column;
       gap: 12px;
       border-bottom: 1px solid #2a2e39;
+      border-bottom-left-radius: 16px;
+      border-bottom-right-radius: 16px;
     }
 
     .epg-card {
@@ -689,8 +723,10 @@
     @media (max-width: 600px) {
       .app-wrapper { padding: 0; }
       .player-container { border-radius: 0; border: none; }
+      .sticky-player-area { border-radius: 0; }
+      .player-header { border-radius: 0; }
       .brand img { height: 28px; }
-      .epg-bar { padding: 10px; gap: 8px; }
+      .epg-bar { padding: 10px; gap: 8px; border-radius: 0; }
       .epg-info { flex-direction: row; align-items: center; gap: 6px; flex-wrap: wrap; }
       .epg-title { font-size: 0.85rem; }
       .player-overlay-logo { height: 28px; bottom: 8px; right: 8px; }
@@ -749,22 +785,25 @@
     </div>
 
     <div class="player-container">
-      <header class="player-header">
-        <div class="header-left">
-          <button class="hamburger-btn" onclick="openMenu()">
-            <i class="fa-solid fa-bars"></i>
-          </button>
-          <div class="brand">
-            <img src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1920.png" alt="Radar TV">
+      
+      <!-- Inicio da Área Fixa do Player -->
+      <div class="sticky-player-area">
+        <header class="player-header">
+          <div class="header-left">
+            <button class="hamburger-btn" onclick="openMenu()">
+              <i class="fa-solid fa-bars"></i>
+            </button>
+            <div class="brand">
+              <img src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1920.png" alt="Radar TV">
+            </div>
           </div>
-        </div>
-        <div class="live-badge" id="liveTag">AO VIVO</div>
-      </header>
+          <div class="live-badge" id="liveTag">AO VIVO</div>
+        </header>
 
-      <main class="view-panel active" id="viewTv">
         <div class="video-wrapper" id="videoWrapper">
           <img src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1920.png" alt="Radar TV Logo" class="player-overlay-logo">
-          <video id="hlsPlayer" controls autoplay muted playsinline webkit-playsinline style="display: block;"></video>
+          <!-- Adicionado x-webkit-airplay para suporte AirPlay da Apple -->
+          <video id="hlsPlayer" controls autoplay muted playsinline webkit-playsinline x-webkit-airplay="allow" style="display: block;"></video>
           <iframe id="ytPlayer" style="display: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
 
@@ -772,14 +811,29 @@
           <button class="action-btn" onclick="toggleFullscreen()">
             <i class="fa-solid fa-expand"></i> Expandir
           </button>
+          
           <button class="action-btn desktop-only" id="pipBtn" onclick="togglePiP()">
-            <i class="fa-solid fa-clone"></i> Janela Flutuante (PiP)
+            <i class="fa-solid fa-clone"></i> Janela (PiP)
           </button>
+          
+          <button class="action-btn" onclick="toggleAirPlay()">
+            <i class="fa-brands fa-apple"></i> AirPlay
+          </button>
+
+          <button class="action-btn cast-btn-wrapper">
+             <google-cast-launcher style="--connected-color: #8ebf00; --disconnected-color: #a0a5b5; width: 22px; height: 22px; cursor: pointer;"></google-cast-launcher>
+             <span>Cast</span>
+          </button>
+          
           <button class="action-btn" onclick="shareApp()">
             <i class="fa-solid fa-share-nodes"></i> Compartilhar
           </button>
         </div>
+      </div>
+      <!-- Fim da Área Fixa do Player -->
 
+      <!-- Início do conteúdo rolável -->
+      <main class="view-panel active" id="viewTv">
         <div class="epg-bar">
           <div class="epg-card">
             <div class="epg-item">
@@ -883,6 +937,16 @@
   </div>
 
   <script>
+    // Inicialização do Google Cast (Chromecast)
+    window['__onGCastApiAvailable'] = function(isAvailable) {
+      if (isAvailable) {
+        cast.framework.CastContext.getInstance().setOptions({
+          receiverApplicationId: chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID,
+          autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED
+        });
+      }
+    };
+
     window.addEventListener('load', () => {
       setTimeout(() => {
         const splash = document.getElementById('splashScreen');
@@ -1071,6 +1135,14 @@
         else alert('A janela flutuante não é suportada neste dispositivo.');
       } catch (err) {
         console.error('Erro PiP:', err);
+      }
+    }
+
+    function toggleAirPlay() {
+      if (window.WebKitPlaybackTargetAvailabilityEvent) {
+        hlsVideo.webkitShowPlaybackTargetPicker();
+      } else {
+        alert("AirPlay nativo não é suportado neste navegador/dispositivo.");
       }
     }
 
