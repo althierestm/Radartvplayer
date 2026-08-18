@@ -5,14 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
   <title>Radar TV</title>
 
-  <!-- Tags PWA e Cor da Barra de Status do Celular -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0d47e6">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Radar TV">
 
-  <!-- OneSignal Web Push SDK -->
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   <script>
     window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -23,16 +21,12 @@
     });
   </script>
 
-  <!-- Ícone para Navegador e Celulares (Android/iOS) -->
   <link rel="icon" type="image/png" href="Logo%20RadarTV%201080x1080.png">
   <link rel="apple-touch-icon" href="Logo%20RadarTV%201080x1080.png">
 
-  <!-- HLS.js para reprodução do sinal m3u8 -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-  <!-- Ícones FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-  <!-- Firebase SDK (Compat) -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
@@ -57,7 +51,6 @@
       -webkit-text-size-adjust: 100%;
     }
 
-    /* TELA DE ABERTURA (SPLASH SCREEN COM DEGRADÊ) */
     .splash-screen {
       position: fixed;
       top: 0;
@@ -122,7 +115,6 @@
       100% { transform: scale(1.04); opacity: 1; }
     }
 
-    /* MENU LATERAL / DRAWER */
     .menu-overlay {
       position: fixed;
       top: 0; left: 0;
@@ -216,7 +208,6 @@
       margin: 10px 0;
     }
 
-    /* Banner de Instalação PWA */
     .install-banner {
       display: none;
       width: 100%;
@@ -250,7 +241,6 @@
       cursor: pointer;
     }
 
-    /* Container Principal */
     .app-wrapper {
       width: 100%;
       max-width: 800px;
@@ -269,7 +259,6 @@
       border: 1px solid #2a2e39;
     }
 
-    /* Cabeçalho */
     .player-header {
       display: flex;
       align-items: center;
@@ -324,7 +313,6 @@
       100% { opacity: 1; }
     }
 
-    /* Video Player */
     .video-wrapper {
       position: relative;
       width: 100%;
@@ -341,7 +329,6 @@
       object-fit: contain;
     }
 
-    /* Logo Sobreposta ao Player - Canto Inferior Direito */
     .player-overlay-logo {
       position: absolute;
       bottom: 12px;
@@ -354,7 +341,6 @@
       filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.7));
     }
 
-    /* Barra de Ações Rápidas */
     .quick-actions {
       display: flex;
       justify-content: space-around;
@@ -390,7 +376,6 @@
       }
     }
 
-    /* EPG / Guia de Programação */
     .epg-bar {
       padding: 16px;
       background: #181b22;
@@ -448,7 +433,6 @@
       gap: 8px;
     }
 
-    /* SEÇÃO DE ENQUETE */
     .poll-section {
       padding: 18px;
       background: #181b22;
@@ -583,7 +567,6 @@
       background: #1a56f0;
     }
 
-    /* RODAPÉ E REDES SOCIAIS */
     .app-footer {
       width: 100%;
       max-width: 800px;
@@ -639,7 +622,6 @@
       font-weight: bold;
     }
 
-    /* Modal Programação */
     .modal {
       display: none;
       position: fixed;
@@ -717,7 +699,6 @@
 </head>
 <body>
 
-  <!-- TELA DE ABERTURA (SPLASH SCREEN COM DEGRADÊ E CRÉDITOS) -->
   <div id="splashScreen" class="splash-screen">
     <div></div>
     
@@ -731,7 +712,6 @@
     </div>
   </div>
 
-  <!-- Overlay e Menu Lateral -->
   <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
   
   <aside class="side-menu" id="sideMenu">
@@ -761,10 +741,8 @@
     </nav>
   </aside>
 
-  <!-- Conteúdo Principal -->
   <div class="app-wrapper">
 
-    <!-- Banner PWA -->
     <div class="install-banner" id="pwaBanner">
       <span><i class="fa-solid fa-mobile-screen-button"></i> Instalar App Radar TV</span>
       <button class="btn-install" id="btnInstall">INSTALAR</button>
@@ -802,7 +780,6 @@
           </button>
         </div>
 
-        <!-- Guia EPG -->
         <div class="epg-bar">
           <div class="epg-card">
             <div class="epg-item">
@@ -827,7 +804,6 @@
           </button>
         </div>
 
-        <!-- SEÇÃO DE ENQUETE -->
         <section class="poll-section">
           <div class="poll-header">
             <i class="fa-solid fa-square-poll-vertical"></i>
@@ -879,7 +855,6 @@
 
     </div>
 
-    <!-- RODAPÉ -->
     <footer class="app-footer">
       <div class="social-buttons">
         <a href="https://instagram.com/radartvmg" target="_blank" rel="noopener noreferrer" class="social-btn instagram">
@@ -897,7 +872,6 @@
 
   </div>
 
-  <!-- Modal Programação -->
   <div class="modal" id="scheduleModal">
     <div class="modal-content">
       <div class="modal-header">
@@ -909,7 +883,6 @@
   </div>
 
   <script>
-    // CONTROLE DA TELA DE ABERTURA (SPLASH SCREEN)
     window.addEventListener('load', () => {
       setTimeout(() => {
         const splash = document.getElementById('splashScreen');
@@ -919,7 +892,6 @@
       }, 2200);
     });
 
-    // TRAVAS ANTI-ZOOM
     document.addEventListener('gesturestart', function (e) {
       e.preventDefault();
     });
@@ -933,7 +905,6 @@
       lastTouchEnd = now;
     }, false);
 
-    // CONFIGURAÇÃO DO FIREBASE
     const firebaseConfig = {
       apiKey: "AIzaSyAgqs3SmViiQYiK7JW9_Z2wZgygjgAKiTE",
       authDomain: "enqueteruralzao26.firebaseapp.com",
@@ -949,12 +920,10 @@
     const db = firebase.database();
     const pollRef = db.ref('enquete_ruralzao_2026');
 
-    // SINAIS DE TRANSMISSÃO
     const HLS_URL = 'https://video01.logicahost.com.br/fcvtv/fcvtv/playlist.m3u8';
     const YOUTUBE_CHANNEL_ID = 'UC7wHmjY4RNruABZ9An1crBA'; 
     const YOUTUBE_API_KEY = 'AIzaSyDaVlWRVlFrq9Qur-Dzv779pIIi3v_XD0g'; 
 
-    // GRADE DE PROGRAMAÇÃO
     const schedule = [
       { start: "00:00", end: "02:00", name: "Corujão Radar TV", startH: 0, endH: 2 },
       { start: "02:00", end: "04:00", name: "Madrugada Sertaneja", startH: 2, endH: 4 },
@@ -977,7 +946,6 @@
     let isYtLiveActive = false;
     let pollVotes = [0, 0, 0];
 
-    // LÓGICA DA ENQUETE FIREBASE
     const COOLDOWN_TIME = 10 * 60 * 1000;
 
     function renderPollResults() {
@@ -1050,7 +1018,6 @@
       document.getElementById('pollComment').value = '';
     }
 
-    // DEMAIS FUNÇÕES DO APP
     function openMenu() {
       document.getElementById('sideMenu').classList.add('active');
       document.getElementById('menuOverlay').classList.add('active');
@@ -1209,7 +1176,6 @@
       document.getElementById('scheduleModal').style.display = 'none';
     }
 
-    // EXECUÇÃO INICIAL
     initHLS();
     updateEPG();
     requestWakeLock();
