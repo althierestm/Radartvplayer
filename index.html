@@ -55,11 +55,16 @@
       -webkit-text-size-adjust: 100%;
     }
 
-    /* Ocultar barra de progresso no player nativo (Chrome/Safari) */
+    /* Reforço para ocultar barra de progresso, segundos e timeline no player nativo */
     video::-webkit-media-controls-timeline,
     video::-webkit-media-controls-current-time-display,
-    video::-webkit-media-controls-time-remaining-display {
+    video::-webkit-media-controls-time-remaining-display,
+    video::-webkit-media-controls-seek-back-button,
+    video::-webkit-media-controls-seek-forward-button {
         display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        pointer-events: none !important;
     }
 
     .splash-screen {
@@ -265,12 +270,11 @@
       width: 100%;
       background: #181b22;
       border-radius: 16px;
-      /* Removido o overflow hidden para permitir o sticky funcionar livremente */
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       border: 1px solid #2a2e39;
     }
 
-    /* Novo Wrapper para fixar o player no topo */
+    /* Área Fixa do Player */
     .sticky-player-area {
       position: sticky;
       top: 0;
@@ -396,16 +400,6 @@
       display: flex;
       align-items: center;
       gap: 6px;
-    }
-
-    .desktop-only {
-      display: flex;
-    }
-
-    @media (max-width: 768px) {
-      .desktop-only {
-        display: none !important;
-      }
     }
 
     .epg-bar {
@@ -802,8 +796,8 @@
 
         <div class="video-wrapper" id="videoWrapper">
           <img src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1920.png" alt="Radar TV Logo" class="player-overlay-logo">
-          <!-- Adicionado x-webkit-airplay para suporte AirPlay da Apple -->
-          <video id="hlsPlayer" controls autoplay muted playsinline webkit-playsinline x-webkit-airplay="allow" style="display: block;"></video>
+          <!-- Adicionado autopictureinpicture para acionar PiP ao arrastar para cima e minimizado -->
+          <video id="hlsPlayer" controls autoplay muted playsinline webkit-playsinline x-webkit-airplay="allow" autopictureinpicture style="display: block;"></video>
           <iframe id="ytPlayer" style="display: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
 
@@ -812,7 +806,8 @@
             <i class="fa-solid fa-expand"></i> Expandir
           </button>
           
-          <button class="action-btn desktop-only" id="pipBtn" onclick="togglePiP()">
+          <!-- Removida a classe desktop-only para o botão PiP funcionar em celulares -->
+          <button class="action-btn" id="pipBtn" onclick="togglePiP()">
             <i class="fa-solid fa-clone"></i> Janela (PiP)
           </button>
           
@@ -1110,6 +1105,26 @@
       }
     }
 
+    // --- CORREÇÃO: Forçar o player a continuar tocando ao sair do modo tela cheia ---
+    function forcePlayOnExitFullscreen() {
+      if (hlsVideo.paused) {
+        hlsVideo.play().catch(e => console.log('Tentativa de retomar vídeo interceptada', e));
+      }
+    }
+    
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement) forcePlayOnExitFullscreen();
+    });
+    
+    document.addEventListener('webkitfullscreenchange', () => {
+      if (!document.webkitFullscreenElement) forcePlayOnExitFullscreen();
+    });
+
+    hlsVideo.addEventListener('webkitendfullscreen', () => {
+      forcePlayOnExitFullscreen();
+    });
+    // --------------------------------------------------------------------------------
+
     function handleAutoRotation() {
       const isLandscape = window.innerWidth > window.innerHeight && window.innerWidth <= 950;
       if (isLandscape) {
@@ -1130,9 +1145,16 @@
 
     async function togglePiP() {
       try {
-        if (document.pictureInPictureElement) await document.exitPictureInPicture();
-        else if (document.pictureInPictureEnabled && hlsVideo.style.display !== 'none') await hlsVideo.requestPictureInPicture();
-        else alert('A janela flutuante não é suportada neste dispositivo.');
+        if (document.pictureInPictureElement) {
+          await document.exitPictureInPicture();
+        } else if (document.pictureInPictureEnabled && hlsVideo.style.display !== 'none') {
+          await hlsVideo.requestPictureInPicture();
+        } else if (hlsVideo.webkitSetPresentationMode) {
+          // Fallback para Safari antigo
+          hlsVideo.webkitSetPresentationMode(hlsVideo.webkitPresentationMode === 'picture-in-picture' ? 'inline' : 'picture-in-picture');
+        } else {
+          alert('A janela flutuante não é suportada neste dispositivo.');
+        }
       } catch (err) {
         console.error('Erro PiP:', err);
       }
