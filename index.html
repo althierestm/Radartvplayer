@@ -221,17 +221,25 @@
 
     @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
 
-    .video-wrapper { position: relative; width: 100%; padding-top: 56.25%; background: #000; overflow: hidden; }
-    .video-wrapper video, .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; object-fit: contain; }
+    /* Cursor pointer adicionado para indicar que é clicável */
+    .video-wrapper { position: relative; width: 100%; padding-top: 56.25%; background: #000; overflow: hidden; cursor: pointer; }
+    .video-wrapper video, .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; object-fit: contain; pointer-events: none; }
 
     .player-overlay-logo {
       position: absolute; bottom: 12px; right: 12px; height: 40px; width: auto;
       z-index: 10; pointer-events: none; opacity: 0.85; filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.7));
     }
 
-    /* ---- Controles Customizados Internos ---- */
+    /* ---- Controles Customizados Internos (Ocultáveis) ---- */
+    .custom-controls {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 20; transition: opacity 0.3s ease, visibility 0.3s ease; pointer-events: none;
+    }
+    .custom-controls.hidden { opacity: 0; visibility: hidden; } /* Visibilty hidden desativa 100% os cliques quando invisível */
+    .custom-controls > * { pointer-events: auto; }
+
     .player-top-actions {
-      position: absolute; top: 15px; right: 15px; display: flex; gap: 15px; z-index: 20; align-items: center;
+      position: absolute; top: 15px; right: 15px; display: flex; gap: 15px; align-items: center;
     }
     .player-top-actions button, .player-top-actions google-cast-launcher {
       background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer;
@@ -240,16 +248,24 @@
     .player-top-actions button:active { transform: scale(0.9); }
     .cast-btn { --connected-color: #fff; --disconnected-color: #fff; width: 22px; height: 22px; }
 
-    .unmute-btn {
+    /* Estilo do botão de Volume Dinâmico */
+    .volume-btn {
       position: absolute; bottom: 15px; left: 15px; background: #ffffff; color: #000000;
       border: none; border-radius: 30px; padding: 8px 16px; font-weight: bold; font-size: 0.85rem;
-      display: flex; align-items: center; gap: 8px; z-index: 20; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      display: flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      transition: background 0.3s, color 0.3s, border 0.3s;
     }
-    .unmute-btn:hover { background: #e0e0e0; }
+    .volume-btn:active { transform: scale(0.95); }
+    
+    /* Quando o som ESTÁ ATIVO, ele fica escurinho e translúcido para não poluir */
+    .volume-btn.is-unmuted {
+      background: rgba(0, 0, 0, 0.5); color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(4px);
+    }
 
     .fullscreen-btn {
       position: absolute; bottom: 15px; right: 65px; /* afastado da logo */
-      background: none; border: none; color: white; font-size: 1.2rem; z-index: 20;
+      background: none; border: none; color: white; font-size: 1.2rem;
       cursor: pointer; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition: transform 0.2s;
     }
     .fullscreen-btn:active { transform: scale(0.9); }
@@ -335,7 +351,7 @@
       .epg-bar { padding: 15px 12px; border-radius: 0; }
       .player-overlay-logo { height: 28px; bottom: 8px; right: 8px; }
       .fullscreen-btn { right: 45px; bottom: 10px; }
-      .unmute-btn { bottom: 10px; left: 10px; padding: 6px 12px; font-size: 0.75rem;}
+      .volume-btn { bottom: 10px; left: 10px; padding: 6px 12px; font-size: 0.75rem;}
     }
   </style>
 </head>
@@ -388,32 +404,34 @@
           <div class="live-badge" id="liveTag">AO VIVO</div>
         </header>
 
-        <div class="video-wrapper" id="videoWrapper">
+        <!-- Ao clicar no wrapper, a função toggleControls é chamada -->
+        <div class="video-wrapper" id="videoWrapper" onclick="toggleControls()">
           <img src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1920.png" alt="Radar TV Logo" class="player-overlay-logo">
           
-          <!-- Ícones no Topo (Cast e AirPlay Oficial SVG) -->
-          <div class="player-top-actions">
-            <button onclick="toggleAirPlay()" title="AirPlay">
-              <!-- SVG do AirPlay (Vazado, idêntico ao Cast) -->
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"></path>
-                <polygon points="12 15 17 21 7 21 12 15"></polygon>
-              </svg>
+          <!-- Camada de controles customizados -->
+          <div id="customControls" class="custom-controls">
+            <!-- Ícones no Topo (Cast e AirPlay Oficial SVG) -->
+            <div class="player-top-actions" onclick="event.stopPropagation()">
+              <button onclick="toggleAirPlay(event)" title="AirPlay">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"></path>
+                  <polygon points="12 15 17 21 7 21 12 15"></polygon>
+                </svg>
+              </button>
+              <google-cast-launcher class="cast-btn"></google-cast-launcher>
+            </div>
+
+            <!-- Botão Dinâmico de Volume (Mudo/Ativar) -->
+            <button class="volume-btn" id="volumeBtn" onclick="toggleSound(event)">
+              <i class="fa-solid fa-volume-xmark"></i> Ativar som
             </button>
-            <google-cast-launcher class="cast-btn"></google-cast-launcher>
+
+            <!-- Botão Expandir -->
+            <button class="fullscreen-btn" onclick="toggleFullscreenAction(event)">
+              <i class="fa-solid fa-expand"></i>
+            </button>
           </div>
 
-          <!-- Botão Ativar Som -->
-          <button class="unmute-btn" id="unmuteBtn" onclick="activateSound()">
-            <i class="fa-solid fa-volume-xmark"></i> Ativar som
-          </button>
-
-          <!-- Botão Expandir -->
-          <button class="fullscreen-btn" onclick="toggleFullscreen()">
-            <i class="fa-solid fa-expand"></i>
-          </button>
-
-          <!-- ATENÇÃO: Atributo 'controls' removido para ocultar nativos -->
           <video id="hlsPlayer" autoplay muted playsinline webkit-playsinline x-webkit-airplay="allow" autopictureinpicture style="display: block;"></video>
           <iframe id="ytPlayer" style="display: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
@@ -516,11 +534,16 @@
       }
     };
 
+    let controlsTimeout; // Variável para controlar o auto-hide
+
     window.addEventListener('load', () => {
       setTimeout(() => {
         const splash = document.getElementById('splashScreen');
         if (splash) { splash.classList.add('hidden'); }
       }, 2200);
+      
+      // Inicia o timer para ocultar os controles quando o app carregar
+      resetControlsTimeout();
     });
 
     document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
@@ -573,13 +596,59 @@
     let pollVotes = [0, 0, 0];
     const COOLDOWN_TIME = 10 * 60 * 1000;
 
-    hlsVideo.addEventListener('volumechange', () => {
-      if(!hlsVideo.muted && hlsVideo.volume > 0) { document.getElementById('unmuteBtn').style.display = 'none'; }
-    });
-
-    function activateSound() {
-      hlsVideo.muted = false; hlsVideo.volume = 1; document.getElementById('unmuteBtn').style.display = 'none';
+    // Renova o tempo para ocultar a UI automaticamente
+    function resetControlsTimeout() {
+      clearTimeout(controlsTimeout);
+      controlsTimeout = setTimeout(() => {
+        document.getElementById('customControls').classList.add('hidden');
+      }, 3500); // 3.5 segundos até sumir
     }
+
+    // Função para ocultar/mostrar a interface de botões com clique no vídeo
+    function toggleControls() {
+      const controls = document.getElementById('customControls');
+      if (controls.classList.contains('hidden')) {
+        controls.classList.remove('hidden');
+        resetControlsTimeout(); // Aciona o timer para esconder depois de um tempo
+      } else {
+        controls.classList.add('hidden'); // Esconde imediatamente se já estava visível e a pessoa tocou na tela
+        clearTimeout(controlsTimeout);
+      }
+    }
+
+    // Função para alternar entre com som e sem som
+    function toggleSound(e) {
+      if (e) e.stopPropagation();
+      resetControlsTimeout(); // Mantém a barra visível enquanto interage
+      
+      hlsVideo.muted = !hlsVideo.muted;
+      if (!hlsVideo.muted) { hlsVideo.volume = 1; }
+    }
+
+    function toggleFullscreenAction(e) {
+      if(e) e.stopPropagation();
+      resetControlsTimeout();
+      toggleFullscreen();
+    }
+    
+    function toggleAirPlay(e) {
+      if(e) e.stopPropagation();
+      resetControlsTimeout();
+      if (window.WebKitPlaybackTargetAvailabilityEvent) { hlsVideo.webkitShowPlaybackTargetPicker(); } 
+      else { alert("AirPlay nativo não é suportado neste navegador/dispositivo."); }
+    }
+
+    // Escuta mudanças de volume no player para atualizar visual do botão
+    hlsVideo.addEventListener('volumechange', () => {
+      const volBtn = document.getElementById('volumeBtn');
+      if (hlsVideo.muted || hlsVideo.volume === 0) {
+        volBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i> Ativar som';
+        volBtn.classList.remove('is-unmuted');
+      } else {
+        volBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Mudo';
+        volBtn.classList.add('is-unmuted');
+      }
+    });
 
     function renderPollResults() {
       const totalVotes = pollVotes.reduce((a, b) => a + b, 0);
@@ -674,11 +743,6 @@
 
     window.addEventListener('orientationchange', handleAutoRotation);
     window.addEventListener('resize', handleAutoRotation);
-
-    function toggleAirPlay() {
-      if (window.WebKitPlaybackTargetAvailabilityEvent) { hlsVideo.webkitShowPlaybackTargetPicker(); } 
-      else { alert("AirPlay nativo não é suportado neste navegador/dispositivo."); }
-    }
 
     function shareApp() {
       if (navigator.share) { navigator.share({ title: 'Radar TV', text: 'Assista à programação ao vivo da Radar TV!', url: window.location.href }).catch(console.error); } 
