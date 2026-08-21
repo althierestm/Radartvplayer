@@ -55,7 +55,7 @@
     .menu-header { padding: 20px; background: #0d47e6; display: flex; justify-content: space-between; align-items: center; }
     .menu-header img { height: 36px; width: auto; object-fit: contain; }
     .close-menu-btn { background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
-    .menu-items { display: flex; flex-direction: column; padding: 15px 0; gap: 5px; }
+    .menu-items { display: flex; flex-direction: column; padding: 15px 0; gap: 5px; overflow-y: auto; }
     .menu-item { display: flex; align-items: center; gap: 14px; padding: 14px 20px; color: #e0e0e0; text-decoration: none; font-size: 0.95rem; font-weight: 600; cursor: pointer; border-left: 4px solid transparent; transition: background 0.2s, border-color 0.2s; }
     .menu-item:hover, .menu-item.active { background: #1c212d; color: #4d82ff; border-left-color: #4d82ff; }
     .menu-item i { font-size: 1.1rem; width: 24px; text-align: center; }
@@ -66,9 +66,9 @@
     .btn-install { background: #4d82ff; color: #ffffff; border: none; padding: 6px 14px; border-radius: 6px; font-weight: bold; font-size: 0.8rem; cursor: pointer; }
 
     .app-wrapper { width: 100%; max-width: 800px; padding: 10px; display: flex; flex-direction: column; align-items: center; }
-    .player-container { width: 100%; background: #181b22; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #2a2e39; }
-    .sticky-player-area { position: sticky; top: 0; z-index: 1000; background: #181b22; border-top-left-radius: 16px; border-top-right-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
-    .player-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; background: #0d47e6; border-top-left-radius: 16px; border-top-right-radius: 16px; }
+    .player-container { width: 100%; background: #181b22; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #2a2e39; overflow: hidden; }
+    .sticky-player-area { position: sticky; top: 0; z-index: 1000; background: #181b22; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+    .player-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; background: #0d47e6; }
     .header-left { display: flex; align-items: center; gap: 14px; }
     .hamburger-btn { background: none; border: none; color: #ffffff; font-size: 1.4rem; cursor: pointer; }
     .brand img { height: 36px; width: auto; object-fit: contain; display: block; }
@@ -96,8 +96,30 @@
     .fullscreen-btn { position: absolute; bottom: 15px; right: 65px; background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition: transform 0.2s; }
     .fullscreen-btn:active { transform: scale(0.9); }
 
+    /* ---- LETREIRO DE NOTÍCIAS (TICKER) ---- */
+    .news-ticker-wrap {
+      width: 100%; background-color: #cc0000; color: #fff; overflow: hidden;
+      display: flex; align-items: center; font-size: 0.85rem; font-weight: bold;
+      border-bottom: 1px solid #2a2e39; position: relative; z-index: 999;
+    }
+    .ticker-label {
+      background: #ff0000; padding: 6px 12px; z-index: 2; font-weight: 900;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 5px;
+    }
+    .ticker-move {
+      display: inline-block; white-space: nowrap; padding-left: 100%;
+      animation: tickerAnim 30s linear infinite; cursor: pointer;
+    }
+    .ticker-move:hover { animation-play-state: paused; }
+    .ticker-item { display: inline-block; padding: 6px 2rem; color: #ffd7d7; }
+    .ticker-item strong { color: #fff; }
+    @keyframes tickerAnim {
+      0% { transform: translate3d(0, 0, 0); }
+      100% { transform: translate3d(-100%, 0, 0); }
+    }
+
     /* Barra de Programação (Abaixo do player) */
-    .epg-bar { padding: 20px 16px; background: #181b22; display: flex; flex-direction: column; border-bottom: 1px solid #2a2e39; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; }
+    .epg-bar { padding: 20px 16px; background: #181b22; display: flex; flex-direction: column; border-bottom: 1px solid #2a2e39; }
     .prog-time { font-size: 0.85rem; color: #a0a5b5; margin-bottom: 6px; font-weight: bold; }
     .prog-title { font-size: 1.2rem; font-weight: bold; color: #ffffff; margin-bottom: 4px; }
     .prog-desc { font-size: 0.9rem; color: #a0a5b5; margin-bottom: 16px; line-height: 1.4; }
@@ -108,7 +130,7 @@
     .btn-schedule-pill:hover { background: rgba(77, 130, 255, 0.1); }
 
     /* Enquetes */
-    .poll-section { padding: 18px; background: #181b22; display: flex; flex-direction: column; gap: 14px; }
+    .poll-section { padding: 18px; background: #181b22; display: flex; flex-direction: column; gap: 14px; border-bottom: 1px solid #2a2e39; }
     .poll-header { display: flex; align-items: center; gap: 10px; color: #4d82ff; font-size: 1rem; font-weight: bold; }
     .poll-question { font-size: 0.95rem; font-weight: 600; color: #ffffff; line-height: 1.4; }
     .poll-options { display: flex; flex-direction: column; gap: 10px; }
@@ -119,14 +141,21 @@
     .poll-option-content { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; }
     .poll-percent { font-weight: bold; color: #4d82ff; font-size: 0.85rem; }
     .poll-status-msg { font-size: 0.78rem; color: #8a8f9d; margin-top: 4px; }
-    .poll-comment-box { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; padding-top: 12px; border-top: 1px dashed #2a2e39; }
-    .poll-comment-box label { font-size: 0.82rem; color: #a0a5b5; font-weight: 600; }
-    .poll-textarea { width: 100%; background: #12141a; border: 1px solid #2a2e39; border-radius: 8px; padding: 10px; color: #fff; font-size: 0.85rem; resize: vertical; min-height: 60px; outline: none; }
-    .poll-textarea:focus { border-color: #0d47e6; }
-    .btn-send-comment { align-self: flex-end; background: #0d47e6; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-size: 0.82rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; }
-    .btn-send-comment:hover { background: #1a56f0; }
+    
+    /* ---- CARROSSEL DE PATROCINADORES ---- */
+    .sponsors-section { padding: 20px 16px; background: #12141a; display: flex; flex-direction: column; gap: 10px; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;}
+    .sponsors-title { color: #8a8f9d; font-size: 0.8rem; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
+    .sponsors-title::after { content: ''; flex: 1; height: 1px; background: #2a2e39; }
+    .sponsors-wrap { width: 100%; overflow: hidden; padding: 10px 0; }
+    .sponsors-track { display: flex; gap: 30px; animation: sponsorScroll 20s linear infinite; white-space: nowrap; align-items: center; }
+    .sponsor-item { font-weight: bold; color: #ffffff; font-size: 1.1rem; opacity: 0.7; transition: opacity 0.3s; }
+    .sponsor-item:hover { opacity: 1; color: #4d82ff; cursor: pointer; }
+    @keyframes sponsorScroll {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
 
-    .app-footer { width: 100%; max-width: 800px; margin-top: 20px; padding: 15px 10px 30px 10px; display: flex; flex-direction: column; align-items: center; gap: 16px; border-top: 1px solid #2a2e39; }
+    .app-footer { width: 100%; max-width: 800px; margin-top: 20px; padding: 15px 10px 30px 10px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
     .social-buttons { display: flex; gap: 12px; width: 100%; justify-content: center; }
     .social-btn { flex: 1; max-width: 200px; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 16px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 0.9rem; color: #ffffff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); transition: transform 0.2s; }
     .social-btn.instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
@@ -155,109 +184,41 @@
     .modal.active .modal-content { transform: translateY(0); }
 
     /* Topo do Modal (Título e Fechar) */
-    .modal-header-top {
-      padding: 16px; display: flex; justify-content: center; align-items: center;
-      position: relative; border-bottom: 1px solid #1c212d; background: #12141a;
-    }
+    .modal-header-top { padding: 16px; display: flex; justify-content: center; align-items: center; position: relative; border-bottom: 1px solid #1c212d; background: #12141a; }
     .modal-title { font-size: 1.15rem; font-weight: bold; color: #fff; margin: 0; }
-    .modal-header-top .close-btn {
-      position: absolute; right: 16px;
-      background: #212530; border: none; color: #8a8f9d; font-size: 1.2rem; cursor: pointer;
-      width: 32px; height: 32px; display: flex; justify-content: center; align-items: center; border-radius: 50%;
-    }
+    .modal-header-top .close-btn { position: absolute; right: 16px; background: #212530; border: none; color: #8a8f9d; font-size: 1.2rem; cursor: pointer; width: 32px; height: 32px; display: flex; justify-content: center; align-items: center; border-radius: 50%; }
     
     /* Barra do Seletor de Datas */
-    .modal-header-date {
-      padding: 12px 16px; background: #12141a; position: relative; border-bottom: 1px solid #2a2e39;
-    }
-
+    .modal-header-date { padding: 12px 16px; background: #12141a; position: relative; border-bottom: 1px solid #2a2e39; }
     .modal-body { padding: 0 15px 15px 15px; overflow-y: auto; display: flex; flex-direction: column; flex: 1; }
 
     /* Seletor de Datas */
-    .date-selector-btn {
-      background: none; border: none; color: #fff; font-size: 1.1rem; font-weight: bold;
-      display: flex; align-items: center; gap: 8px; cursor: pointer;
-    }
+    .date-selector-btn { background: none; border: none; color: #fff; font-size: 1.1rem; font-weight: bold; display: flex; align-items: center; gap: 8px; cursor: pointer; }
     .date-selector-btn i { font-size: 0.9rem; transition: transform 0.3s; }
     .date-selector-btn.open i { transform: rotate(180deg); }
 
     /* Overlay de Datas (Menu suspenso) */
-    .date-dropdown {
-      position: absolute; top: 100%; left: 0; width: 100%; background: #12141a;
-      z-index: 10; display: none; flex-direction: column;
-      border-bottom: 1px solid #2a2e39; max-height: 40vh; overflow-y: auto;
-    }
+    .date-dropdown { position: absolute; top: 100%; left: 0; width: 100%; background: #12141a; z-index: 10; display: none; flex-direction: column; border-bottom: 1px solid #2a2e39; max-height: 40vh; overflow-y: auto; }
     .date-dropdown.active { display: flex; }
-    .date-option {
-      padding: 16px 20px; color: #a0a5b5; font-size: 1rem; font-weight: 600; text-align: left;
-      border: none; background: none; border-bottom: 1px solid #1c212d; cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-    }
+    .date-option { padding: 16px 20px; color: #a0a5b5; font-size: 1rem; font-weight: 600; text-align: left; border: none; background: none; border-bottom: 1px solid #1c212d; cursor: pointer; transition: background 0.2s, color 0.2s; }
     .date-option:hover { background: #181b22; color: #fff; }
     .date-option.selected { color: #4d82ff; }
 
     /* NOVO VISUAL DA LISTA DE PROGRAMAÇÃO */
-    .schedule-item { 
-      padding: 16px 0; 
-      background: transparent; 
-      display: flex; 
-      flex-direction: column; 
-      align-items: flex-start; 
-      border-bottom: 1px solid #212530; 
-      gap: 4px;
-    }
-    .schedule-item.active { 
-      background: #1a202c; 
-      border-left: 4px solid #0d47e6; 
-      padding-left: 12px; 
-      margin-left: -15px; 
-      margin-right: -15px;
-      padding-right: 15px;
-    }
-    
-    .schedule-time { 
-      font-weight: 500; 
-      color: #a0a5b5; 
-      font-size: 0.8rem; 
-      display: flex; 
-      align-items: center; 
-    }
-    
-    .schedule-name { 
-      font-weight: bold; 
-      color: #fff; 
-      font-size: 1.05rem; 
-      display: flex; 
-      align-items: center; 
-      margin-top: 2px;
-    }
-    
-    .schedule-desc { 
-      font-size: 0.85rem; 
-      color: #8a8f9d; 
-      margin-top: 2px; 
-      line-height: 1.3;
-    }
+    .schedule-item { padding: 16px 0; background: transparent; display: flex; flex-direction: column; align-items: flex-start; border-bottom: 1px solid #212530; gap: 4px; }
+    .schedule-item.active { background: #1a202c; border-left: 4px solid #0d47e6; padding-left: 12px; margin-left: -15px; margin-right: -15px; padding-right: 15px; }
+    .schedule-time { font-weight: 500; color: #a0a5b5; font-size: 0.8rem; display: flex; align-items: center; }
+    .schedule-name { font-weight: bold; color: #fff; font-size: 1.05rem; display: flex; align-items: center; margin-top: 2px; }
+    .schedule-desc { font-size: 0.85rem; color: #8a8f9d; margin-top: 2px; line-height: 1.3; }
 
     /* Ícone de Transmissão ((o)) Animado */
-    .live-broadcast-icon {
-      color: #ff0000;
-      margin-left: 8px;
-      font-size: 0.95rem;
-      animation: pulseBroadcast 1.5s infinite;
-    }
-    @keyframes pulseBroadcast {
-      0% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.6; transform: scale(1.15); }
-      100% { opacity: 1; transform: scale(1); }
-    }
+    .live-broadcast-icon { color: #ff0000; margin-left: 8px; font-size: 0.95rem; animation: pulseBroadcast 1.5s infinite; }
+    @keyframes pulseBroadcast { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.15); } 100% { opacity: 1; transform: scale(1); } }
 
     @media (max-width: 600px) {
       .app-wrapper { padding: 0; }
       .player-container { border-radius: 0; border: none; }
       .sticky-player-area { border-radius: 0; }
-      .player-header { border-radius: 0; }
-      .brand img { height: 28px; }
       .epg-bar { padding: 15px 12px; border-radius: 0; }
       .player-overlay-logo { height: 28px; bottom: 8px; right: 8px; }
       .fullscreen-btn { right: 45px; bottom: 10px; }
@@ -287,6 +248,20 @@
     <nav class="menu-items">
       <div class="menu-item active"><i class="fa-solid fa-tv"></i> Radar TV Ao Vivo</div>
       <div class="menu-divider"></div>
+      
+      <!-- Novos Botões Adicionados -->
+      <a href="#" class="menu-item" onclick="alert('Em breve: Notícias de Rosário da Limeira e região!')">
+        <i class="fa-regular fa-newspaper" style="color: #4d82ff;"></i> Limeira News
+      </a>
+      <a href="#" class="menu-item" onclick="alert('Em breve: Tabela do Ruralzão e Copa Baldanza!')">
+        <i class="fa-solid fa-trophy" style="color: #f1c40f;"></i> Tabela City Sports
+      </a>
+      <a href="https://wa.me/5532985109726?text=Ol%C3%A1%21%20Gostaria%20de%20enviar%20uma%20sugest%C3%A3o%20de%20pauta/v%C3%ADdeo%20para%20a%20Radar%20TV%21" target="_blank" rel="noopener noreferrer" class="menu-item">
+        <i class="fa-solid fa-camera-retro" style="color: #e74c3c;"></i> Envie sua Pauta/Vídeo
+      </a>
+      
+      <div class="menu-divider"></div>
+      
       <a href="https://wa.me/5532985109726?text=Ol%C3%A1%21%20Estou%20assistindo%20pelo%20App%20Radar%20TV%21" target="_blank" rel="noopener noreferrer" class="menu-item">
         <i class="fa-brands fa-whatsapp" style="color: #25d366;"></i> WhatsApp no Ar
       </a>
@@ -304,7 +279,6 @@
 
     <div class="player-container">
       
-      <!-- Inicio da Área Fixa do Player -->
       <div class="sticky-player-area">
         <header class="player-header">
           <div class="header-left">
@@ -340,10 +314,21 @@
           <video id="hlsPlayer" autoplay muted playsinline webkit-playsinline x-webkit-airplay="allow" autopictureinpicture style="display: block;"></video>
           <iframe id="ytPlayer" style="display: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
-      </div>
-      <!-- Fim da Área Fixa do Player -->
 
-      <!-- Início do conteúdo rolável -->
+        <!-- NOVO: Letreiro de Notícias (Ticker) -->
+        <div class="news-ticker-wrap">
+          <div class="ticker-label"><i class="fa-solid fa-bolt"></i> INFO</div>
+          <div class="ticker-move">
+            <div class="ticker-item">🔴 <strong>COPA BALDANZA:</strong> Acompanhe a transmissão das finais neste final de semana!</div>
+            <div class="ticker-item">⚽ <strong>RURALZÃO 2026:</strong> Confira todos os lances e os próximos confrontos aqui no app.</div>
+            <div class="ticker-item">📰 <strong>LIMEIRA NEWS:</strong> Mantenha-se informado com as notícias de Rosário da Limeira e região.</div>
+            <!-- O texto é repetido para dar a ilusão de rolagem infinita -->
+            <div class="ticker-item">🔴 <strong>COPA BALDANZA:</strong> Acompanhe a transmissão das finais neste final de semana!</div>
+          </div>
+        </div>
+
+      </div>
+
       <main class="view-panel active" id="viewTv">
         <div class="epg-bar">
           <div class="prog-time" id="progTime">--:-- - --:--</div>
@@ -377,14 +362,28 @@
             </button>
           </div>
           <div class="poll-status-msg" id="pollStatusMsg">Conectando à enquete...</div>
-          <div class="poll-comment-box">
-            <label for="pollComment"><i class="fa-regular fa-comment-dots"></i> Deixe um comentário ou sugestão (opcional):</label>
-            <textarea id="pollComment" class="poll-textarea" placeholder="Digite sua opinião aqui..."></textarea>
-            <button class="btn-send-comment" onclick="sendPollComment()"><i class="fa-paper-plane fa-solid"></i> Enviar para Radar TV</button>
+        </section>
+
+        <!-- NOVO: Carrossel de Patrocinadores (Apoio Local) -->
+        <section class="sponsors-section">
+          <h4 class="sponsors-title">Apoio Local</h4>
+          <div class="sponsors-wrap">
+            <div class="sponsors-track">
+              <!-- Aqui você pode colocar texto ou tags <img> com a logo dos patrocinadores -->
+              <span class="sponsor-item">Supermercado Silva</span>
+              <span class="sponsor-item">Farmácia Central</span>
+              <span class="sponsor-item">Restaurante do João</span>
+              <span class="sponsor-item">Material de Construção Casa Nova</span>
+              <span class="sponsor-item">Auto Peças Progresso</span>
+              <!-- Repita os itens para o carrossel não ficar vazio no final da rolagem -->
+              <span class="sponsor-item">Supermercado Silva</span>
+              <span class="sponsor-item">Farmácia Central</span>
+              <span class="sponsor-item">Restaurante do João</span>
+            </div>
           </div>
         </section>
-      </main>
 
+      </main>
     </div>
 
     <footer class="app-footer">
@@ -400,26 +399,17 @@
   <!-- MODAL DA PROGRAMAÇÃO COM ANIMAÇÃO SLIDE-UP E SELETOR DE DATAS -->
   <div class="modal" id="scheduleModal">
     <div class="modal-content">
-      
-      <!-- Topo: Título Centralizado e Botão de Fechar -->
       <div class="modal-header-top">
         <h3 class="modal-title">Programação</h3>
         <button class="close-btn" onclick="closeScheduleModal()"><i class="fa-solid fa-xmark"></i></button>
       </div>
-
-      <!-- Barra do Seletor de Datas -->
       <div class="modal-header-date">
         <button class="date-selector-btn" id="btnDateSelector" onclick="toggleDateMenu()">
           Hoje, 21 ago. <i class="fa-solid fa-chevron-down"></i>
         </button>
-        
-        <!-- Menu Suspenso de Datas -->
         <div class="date-dropdown" id="dateDropdown"></div>
       </div>
-      
-      <!-- Lista de Programação Empilhada (Visual Moderno) -->
       <div class="modal-body" id="fullScheduleList"></div>
-      
     </div>
   </div>
 
@@ -490,10 +480,7 @@
       for (let i = 0; i < 7; i++) {
         let loopDate = new Date(today);
         loopDate.setDate(today.getDate() + i);
-        next7Days.push({
-          dateObj: loopDate,
-          label: formatUIDate(loopDate, i)
-        });
+        next7Days.push({ dateObj: loopDate, label: formatUIDate(loopDate, i) });
       }
     }
 
@@ -577,7 +564,6 @@
       selectedScheduleDate = next7Days[0].dateObj; 
       updateDateSelectorUI();
       renderScheduleList();
-      
       document.getElementById('scheduleModal').classList.add('active');
     }
 
@@ -644,10 +630,8 @@
         const div = document.createElement('div');
         div.className = `schedule-item ${isCurrent ? 'active' : ''}`;
         
-        // Ícone novo de transmissão ((o))
         const liveIndicator = isCurrent ? '<i class="fa-solid fa-tower-broadcast live-broadcast-icon"></i>' : '';
 
-        // Layout empilhado (Hora -> Título -> Desc)
         div.innerHTML = `
           <div class="schedule-time">${formatTime(item.start)} - ${formatTime(item.end)}</div>
           <div class="schedule-name">${item.title} ${liveIndicator}</div>
@@ -665,7 +649,6 @@
     let hlsInstance = null;
     let isYtLiveActive = false;
 
-    // AQUI ESTAVA O ERRO! (A variável do tempo da enquete estava faltando)
     const COOLDOWN_TIME = 10 * 60 * 1000;
     let pollVotes = [0, 0, 0];
 
@@ -707,12 +690,6 @@
       if (lastVote && (now - parseInt(lastVote, 10)) < COOLDOWN_TIME) { alert("Você já votou recentemente. Aguarde 10 minutos para votar novamente!"); return; }
       const field = `op${optionIndex}`;
       pollRef.child(field).transaction((currentVotes) => { return (currentVotes || 0) + 1; }, (error, committed) => { if (committed) { localStorage.setItem('radar_last_vote_timestamp', now.toString()); checkPollCooldown(); } });
-    }
-
-    function sendPollComment() {
-      const comment = document.getElementById('pollComment').value.trim();
-      if (!comment) { alert("Por favor, escreva uma sugestão ou comentário."); return; }
-      const subject = encodeURIComponent("Opinião/Sugestão - App Radar TV"); const body = encodeURIComponent(`Olá equipe Radar TV,\n\n"${comment}"`); window.location.href = `mailto:radartvmg@gmail.com?subject=${subject}&body=${body}`; document.getElementById('pollComment').value = '';
     }
 
     function openMenu() { document.getElementById('sideMenu').classList.add('active'); document.getElementById('menuOverlay').classList.add('active'); }
