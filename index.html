@@ -96,41 +96,19 @@
     .fullscreen-btn { position: absolute; bottom: 15px; right: 65px; background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition: transform 0.2s; }
     .fullscreen-btn:active { transform: scale(0.9); }
 
-    /* ---- LETREIRO DE NOTÍCIAS (TICKER) ---- */
-    .news-ticker-wrap {
-      width: 100%; background-color: #cc0000; color: #fff; overflow: hidden;
-      display: flex; align-items: center; font-size: 0.85rem; font-weight: bold;
-      border-bottom: 1px solid #2a2e39; position: relative; z-index: 999;
-    }
-    .ticker-label {
-      background: #ff0000; padding: 6px 12px; z-index: 2; font-weight: 900;
-      box-shadow: 2px 0 5px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 5px;
-    }
-    .ticker-move {
-      display: inline-block; white-space: nowrap; padding-left: 100%;
-      animation: tickerAnim 30s linear infinite; cursor: pointer;
-    }
-    .ticker-move:hover { animation-play-state: paused; }
-    .ticker-item { display: inline-block; padding: 6px 2rem; color: #ffd7d7; }
-    .ticker-item strong { color: #fff; }
-    @keyframes tickerAnim {
-      0% { transform: translate3d(0, 0, 0); }
-      100% { transform: translate3d(-100%, 0, 0); }
-    }
-
     /* Barra de Programação (Abaixo do player) */
-    .epg-bar { padding: 20px 16px; background: #181b22; display: flex; flex-direction: column; border-bottom: 1px solid #2a2e39; }
+    .epg-bar { padding: 20px 16px; background: #181b22; display: flex; flex-direction: column; border-bottom: 1px solid #2a2e39; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; }
     .prog-time { font-size: 0.85rem; color: #a0a5b5; margin-bottom: 6px; font-weight: bold; }
     .prog-title { font-size: 1.2rem; font-weight: bold; color: #ffffff; margin-bottom: 4px; }
     .prog-desc { font-size: 0.9rem; color: #a0a5b5; margin-bottom: 16px; line-height: 1.4; }
     .progress-container { width: 100%; height: 4px; background: #3a3f50; border-radius: 2px; margin-bottom: 20px; overflow: hidden; }
     .progress-bar { height: 100%; background: #0d47e6; width: 0%; border-radius: 2px; transition: width 1s linear; }
-    .btn-schedule-container { display: flex; justify-content: center; }
+    .btn-schedule-container { display: flex; justify-content: center; gap: 10px;}
     .btn-schedule-pill { background: transparent; border: 1px solid #4d82ff; color: #ffffff; padding: 10px 24px; border-radius: 30px; font-size: 0.9rem; font-weight: bold; cursor: pointer; transition: background 0.2s; }
     .btn-schedule-pill:hover { background: rgba(77, 130, 255, 0.1); }
 
     /* Enquetes */
-    .poll-section { padding: 18px; background: #181b22; display: flex; flex-direction: column; gap: 14px; border-bottom: 1px solid #2a2e39; }
+    .poll-section { padding: 18px; background: #181b22; display: flex; flex-direction: column; gap: 14px; }
     .poll-header { display: flex; align-items: center; gap: 10px; color: #4d82ff; font-size: 1rem; font-weight: bold; }
     .poll-question { font-size: 0.95rem; font-weight: 600; color: #ffffff; line-height: 1.4; }
     .poll-options { display: flex; flex-direction: column; gap: 10px; }
@@ -141,21 +119,14 @@
     .poll-option-content { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; }
     .poll-percent { font-weight: bold; color: #4d82ff; font-size: 0.85rem; }
     .poll-status-msg { font-size: 0.78rem; color: #8a8f9d; margin-top: 4px; }
-    
-    /* ---- CARROSSEL DE PATROCINADORES ---- */
-    .sponsors-section { padding: 20px 16px; background: #12141a; display: flex; flex-direction: column; gap: 10px; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px;}
-    .sponsors-title { color: #8a8f9d; font-size: 0.8rem; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
-    .sponsors-title::after { content: ''; flex: 1; height: 1px; background: #2a2e39; }
-    .sponsors-wrap { width: 100%; overflow: hidden; padding: 10px 0; }
-    .sponsors-track { display: flex; gap: 30px; animation: sponsorScroll 20s linear infinite; white-space: nowrap; align-items: center; }
-    .sponsor-item { font-weight: bold; color: #ffffff; font-size: 1.1rem; opacity: 0.7; transition: opacity 0.3s; }
-    .sponsor-item:hover { opacity: 1; color: #4d82ff; cursor: pointer; }
-    @keyframes sponsorScroll {
-      0% { transform: translateX(100%); }
-      100% { transform: translateX(-100%); }
-    }
+    .poll-comment-box { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; padding-top: 12px; border-top: 1px dashed #2a2e39; }
+    .poll-comment-box label { font-size: 0.82rem; color: #a0a5b5; font-weight: 600; }
+    .poll-textarea { width: 100%; background: #12141a; border: 1px solid #2a2e39; border-radius: 8px; padding: 10px; color: #fff; font-size: 0.85rem; resize: vertical; min-height: 60px; outline: none; }
+    .poll-textarea:focus { border-color: #0d47e6; }
+    .btn-send-comment { align-self: flex-end; background: #0d47e6; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-size: 0.82rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .btn-send-comment:hover { background: #1a56f0; }
 
-    .app-footer { width: 100%; max-width: 800px; margin-top: 20px; padding: 15px 10px 30px 10px; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .app-footer { width: 100%; max-width: 800px; margin-top: 20px; padding: 15px 10px 30px 10px; display: flex; flex-direction: column; align-items: center; gap: 16px; border-top: 1px solid #2a2e39; }
     .social-buttons { display: flex; gap: 12px; width: 100%; justify-content: center; }
     .social-btn { flex: 1; max-width: 200px; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 16px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 0.9rem; color: #ffffff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); transition: transform 0.2s; }
     .social-btn.instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
@@ -164,61 +135,67 @@
     .footer-credits { font-size: 0.85rem; color: #8a8f9d; text-align: center; }
     .footer-credits a { color: #4d82ff; text-decoration: none; font-weight: bold; }
 
-    /* ---- Animação do Modal da Programação (Slide-up) ---- */
+    /* ---- Estilo Geral de Modais (Programação e Tabela) ---- */
     .modal {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.85); z-index: 3000;
       display: flex; justify-content: center; align-items: flex-end; 
-      visibility: hidden; opacity: 0;
-      transition: visibility 0.4s, opacity 0.4s;
+      visibility: hidden; opacity: 0; transition: visibility 0.4s, opacity 0.4s;
     }
     .modal.active { visibility: visible; opacity: 1; }
-
     .modal-content {
       background: #181b22; width: 100%; max-width: 600px; height: 90vh;
-      border-radius: 20px 20px 0 0;
-      display: flex; flex-direction: column; overflow: hidden;
-      transform: translateY(100%);
-      transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      border-radius: 20px 20px 0 0; display: flex; flex-direction: column; overflow: hidden;
+      transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
     .modal.active .modal-content { transform: translateY(0); }
-
-    /* Topo do Modal (Título e Fechar) */
     .modal-header-top { padding: 16px; display: flex; justify-content: center; align-items: center; position: relative; border-bottom: 1px solid #1c212d; background: #12141a; }
     .modal-title { font-size: 1.15rem; font-weight: bold; color: #fff; margin: 0; }
     .modal-header-top .close-btn { position: absolute; right: 16px; background: #212530; border: none; color: #8a8f9d; font-size: 1.2rem; cursor: pointer; width: 32px; height: 32px; display: flex; justify-content: center; align-items: center; border-radius: 50%; }
-    
-    /* Barra do Seletor de Datas */
-    .modal-header-date { padding: 12px 16px; background: #12141a; position: relative; border-bottom: 1px solid #2a2e39; }
     .modal-body { padding: 0 15px 15px 15px; overflow-y: auto; display: flex; flex-direction: column; flex: 1; }
 
-    /* Seletor de Datas */
+    /* ---- Especificos Modal Programação ---- */
+    .modal-header-date { padding: 12px 16px; background: #12141a; position: relative; border-bottom: 1px solid #2a2e39; }
     .date-selector-btn { background: none; border: none; color: #fff; font-size: 1.1rem; font-weight: bold; display: flex; align-items: center; gap: 8px; cursor: pointer; }
     .date-selector-btn i { font-size: 0.9rem; transition: transform 0.3s; }
     .date-selector-btn.open i { transform: rotate(180deg); }
-
-    /* Overlay de Datas (Menu suspenso) */
     .date-dropdown { position: absolute; top: 100%; left: 0; width: 100%; background: #12141a; z-index: 10; display: none; flex-direction: column; border-bottom: 1px solid #2a2e39; max-height: 40vh; overflow-y: auto; }
     .date-dropdown.active { display: flex; }
     .date-option { padding: 16px 20px; color: #a0a5b5; font-size: 1rem; font-weight: 600; text-align: left; border: none; background: none; border-bottom: 1px solid #1c212d; cursor: pointer; transition: background 0.2s, color 0.2s; }
     .date-option:hover { background: #181b22; color: #fff; }
     .date-option.selected { color: #4d82ff; }
 
-    /* NOVO VISUAL DA LISTA DE PROGRAMAÇÃO */
     .schedule-item { padding: 16px 0; background: transparent; display: flex; flex-direction: column; align-items: flex-start; border-bottom: 1px solid #212530; gap: 4px; }
     .schedule-item.active { background: #1a202c; border-left: 4px solid #0d47e6; padding-left: 12px; margin-left: -15px; margin-right: -15px; padding-right: 15px; }
     .schedule-time { font-weight: 500; color: #a0a5b5; font-size: 0.8rem; display: flex; align-items: center; }
     .schedule-name { font-weight: bold; color: #fff; font-size: 1.05rem; display: flex; align-items: center; margin-top: 2px; }
     .schedule-desc { font-size: 0.85rem; color: #8a8f9d; margin-top: 2px; line-height: 1.3; }
-
-    /* Ícone de Transmissão ((o)) Animado */
     .live-broadcast-icon { color: #ff0000; margin-left: 8px; font-size: 0.95rem; animation: pulseBroadcast 1.5s infinite; }
     @keyframes pulseBroadcast { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.15); } 100% { opacity: 1; transform: scale(1); } }
+
+    /* ---- Especificos Modal Tabela (Standings) ---- */
+    .tabs-header { display: flex; background: #12141a; border-bottom: 1px solid #2a2e39; }
+    .tab-btn { flex: 1; padding: 14px; background: none; border: none; color: #8a8f9d; font-weight: bold; font-size: 0.9rem; cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.2s, border-bottom 0.2s; }
+    .tab-btn.active { color: #4d82ff; border-bottom-color: #4d82ff; }
+    
+    .standings-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 10px;}
+    .standings-table th { background: #181b22; color: #8a8f9d; padding: 12px 6px; text-align: center; position: sticky; top: 0; z-index: 2; font-size: 0.75rem; border-bottom: 1px solid #2a2e39;}
+    .standings-table th:nth-child(2) { text-align: left; }
+    .standings-table td { padding: 14px 6px; text-align: center; border-bottom: 1px solid #212530; color: #fff; font-weight: 500;}
+    .standings-table td:nth-child(1) { width: 30px; font-weight: bold; }
+    .standings-table td:nth-child(2) { text-align: left; font-weight: bold; font-size: 0.9rem;}
+    
+    /* Cores de Classificação (Libertadores verde, Rebaixamento vermelho) */
+    .standings-table tr.zone-libertadores td:first-child { border-left: 3px solid #2ecc71; color: #2ecc71;}
+    .standings-table tr.zone-sulamericana td:first-child { border-left: 3px solid #f1c40f; color: #f1c40f;}
+    .standings-table tr.zone-rebaixamento td:first-child { border-left: 3px solid #e74c3c; color: #e74c3c;}
 
     @media (max-width: 600px) {
       .app-wrapper { padding: 0; }
       .player-container { border-radius: 0; border: none; }
       .sticky-player-area { border-radius: 0; }
+      .player-header { border-radius: 0; }
+      .brand img { height: 28px; }
       .epg-bar { padding: 15px 12px; border-radius: 0; }
       .player-overlay-logo { height: 28px; bottom: 8px; right: 8px; }
       .fullscreen-btn { right: 45px; bottom: 10px; }
@@ -246,15 +223,15 @@
       <button class="close-menu-btn" onclick="closeMenu()">&times;</button>
     </div>
     <nav class="menu-items">
-      <div class="menu-item active"><i class="fa-solid fa-tv"></i> Radar TV Ao Vivo</div>
+      <div class="menu-item active" onclick="closeMenu()"><i class="fa-solid fa-tv"></i> Radar TV Ao Vivo</div>
       <div class="menu-divider"></div>
       
-      <!-- Novos Botões Adicionados -->
+      <!-- MENU ATUALIZADO -->
       <a href="#" class="menu-item" onclick="alert('Em breve: Notícias de Rosário da Limeira e região!')">
         <i class="fa-regular fa-newspaper" style="color: #4d82ff;"></i> Limeira News
       </a>
-      <a href="#" class="menu-item" onclick="alert('Em breve: Tabela do Ruralzão e Copa Baldanza!')">
-        <i class="fa-solid fa-trophy" style="color: #f1c40f;"></i> Tabela City Sports
+      <a href="#" class="menu-item" onclick="openStandingsModal(); closeMenu();">
+        <i class="fa-solid fa-trophy" style="color: #f1c40f;"></i> Tabela Radar Esportes
       </a>
       <a href="https://wa.me/5532985109726?text=Ol%C3%A1%21%20Gostaria%20de%20enviar%20uma%20sugest%C3%A3o%20de%20pauta/v%C3%ADdeo%20para%20a%20Radar%20TV%21" target="_blank" rel="noopener noreferrer" class="menu-item">
         <i class="fa-solid fa-camera-retro" style="color: #e74c3c;"></i> Envie sua Pauta/Vídeo
@@ -314,19 +291,6 @@
           <video id="hlsPlayer" autoplay muted playsinline webkit-playsinline x-webkit-airplay="allow" autopictureinpicture style="display: block;"></video>
           <iframe id="ytPlayer" style="display: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
-
-        <!-- NOVO: Letreiro de Notícias (Ticker) -->
-        <div class="news-ticker-wrap">
-          <div class="ticker-label"><i class="fa-solid fa-bolt"></i> INFO</div>
-          <div class="ticker-move">
-            <div class="ticker-item">🔴 <strong>COPA BALDANZA:</strong> Acompanhe a transmissão das finais neste final de semana!</div>
-            <div class="ticker-item">⚽ <strong>RURALZÃO 2026:</strong> Confira todos os lances e os próximos confrontos aqui no app.</div>
-            <div class="ticker-item">📰 <strong>LIMEIRA NEWS:</strong> Mantenha-se informado com as notícias de Rosário da Limeira e região.</div>
-            <!-- O texto é repetido para dar a ilusão de rolagem infinita -->
-            <div class="ticker-item">🔴 <strong>COPA BALDANZA:</strong> Acompanhe a transmissão das finais neste final de semana!</div>
-          </div>
-        </div>
-
       </div>
 
       <main class="view-panel active" id="viewTv">
@@ -363,27 +327,8 @@
           </div>
           <div class="poll-status-msg" id="pollStatusMsg">Conectando à enquete...</div>
         </section>
-
-        <!-- NOVO: Carrossel de Patrocinadores (Apoio Local) -->
-        <section class="sponsors-section">
-          <h4 class="sponsors-title">Apoio Local</h4>
-          <div class="sponsors-wrap">
-            <div class="sponsors-track">
-              <!-- Aqui você pode colocar texto ou tags <img> com a logo dos patrocinadores -->
-              <span class="sponsor-item">Supermercado Silva</span>
-              <span class="sponsor-item">Farmácia Central</span>
-              <span class="sponsor-item">Restaurante do João</span>
-              <span class="sponsor-item">Material de Construção Casa Nova</span>
-              <span class="sponsor-item">Auto Peças Progresso</span>
-              <!-- Repita os itens para o carrossel não ficar vazio no final da rolagem -->
-              <span class="sponsor-item">Supermercado Silva</span>
-              <span class="sponsor-item">Farmácia Central</span>
-              <span class="sponsor-item">Restaurante do João</span>
-            </div>
-          </div>
-        </section>
-
       </main>
+
     </div>
 
     <footer class="app-footer">
@@ -396,7 +341,7 @@
 
   </div>
 
-  <!-- MODAL DA PROGRAMAÇÃO COM ANIMAÇÃO SLIDE-UP E SELETOR DE DATAS -->
+  <!-- MODAL DA PROGRAMAÇÃO -->
   <div class="modal" id="scheduleModal">
     <div class="modal-content">
       <div class="modal-header-top">
@@ -404,12 +349,45 @@
         <button class="close-btn" onclick="closeScheduleModal()"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="modal-header-date">
-        <button class="date-selector-btn" id="btnDateSelector" onclick="toggleDateMenu()">
-          Hoje, 21 ago. <i class="fa-solid fa-chevron-down"></i>
-        </button>
+        <button class="date-selector-btn" id="btnDateSelector" onclick="toggleDateMenu()">Hoje, 21 ago. <i class="fa-solid fa-chevron-down"></i></button>
         <div class="date-dropdown" id="dateDropdown"></div>
       </div>
       <div class="modal-body" id="fullScheduleList"></div>
+    </div>
+  </div>
+
+  <!-- NOVO MODAL: TABELA DE CAMPEONATOS -->
+  <div class="modal" id="standingsModal">
+    <div class="modal-content">
+      <div class="modal-header-top">
+        <h3 class="modal-title">Radar Esportes</h3>
+        <button class="close-btn" onclick="closeStandingsModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      
+      <!-- Abas dos Campeonatos -->
+      <div class="tabs-header">
+        <button class="tab-btn active" id="tabSerieA" onclick="switchStandingsTab('serieA')">Série A</button>
+        <button class="tab-btn" id="tabMineiro" onclick="switchStandingsTab('mineiro')">Mineiro Sub-20</button>
+      </div>
+      
+      <!-- Tabela em si -->
+      <div class="modal-body" style="padding: 0;">
+        <table class="standings-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Clube</th>
+              <th>P</th>
+              <th>J</th>
+              <th>V</th>
+              <th>SG</th>
+            </tr>
+          </thead>
+          <tbody id="standingsTableBody">
+            <!-- As linhas da tabela serão geradas pelo JavaScript -->
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 
@@ -461,196 +439,168 @@
     const YOUTUBE_API_KEY = 'AIzaSyDaVlWRVlFrq9Qur-Dzv779pIIi3v_XD0g'; 
     const EPG_XML_URL = 'https://raw.githubusercontent.com/althierestm/Lista-RadarTV/refs/heads/main/epg.xml';
 
+    /* ---- Lógica Tabela de Esportes ---- */
+    
+    // Dados simulados. Futuramente você pode usar o fetch() para puxar um "tabela.json" do seu Github!
+    const mockStandings = {
+      "serieA": [
+        { pos: 1, team: "Botafogo", pts: 46, jogos: 23, vitorias: 14, sg: 18, zone: "zone-libertadores" },
+        { pos: 2, team: "Fortaleza", pts: 45, jogos: 22, vitorias: 13, sg: 10, zone: "zone-libertadores" },
+        { pos: 3, team: "Flamengo", pts: 41, jogos: 22, vitorias: 12, sg: 11, zone: "zone-libertadores" },
+        { pos: 4, team: "Palmeiras", pts: 41, jogos: 23, vitorias: 12, sg: 12, zone: "zone-libertadores" },
+        { pos: 5, team: "São Paulo", pts: 38, jogos: 23, vitorias: 11, sg: 9, zone: "zone-sulamericana" },
+        { pos: 6, team: "Bahia", pts: 38, jogos: 23, vitorias: 11, sg: 6, zone: "zone-sulamericana" },
+        { pos: 17, team: "Vitória", pts: 22, jogos: 23, vitorias: 6, sg: -8, zone: "zone-rebaixamento" },
+        { pos: 18, team: "Corinthians", pts: 22, jogos: 23, vitorias: 4, sg: -7, zone: "zone-rebaixamento" },
+        { pos: 19, team: "Cuiabá", pts: 22, jogos: 22, vitorias: 5, sg: -10, zone: "zone-rebaixamento" },
+        { pos: 20, team: "Atlético-GO", pts: 17, jogos: 22, vitorias: 4, sg: -15, zone: "zone-rebaixamento" }
+      ],
+      "mineiro": [
+        { pos: 1, team: "Cruzeiro Sub-20", pts: 21, jogos: 8, vitorias: 7, sg: 15, zone: "zone-libertadores" },
+        { pos: 2, team: "Atlético-MG Sub-20", pts: 19, jogos: 8, vitorias: 6, sg: 12, zone: "zone-libertadores" },
+        { pos: 3, team: "América-MG Sub-20", pts: 15, jogos: 8, vitorias: 5, sg: 8, zone: "zone-libertadores" },
+        { pos: 4, team: "Coimbra Sub-20", pts: 14, jogos: 8, vitorias: 4, sg: 2, zone: "zone-libertadores" },
+        { pos: 5, team: "Boston City Sub-20", pts: 11, jogos: 8, vitorias: 3, sg: 0, zone: "" }
+      ]
+    };
+
+    function openStandingsModal() {
+      document.getElementById('standingsModal').classList.add('active');
+      renderStandings('serieA'); // Carrega Brasileirão por padrão
+    }
+
+    function closeStandingsModal() {
+      document.getElementById('standingsModal').classList.remove('active');
+    }
+
+    function switchStandingsTab(championship) {
+      document.getElementById('tabSerieA').classList.remove('active');
+      document.getElementById('tabMineiro').classList.remove('active');
+      
+      if(championship === 'serieA') {
+        document.getElementById('tabSerieA').classList.add('active');
+      } else {
+        document.getElementById('tabMineiro').classList.add('active');
+      }
+      
+      renderStandings(championship);
+    }
+
+    function renderStandings(championship) {
+      const tbody = document.getElementById('standingsTableBody');
+      tbody.innerHTML = '';
+      
+      const data = mockStandings[championship];
+      
+      data.forEach(team => {
+        const tr = document.createElement('tr');
+        if(team.zone) tr.classList.add(team.zone);
+        
+        tr.innerHTML = `
+          <td>${team.pos}</td>
+          <td>${team.team}</td>
+          <td style="color:#fff;">${team.pts}</td>
+          <td style="color:#8a8f9d;">${team.jogos}</td>
+          <td style="color:#8a8f9d;">${team.vitorias}</td>
+          <td style="color:#8a8f9d;">${team.sg}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    /* ---- Lógica EPG XML ---- */
     let scheduleData = []; 
     let selectedScheduleDate = new Date(); 
     let next7Days = [];
 
     const monthsPt = ['jan.', 'fev.', 'mar.', 'abr.', 'mai.', 'jun.', 'jul.', 'ago.', 'set.', 'out.', 'nov.', 'dez.'];
     function formatUIDate(date, offsetIndex) {
-      const d = date.getDate();
-      const m = monthsPt[date.getMonth()];
+      const d = date.getDate(); const m = monthsPt[date.getMonth()];
       if (offsetIndex === 0) return `Hoje, ${d} ${m}`;
-      if (offsetIndex === 1) return `Amanhã, ${d} ${m}`;
-      return `${d} ${m}`;
+      if (offsetIndex === 1) return `Amanhã, ${d} ${m}`; return `${d} ${m}`;
     }
 
     function generateDays() {
-      const today = new Date();
-      next7Days = [];
+      const today = new Date(); next7Days = [];
       for (let i = 0; i < 7; i++) {
-        let loopDate = new Date(today);
-        loopDate.setDate(today.getDate() + i);
+        let loopDate = new Date(today); loopDate.setDate(today.getDate() + i);
         next7Days.push({ dateObj: loopDate, label: formatUIDate(loopDate, i) });
       }
     }
 
     function parseXMLTVDate(dateString) {
       if (!dateString) return new Date();
-      const year = dateString.substring(0, 4);
-      const month = dateString.substring(4, 6);
-      const day = dateString.substring(6, 8);
-      const hour = dateString.substring(8, 10);
-      const min = dateString.substring(10, 12);
-      const sec = dateString.substring(12, 14);
-      
+      const year = dateString.substring(0, 4); const month = dateString.substring(4, 6); const day = dateString.substring(6, 8);
+      const hour = dateString.substring(8, 10); const min = dateString.substring(10, 12); const sec = dateString.substring(12, 14);
       let tz = "";
-      if (dateString.length > 15) {
-        tz = dateString.substring(15).trim(); 
-        if (tz.length === 5) tz = tz.substring(0, 3) + ":" + tz.substring(3, 5); 
-      } else { tz = "-03:00"; }
-      
+      if (dateString.length > 15) { tz = dateString.substring(15).trim(); if (tz.length === 5) tz = tz.substring(0, 3) + ":" + tz.substring(3, 5); } else { tz = "-03:00"; }
       return new Date(`${year}-${month}-${day}T${hour}:${min}:${sec}${tz}`);
     }
 
-    function formatTime(date) {
-      return String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
-    }
+    function formatTime(date) { return String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0'); }
 
     async function fetchEPG() {
       try {
-        const response = await fetch(EPG_XML_URL);
-        const text = await response.text();
-        const parser = new DOMParser();
-        const xmlDoc = parser.parseFromString(text, "text/xml");
-        const programs = xmlDoc.getElementsByTagName('programme');
-        let newSchedule = [];
-        
+        const response = await fetch(EPG_XML_URL); const text = await response.text();
+        const parser = new DOMParser(); const xmlDoc = parser.parseFromString(text, "text/xml");
+        const programs = xmlDoc.getElementsByTagName('programme'); let newSchedule = [];
         for (let i = 0; i < programs.length; i++) {
-          const prog = programs[i];
-          const startStr = prog.getAttribute('start');
-          const stopStr = prog.getAttribute('stop');
-          const titleNode = prog.getElementsByTagName('title')[0];
-          const descNode = prog.getElementsByTagName('desc')[0];
-          const title = titleNode ? titleNode.textContent : 'Sem título';
-          const desc = descNode ? descNode.textContent : 'Acompanhe nossa programação.';
-          
+          const prog = programs[i]; const startStr = prog.getAttribute('start'); const stopStr = prog.getAttribute('stop');
+          const titleNode = prog.getElementsByTagName('title')[0]; const descNode = prog.getElementsByTagName('desc')[0];
+          const title = titleNode ? titleNode.textContent : 'Sem título'; const desc = descNode ? descNode.textContent : 'Acompanhe nossa programação.';
           newSchedule.push({ start: parseXMLTVDate(startStr), end: parseXMLTVDate(stopStr), title: title, desc: desc });
         }
-        
-        newSchedule.sort((a, b) => a.start - b.start);
-        scheduleData = newSchedule;
-        updateEPG(); 
-      } catch (err) {
-        console.error("Erro EPG:", err);
-        document.getElementById('progDesc').innerText = "Erro ao carregar programação.";
-      }
+        newSchedule.sort((a, b) => a.start - b.start); scheduleData = newSchedule; updateEPG(); 
+      } catch (err) { console.error("Erro EPG:", err); document.getElementById('progDesc').innerText = "Erro ao carregar programação."; }
     }
 
     function updateEPG() {
       if (scheduleData.length === 0) return;
-      const now = new Date();
-      let currentIndex = scheduleData.findIndex(item => now >= item.start && now < item.end);
-      
+      const now = new Date(); let currentIndex = scheduleData.findIndex(item => now >= item.start && now < item.end);
       let currentProg;
-      if (currentIndex === -1) {
-        currentProg = { start: now, end: new Date(now.getTime() + 60*60*1000), title: "Radar TV Ao Vivo", desc: "Fique ligado na nossa programação." };
+      if (currentIndex === -1) { currentProg = { start: now, end: new Date(now.getTime() + 60*60*1000), title: "Radar TV Ao Vivo", desc: "Fique ligado na nossa programação." };
       } else { currentProg = scheduleData[currentIndex]; }
 
       document.getElementById('progTime').innerText = `${formatTime(currentProg.start)} - ${formatTime(currentProg.end)}`;
-      document.getElementById('progTitle').innerText = currentProg.title;
-      document.getElementById('progDesc').innerText = currentProg.desc; 
-
-      const totalDuration = currentProg.end.getTime() - currentProg.start.getTime();
-      const elapsed = now.getTime() - currentProg.start.getTime();
-      let percentage = (elapsed / totalDuration) * 100;
-      if(percentage < 0) percentage = 0; if(percentage > 100) percentage = 100;
+      document.getElementById('progTitle').innerText = currentProg.title; document.getElementById('progDesc').innerText = currentProg.desc; 
+      const totalDuration = currentProg.end.getTime() - currentProg.start.getTime(); const elapsed = now.getTime() - currentProg.start.getTime();
+      let percentage = (elapsed / totalDuration) * 100; if(percentage < 0) percentage = 0; if(percentage > 100) percentage = 100;
       document.getElementById('progBar').style.width = `${percentage}%`;
     }
 
-    /* ---- Lógica do Modal ---- */
-    
-    function openScheduleModal() {
-      generateDays();
-      selectedScheduleDate = next7Days[0].dateObj; 
-      updateDateSelectorUI();
-      renderScheduleList();
-      document.getElementById('scheduleModal').classList.add('active');
-    }
-
-    function closeScheduleModal() {
-      document.getElementById('scheduleModal').classList.remove('active');
-      document.getElementById('dateDropdown').classList.remove('active');
-      document.getElementById('btnDateSelector').classList.remove('open');
-    }
-
+    /* ---- Lógica do Modal de Programação ---- */
+    function openScheduleModal() { generateDays(); selectedScheduleDate = next7Days[0].dateObj; updateDateSelectorUI(); renderScheduleList(); document.getElementById('scheduleModal').classList.add('active'); }
+    function closeScheduleModal() { document.getElementById('scheduleModal').classList.remove('active'); document.getElementById('dateDropdown').classList.remove('active'); document.getElementById('btnDateSelector').classList.remove('open'); }
     function toggleDateMenu() {
-      const dropdown = document.getElementById('dateDropdown');
-      const btn = document.getElementById('btnDateSelector');
-      dropdown.classList.toggle('active');
-      btn.classList.toggle('open');
-      
+      const dropdown = document.getElementById('dateDropdown'); const btn = document.getElementById('btnDateSelector'); dropdown.classList.toggle('active'); btn.classList.toggle('open');
       if (dropdown.classList.contains('active')) {
         dropdown.innerHTML = ''; 
         next7Days.forEach((dayInfo, index) => {
-          const btnOption = document.createElement('button');
-          btnOption.className = 'date-option';
-          
-          const isSelected = selectedScheduleDate.getDate() === dayInfo.dateObj.getDate();
-          if(isSelected) btnOption.classList.add('selected');
-
-          btnOption.innerText = dayInfo.label;
-          btnOption.onclick = () => { selectScheduleDate(index); };
-          dropdown.appendChild(btnOption);
+          const btnOption = document.createElement('button'); btnOption.className = 'date-option';
+          const isSelected = selectedScheduleDate.getDate() === dayInfo.dateObj.getDate(); if(isSelected) btnOption.classList.add('selected');
+          btnOption.innerText = dayInfo.label; btnOption.onclick = () => { selectScheduleDate(index); }; dropdown.appendChild(btnOption);
         });
       }
     }
-
-    function selectScheduleDate(dayIndex) {
-      selectedScheduleDate = next7Days[dayIndex].dateObj;
-      updateDateSelectorUI();
-      renderScheduleList();
-      
-      document.getElementById('dateDropdown').classList.remove('active');
-      document.getElementById('btnDateSelector').classList.remove('open');
-    }
-
-    function updateDateSelectorUI() {
-      const dayInfo = next7Days.find(d => d.dateObj.getDate() === selectedScheduleDate.getDate());
-      document.getElementById('btnDateSelector').innerHTML = `${dayInfo.label} <i class="fa-solid fa-chevron-down"></i>`;
-    }
-
+    function selectScheduleDate(dayIndex) { selectedScheduleDate = next7Days[dayIndex].dateObj; updateDateSelectorUI(); renderScheduleList(); document.getElementById('dateDropdown').classList.remove('active'); document.getElementById('btnDateSelector').classList.remove('open'); }
+    function updateDateSelectorUI() { const dayInfo = next7Days.find(d => d.dateObj.getDate() === selectedScheduleDate.getDate()); document.getElementById('btnDateSelector').innerHTML = `${dayInfo.label} <i class="fa-solid fa-chevron-down"></i>`; }
     function renderScheduleList() {
       const now = new Date();
-      
-      const targetPrograms = scheduleData.filter(item => {
-        return item.start.getDate() === selectedScheduleDate.getDate() &&
-               item.start.getMonth() === selectedScheduleDate.getMonth() &&
-               item.start.getFullYear() === selectedScheduleDate.getFullYear();
-      });
-
-      const container = document.getElementById('fullScheduleList');
-      container.innerHTML = '';
-      
-      if(targetPrograms.length === 0) {
-        container.innerHTML = '<div class="schedule-item"><span style="color:#a0a5b5; padding: 10px 0;">Nenhuma programação disponível para esta data.</span></div>';
-      }
-
+      const targetPrograms = scheduleData.filter(item => { return item.start.getDate() === selectedScheduleDate.getDate() && item.start.getMonth() === selectedScheduleDate.getMonth() && item.start.getFullYear() === selectedScheduleDate.getFullYear(); });
+      const container = document.getElementById('fullScheduleList'); container.innerHTML = '';
+      if(targetPrograms.length === 0) { container.innerHTML = '<div class="schedule-item"><span style="color:#a0a5b5; padding: 10px 0;">Nenhuma programação disponível para esta data.</span></div>'; }
       targetPrograms.forEach(item => {
         const isCurrent = (now >= item.start && now < item.end);
-        const div = document.createElement('div');
-        div.className = `schedule-item ${isCurrent ? 'active' : ''}`;
-        
+        const div = document.createElement('div'); div.className = `schedule-item ${isCurrent ? 'active' : ''}`;
         const liveIndicator = isCurrent ? '<i class="fa-solid fa-tower-broadcast live-broadcast-icon"></i>' : '';
-
-        div.innerHTML = `
-          <div class="schedule-time">${formatTime(item.start)} - ${formatTime(item.end)}</div>
-          <div class="schedule-name">${item.title} ${liveIndicator}</div>
-          <div class="schedule-desc">${item.desc}</div>
-        `;
+        div.innerHTML = `<div class="schedule-time">${formatTime(item.start)} - ${formatTime(item.end)}</div><div class="schedule-name">${item.title} ${liveIndicator}</div><div class="schedule-desc">${item.desc}</div>`;
         container.appendChild(div);
       });
     }
 
-    /* ------------------------------------------------ */
-
-    const hlsVideo = document.getElementById('hlsPlayer');
-    const ytIframe = document.getElementById('ytPlayer');
-    const videoWrapper = document.getElementById('videoWrapper');
-    let hlsInstance = null;
-    let isYtLiveActive = false;
-
-    const COOLDOWN_TIME = 10 * 60 * 1000;
-    let pollVotes = [0, 0, 0];
+    /* ---- Player e Funções Base ---- */
+    const hlsVideo = document.getElementById('hlsPlayer'); const ytIframe = document.getElementById('ytPlayer'); const videoWrapper = document.getElementById('videoWrapper');
+    let hlsInstance = null; let isYtLiveActive = false; const COOLDOWN_TIME = 10 * 60 * 1000; let pollVotes = [0, 0, 0];
 
     function resetControlsTimeout() { clearTimeout(controlsTimeout); controlsTimeout = setTimeout(() => { document.getElementById('customControls').classList.add('hidden'); }, 3500); }
     function toggleControls() { const controls = document.getElementById('customControls'); if (controls.classList.contains('hidden')) { controls.classList.remove('hidden'); resetControlsTimeout(); } else { controls.classList.add('hidden'); clearTimeout(controlsTimeout); } }
@@ -660,19 +610,15 @@
     
     hlsVideo.addEventListener('volumechange', () => {
       const volBtn = document.getElementById('volumeBtn');
-      if (hlsVideo.muted || hlsVideo.volume === 0) {
-        volBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i> Ativar som'; volBtn.classList.remove('is-unmuted');
-      } else {
-        volBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Mudo'; volBtn.classList.add('is-unmuted');
-      }
+      if (hlsVideo.muted || hlsVideo.volume === 0) { volBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i> Ativar som'; volBtn.classList.remove('is-unmuted'); } 
+      else { volBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Mudo'; volBtn.classList.add('is-unmuted'); }
     });
 
     function renderPollResults() {
       const totalVotes = pollVotes.reduce((a, b) => a + b, 0);
       pollVotes.forEach((votes, index) => {
         const percentage = totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0;
-        document.getElementById(`percent${index}`).innerText = `${percentage}% (${votes} ${votes === 1 ? 'voto' : 'votos'})`;
-        document.getElementById(`bar${index}`).style.width = `${percentage}%`;
+        document.getElementById(`percent${index}`).innerText = `${percentage}% (${votes} ${votes === 1 ? 'voto' : 'votos'})`; document.getElementById(`bar${index}`).style.width = `${percentage}%`;
       });
     }
 
@@ -688,8 +634,12 @@
     function votePoll(optionIndex) {
       const lastVote = localStorage.getItem('radar_last_vote_timestamp'); const now = Date.now();
       if (lastVote && (now - parseInt(lastVote, 10)) < COOLDOWN_TIME) { alert("Você já votou recentemente. Aguarde 10 minutos para votar novamente!"); return; }
-      const field = `op${optionIndex}`;
-      pollRef.child(field).transaction((currentVotes) => { return (currentVotes || 0) + 1; }, (error, committed) => { if (committed) { localStorage.setItem('radar_last_vote_timestamp', now.toString()); checkPollCooldown(); } });
+      const field = `op${optionIndex}`; pollRef.child(field).transaction((currentVotes) => { return (currentVotes || 0) + 1; }, (error, committed) => { if (committed) { localStorage.setItem('radar_last_vote_timestamp', now.toString()); checkPollCooldown(); } });
+    }
+
+    function sendPollComment() {
+      const comment = document.getElementById('pollComment').value.trim(); if (!comment) { alert("Por favor, escreva uma sugestão ou comentário."); return; }
+      const subject = encodeURIComponent("Opinião/Sugestão - App Radar TV"); const body = encodeURIComponent(`Olá equipe Radar TV,\n\n"${comment}"`); window.location.href = `mailto:radartvmg@gmail.com?subject=${subject}&body=${body}`; document.getElementById('pollComment').value = '';
     }
 
     function openMenu() { document.getElementById('sideMenu').classList.add('active'); document.getElementById('menuOverlay').classList.add('active'); }
@@ -698,14 +648,8 @@
 
     function toggleFullscreen() {
       const elem = videoWrapper;
-      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-        if (elem.requestFullscreen) elem.requestFullscreen();
-        else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
-        else if (hlsVideo.webkitEnterFullscreen) hlsVideo.webkitEnterFullscreen();
-      } else {
-        if (document.exitFullscreen) document.exitFullscreen();
-        else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
-      }
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) { if (elem.requestFullscreen) elem.requestFullscreen(); else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen(); else if (hlsVideo.webkitEnterFullscreen) hlsVideo.webkitEnterFullscreen(); } 
+      else { if (document.exitFullscreen) document.exitFullscreen(); else if (document.webkitExitFullscreen) document.webkitExitFullscreen(); }
     }
     function forcePlayOnExitFullscreen() { if (hlsVideo.paused) { hlsVideo.play().catch(e => console.log('Retomar interceptado', e)); } }
     document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement) forcePlayOnExitFullscreen(); });
@@ -714,74 +658,29 @@
 
     function handleAutoRotation() {
       const isLandscape = window.innerWidth > window.innerHeight && window.innerWidth <= 950;
-      if (isLandscape) {
-        if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-          if (videoWrapper.requestFullscreen) videoWrapper.requestFullscreen().catch(() => {});
-          else if (hlsVideo.webkitEnterFullscreen) hlsVideo.webkitEnterFullscreen();
-        }
-      } else {
-        if (document.fullscreenElement || document.webkitFullscreenElement) {
-          if (document.exitFullscreen) document.exitFullscreen().catch(() => {});
-          else if (document.webkitExitFullscreen) document.webkitExitFullscreen().catch(() => {});
-        }
-      }
+      if (isLandscape) { if (!document.fullscreenElement && !document.webkitFullscreenElement) { if (videoWrapper.requestFullscreen) videoWrapper.requestFullscreen().catch(() => {}); else if (hlsVideo.webkitEnterFullscreen) hlsVideo.webkitEnterFullscreen(); } } 
+      else { if (document.fullscreenElement || document.webkitFullscreenElement) { if (document.exitFullscreen) document.exitFullscreen().catch(() => {}); else if (document.webkitExitFullscreen) document.webkitExitFullscreen().catch(() => {}); } }
     }
-    window.addEventListener('orientationchange', handleAutoRotation);
-    window.addEventListener('resize', handleAutoRotation);
+    window.addEventListener('orientationchange', handleAutoRotation); window.addEventListener('resize', handleAutoRotation);
 
-    function shareApp() {
-      if (navigator.share) { navigator.share({ title: 'Radar TV', text: 'Assista ao vivo!', url: window.location.href }).catch(console.error); } 
-      else { navigator.clipboard.writeText(window.location.href); alert('Link copiado!'); }
-    }
+    function shareApp() { if (navigator.share) { navigator.share({ title: 'Radar TV', text: 'Assista ao vivo!', url: window.location.href }).catch(console.error); } else { navigator.clipboard.writeText(window.location.href); alert('Link copiado!'); } }
+    function requestNotificationPermission() { closeMenu(); if ('Notification' in window) { Notification.requestPermission().then(permission => { if (permission === 'granted') alert('Notificações ativadas com sucesso!'); else alert('As notificações foram negadas.'); }); } else { alert('Seu navegador não suporta notificações.'); } }
 
-    function requestNotificationPermission() {
-      closeMenu();
-      if ('Notification' in window) {
-        Notification.requestPermission().then(permission => {
-          if (permission === 'granted') alert('Notificações ativadas com sucesso!');
-          else alert('As notificações foram negadas.');
-        });
-      } else { alert('Seu navegador não suporta notificações.'); }
-    }
-
-    function initHLS() {
-      if (Hls.isSupported()) {
-        hlsInstance = new Hls(); hlsInstance.loadSource(HLS_URL); hlsInstance.attachMedia(hlsVideo);
-      } else if (hlsVideo.canPlayType('application/vnd.apple.mpegurl')) { hlsVideo.src = HLS_URL; }
-    }
+    function initHLS() { if (Hls.isSupported()) { hlsInstance = new Hls(); hlsInstance.loadSource(HLS_URL); hlsInstance.attachMedia(hlsVideo); } else if (hlsVideo.canPlayType('application/vnd.apple.mpegurl')) { hlsVideo.src = HLS_URL; } }
 
     async function checkYouTubeLive() {
       try {
         const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${YOUTUBE_CHANNEL_ID}&type=video&eventType=live&key=${YOUTUBE_API_KEY}`;
-        const response = await fetch(url);
-        const data = await response.json();
-        if (data.items && data.items.length > 0) {
-          const videoId = data.items[0].id.videoId;
-          if (!isYtLiveActive) enableYouTubeLive(videoId);
-        } else {
-          if (isYtLiveActive) disableYouTubeLive();
-        }
+        const response = await fetch(url); const data = await response.json();
+        if (data.items && data.items.length > 0) { const videoId = data.items[0].id.videoId; if (!isYtLiveActive) enableYouTubeLive(videoId); } 
+        else { if (isYtLiveActive) disableYouTubeLive(); }
       } catch (err) {}
     }
 
-    function enableYouTubeLive(videoId) {
-      isYtLiveActive = true; hlsVideo.pause(); hlsVideo.style.display = 'none';
-      ytIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&live=1`; ytIframe.style.display = 'block';
-    }
+    function enableYouTubeLive(videoId) { isYtLiveActive = true; hlsVideo.pause(); hlsVideo.style.display = 'none'; ytIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&live=1`; ytIframe.style.display = 'block'; }
+    function disableYouTubeLive() { isYtLiveActive = false; ytIframe.src = ''; ytIframe.style.display = 'none'; hlsVideo.style.display = 'block'; }
 
-    function disableYouTubeLive() {
-      isYtLiveActive = false; ytIframe.src = ''; ytIframe.style.display = 'none'; hlsVideo.style.display = 'block';
-    }
-
-    initHLS();
-    fetchEPG(); 
-    requestWakeLock();
-    setInterval(updateEPG, 60000); 
-    setInterval(fetchEPG, 300000); 
-    setInterval(checkPollCooldown, 30000);
-    checkYouTubeLive();
-    setInterval(checkYouTubeLive, 30000);
-
+    initHLS(); fetchEPG(); requestWakeLock(); setInterval(updateEPG, 60000); setInterval(fetchEPG, 300000); setInterval(checkPollCooldown, 30000); checkYouTubeLive(); setInterval(checkYouTubeLive, 30000);
     if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(console.error); }
     let deferredPrompt; const pwaBanner = document.getElementById('pwaBanner'); const btnInstall = document.getElementById('btnInstall');
     window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; pwaBanner.style.display = 'flex'; });
