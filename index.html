@@ -135,18 +135,81 @@
     .footer-credits { font-size: 0.85rem; color: #8a8f9d; text-align: center; }
     .footer-credits a { color: #4d82ff; text-decoration: none; font-weight: bold; }
 
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; justify-content: center; align-items: center; padding: 15px; }
-    .modal-content { background: #181b22; border-radius: 14px; width: 100%; max-width: 500px; max-height: 80vh; display: flex; flex-direction: column; border: 1px solid #2a2e39; overflow: hidden; }
-    .modal-header { padding: 12px 16px; background: #12141a; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a2e39; }
-    .close-btn { background: none; border: none; color: #8a8f9d; font-size: 1.4rem; cursor: pointer; }
-    .modal-body { padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-    
-    .schedule-item { padding: 12px; background: #212530; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; border-left: 3px solid transparent; }
-    .schedule-item.active { border-left-color: #0d47e6; background: #101c3d; }
-    .schedule-info { display: flex; flex-direction: column; gap: 4px; max-width: 75%; }
-    .schedule-name { font-weight: 600; color: #fff; }
-    .schedule-desc { font-size: 0.75rem; color: #8a8f9d; }
-    .schedule-time { font-weight: bold; color: #4d82ff; font-size: 0.85rem; }
+    /* ---- Animação do Modal da Programação (Slide-up) ---- */
+    .modal {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85); z-index: 3000;
+      display: flex; justify-content: center; align-items: flex-end; /* Alinhado ao fundo */
+      visibility: hidden; opacity: 0;
+      transition: visibility 0.4s, opacity 0.4s;
+    }
+    .modal.active { visibility: visible; opacity: 1; }
+
+    .modal-content {
+      background: #181b22; width: 100%; max-width: 600px; height: 90vh; /* Ocupa 90% da tela */
+      border-radius: 20px 20px 0 0; /* Arredondado só no topo */
+      display: flex; flex-direction: column; overflow: hidden;
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    .modal.active .modal-content { transform: translateY(0); }
+
+    .modal-header {
+      padding: 18px; background: #12141a; display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid #2a2e39; position: relative;
+    }
+    .close-btn {
+      background: none; border: none; color: #8a8f9d; font-size: 1.5rem; cursor: pointer;
+      width: 32px; height: 32px; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: #212530;
+    }
+    .modal-body { padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+
+    /* Seletor de Datas */
+    .date-selector-btn {
+      background: none; border: none; color: #fff; font-size: 1.1rem; font-weight: bold;
+      display: flex; align-items: center; gap: 8px; cursor: pointer;
+    }
+    .date-selector-btn i { font-size: 0.9rem; transition: transform 0.3s; }
+    .date-selector-btn.open i { transform: rotate(180deg); }
+
+    /* Overlay de Datas (Menu suspenso dentro do modal) */
+    .date-dropdown {
+      position: absolute; top: 100%; left: 0; width: 100%; background: #12141a;
+      z-index: 10; display: none; flex-direction: column;
+      border-bottom: 1px solid #2a2e39; max-height: 40vh; overflow-y: auto;
+    }
+    .date-dropdown.active { display: flex; }
+    .date-option {
+      padding: 16px 20px; color: #a0a5b5; font-size: 1rem; font-weight: 600; text-align: left;
+      border: none; background: none; border-bottom: 1px solid #1c212d; cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .date-option:hover { background: #181b22; color: #fff; }
+    .date-option.selected { color: #4d82ff; }
+
+    /* Lista da Programação */
+    .schedule-item { padding: 16px; background: transparent; display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #212530; }
+    .schedule-item.active { background: #1a202c; border-left: 4px solid #0d47e6; }
+    .schedule-info { display: flex; flex-direction: column; gap: 6px; max-width: 75%; }
+    .schedule-name { font-weight: bold; color: #fff; font-size: 1rem; display: flex; align-items: center; }
+    .schedule-desc { font-size: 0.85rem; color: #8a8f9d; }
+    .schedule-time { font-weight: bold; color: #4d82ff; font-size: 0.9rem; }
+
+    /* Ícone Animado de Transmissão (Barras do Equalizador) */
+    .live-icon {
+      display: inline-flex; align-items: flex-end; gap: 3px; height: 14px; margin-left: 8px;
+    }
+    .live-icon span {
+      width: 3px; background-color: #ff0000; display: inline-block;
+      animation: pulseLive 1s infinite alternate ease-in-out;
+    }
+    .live-icon span:nth-child(2) { animation-delay: 0.2s; }
+    .live-icon span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes pulseLive {
+      0% { height: 4px; }
+      100% { height: 14px; }
+    }
 
     @media (max-width: 600px) {
       .app-wrapper { padding: 0; }
@@ -158,6 +221,7 @@
       .player-overlay-logo { height: 28px; bottom: 8px; right: 8px; }
       .fullscreen-btn { right: 45px; bottom: 10px; }
       .volume-btn { bottom: 10px; left: 10px; padding: 6px 12px; font-size: 0.75rem;}
+      .modal-content { max-width: 100%; height: 95vh; } /* No mobile sobe mais */
     }
   </style>
 </head>
@@ -179,7 +243,6 @@
       <img src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1920.png" alt="Radar TV">
       <button class="close-menu-btn" onclick="closeMenu()">&times;</button>
     </div>
-    
     <nav class="menu-items">
       <div class="menu-item active"><i class="fa-solid fa-tv"></i> Radar TV Ao Vivo</div>
       <div class="menu-divider"></div>
@@ -210,13 +273,10 @@
           <div class="live-badge" id="liveTag">AO VIVO</div>
         </header>
 
-        <!-- Ao clicar no wrapper, a função toggleControls é chamada -->
         <div class="video-wrapper" id="videoWrapper" onclick="toggleControls()">
           <img src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1920.png" alt="Radar TV Logo" class="player-overlay-logo">
           
-          <!-- Camada de controles customizados -->
           <div id="customControls" class="custom-controls">
-            <!-- Ícones no Topo (Cast e AirPlay Oficial SVG) -->
             <div class="player-top-actions" onclick="event.stopPropagation()">
               <button onclick="toggleAirPlay(event)" title="AirPlay">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -227,12 +287,10 @@
               <google-cast-launcher class="cast-btn"></google-cast-launcher>
             </div>
 
-            <!-- Botão Dinâmico de Volume (Mudo/Ativar) -->
             <button class="volume-btn" id="volumeBtn" onclick="toggleSound(event)">
               <i class="fa-solid fa-volume-xmark"></i> Ativar som
             </button>
 
-            <!-- Botão Expandir -->
             <button class="fullscreen-btn" onclick="toggleFullscreenAction(event)">
               <i class="fa-solid fa-expand"></i>
             </button>
@@ -256,48 +314,32 @@
           </div>
 
           <div class="btn-schedule-container">
-            <button class="btn-schedule-pill" onclick="openSchedule()">Ver programação</button>
+            <button class="btn-schedule-pill" onclick="openScheduleModal()">Ver programação</button>
           </div>
         </div>
 
         <section class="poll-section">
-          <div class="poll-header">
-            <i class="fa-solid fa-square-poll-vertical"></i>
-            <span>Enquete Rápida (Tempo Real)</span>
-          </div>
-          <p class="poll-question">
-            Você curtiu a cobertura do Ruralzão 2026 feita pela RadarTV e Limeira News?
-          </p>
+          <div class="poll-header"><i class="fa-solid fa-square-poll-vertical"></i><span>Enquete Rápida (Tempo Real)</span></div>
+          <p class="poll-question">Você curtiu a cobertura do Ruralzão 2026 feita pela RadarTV e Limeira News?</p>
           <div class="poll-options">
             <button class="poll-option-btn" onclick="votePoll(0)">
               <div class="poll-progress-bar" id="bar0"></div>
-              <div class="poll-option-content">
-                <span>Sim, foi ótima.</span>
-                <span class="poll-percent" id="percent0">0% (0 votos)</span>
-              </div>
+              <div class="poll-option-content"><span>Sim, foi ótima.</span><span class="poll-percent" id="percent0">0% (0 votos)</span></div>
             </button>
             <button class="poll-option-btn" onclick="votePoll(1)">
               <div class="poll-progress-bar" id="bar1"></div>
-              <div class="poll-option-content">
-                <span>Não gostei.</span>
-                <span class="poll-percent" id="percent1">0% (0 votos)</span>
-              </div>
+              <div class="poll-option-content"><span>Não gostei.</span><span class="poll-percent" id="percent1">0% (0 votos)</span></div>
             </button>
             <button class="poll-option-btn" onclick="votePoll(2)">
               <div class="poll-progress-bar" id="bar2"></div>
-              <div class="poll-option-content">
-                <span>Pode melhorar.</span>
-                <span class="poll-percent" id="percent2">0% (0 votos)</span>
-              </div>
+              <div class="poll-option-content"><span>Pode melhorar.</span><span class="poll-percent" id="percent2">0% (0 votos)</span></div>
             </button>
           </div>
           <div class="poll-status-msg" id="pollStatusMsg">Conectando à enquete...</div>
           <div class="poll-comment-box">
             <label for="pollComment"><i class="fa-regular fa-comment-dots"></i> Deixe um comentário ou sugestão (opcional):</label>
             <textarea id="pollComment" class="poll-textarea" placeholder="Digite sua opinião aqui..."></textarea>
-            <button class="btn-send-comment" onclick="sendPollComment()">
-              <i class="fa-paper-plane fa-solid"></i> Enviar para Radar TV
-            </button>
+            <button class="btn-send-comment" onclick="sendPollComment()"><i class="fa-paper-plane fa-solid"></i> Enviar para Radar TV</button>
           </div>
         </section>
       </main>
@@ -306,25 +348,25 @@
 
     <footer class="app-footer">
       <div class="social-buttons">
-        <a href="https://instagram.com/radartvmg" target="_blank" rel="noopener noreferrer" class="social-btn instagram">
-          <i class="fa-brands fa-instagram"></i> Instagram
-        </a>
-        <a href="https://youtube.com/@radartvmg" target="_blank" rel="noopener noreferrer" class="social-btn youtube">
-          <i class="fa-brands fa-youtube"></i> YouTube
-        </a>
+        <a href="https://instagram.com/radartvmg" target="_blank" rel="noopener noreferrer" class="social-btn instagram"><i class="fa-brands fa-instagram"></i> Instagram</a>
+        <a href="https://youtube.com/@radartvmg" target="_blank" rel="noopener noreferrer" class="social-btn youtube"><i class="fa-brands fa-youtube"></i> YouTube</a>
       </div>
-      <div class="footer-credits">
-        Grupo Radar de Comunicação por <a href="https://instagram.com/althierestm" target="_blank" rel="noopener noreferrer">Althieres Dias</a>
-      </div>
+      <div class="footer-credits">Grupo Radar de Comunicação por <a href="https://instagram.com/althierestm" target="_blank" rel="noopener noreferrer">Althieres Dias</a></div>
     </footer>
 
   </div>
 
+  <!-- MODAL DA PROGRAMAÇÃO COM ANIMAÇÃO SLIDE-UP E SELETOR DE DATAS -->
   <div class="modal" id="scheduleModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3><i class="fa-solid fa-list-ul"></i> Programação de Hoje</h3>
-        <button class="close-btn" onclick="closeSchedule()">&times;</button>
+        <button class="date-selector-btn" id="btnDateSelector" onclick="toggleDateMenu()">
+          Hoje, 21 ago. <i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <button class="close-btn" onclick="closeScheduleModal()"><i class="fa-solid fa-xmark"></i></button>
+        
+        <!-- Menu Suspenso de Datas -->
+        <div class="date-dropdown" id="dateDropdown"></div>
       </div>
       <div class="modal-body" id="fullScheduleList"></div>
     </div>
@@ -376,19 +418,39 @@
     const HLS_URL = 'https://video01.logicahost.com.br/fcvtv/fcvtv/playlist.m3u8';
     const YOUTUBE_CHANNEL_ID = 'UC7wHmjY4RNruABZ9An1crBA'; 
     const YOUTUBE_API_KEY = 'AIzaSyDaVlWRVlFrq9Qur-Dzv779pIIi3v_XD0g'; 
-
-    /* ----------------------------------------------------
-       SISTEMA DE EPG VIA XML DO GITHUB (XMLTV)
-    ----------------------------------------------------- */
-
     const EPG_XML_URL = 'https://raw.githubusercontent.com/althierestm/Lista-RadarTV/refs/heads/main/epg.xml';
-    let scheduleData = []; // Guardará os programas processados
 
-    // Função para converter o texto de data do XMLTV em objeto Date do Javascript
-    // Exemplo de formato XMLTV: "20260821140000 -0300"
+    let scheduleData = []; 
+    let selectedScheduleDate = new Date(); // Controla o dia selecionado no modal
+    let next7Days = [];
+
+    // Função para formatar as datas bonitinhas no seletor
+    const monthsPt = ['jan.', 'fev.', 'mar.', 'abr.', 'mai.', 'jun.', 'jul.', 'ago.', 'set.', 'out.', 'nov.', 'dez.'];
+    function formatUIDate(date, offsetIndex) {
+      const d = date.getDate();
+      const m = monthsPt[date.getMonth()];
+      if (offsetIndex === 0) return `Hoje, ${d} ${m}`;
+      if (offsetIndex === 1) return `Amanhã, ${d} ${m}`;
+      return `${d} ${m}`;
+    }
+
+    // Gera o Array com os próximos 7 dias
+    function generateDays() {
+      const today = new Date();
+      next7Days = [];
+      for (let i = 0; i < 7; i++) {
+        let loopDate = new Date(today);
+        loopDate.setDate(today.getDate() + i);
+        next7Days.push({
+          dateObj: loopDate,
+          label: formatUIDate(loopDate, i)
+        });
+      }
+    }
+
+    // Tradutor de Data do XMLTV
     function parseXMLTVDate(dateString) {
       if (!dateString) return new Date();
-      
       const year = dateString.substring(0, 4);
       const month = dateString.substring(4, 6);
       const day = dateString.substring(6, 8);
@@ -399,18 +461,12 @@
       let tz = "";
       if (dateString.length > 15) {
         tz = dateString.substring(15).trim(); 
-        if (tz.length === 5) {
-          tz = tz.substring(0, 3) + ":" + tz.substring(3, 5); // Ex: -03:00
-        }
-      } else {
-        tz = "-03:00"; 
-      }
+        if (tz.length === 5) tz = tz.substring(0, 3) + ":" + tz.substring(3, 5); 
+      } else { tz = "-03:00"; }
       
-      const isoString = `${year}-${month}-${day}T${hour}:${min}:${sec}${tz}`;
-      return new Date(isoString);
+      return new Date(`${year}-${month}-${day}T${hour}:${min}:${sec}${tz}`);
     }
 
-    // Função que formata a hora (Ex: 08:30)
     function formatTime(date) {
       return String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
     }
@@ -421,7 +477,6 @@
         const text = await response.text();
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(text, "text/xml");
-        
         const programs = xmlDoc.getElementsByTagName('programme');
         let newSchedule = [];
         
@@ -429,163 +484,165 @@
           const prog = programs[i];
           const startStr = prog.getAttribute('start');
           const stopStr = prog.getAttribute('stop');
-          
           const titleNode = prog.getElementsByTagName('title')[0];
           const descNode = prog.getElementsByTagName('desc')[0];
-          
           const title = titleNode ? titleNode.textContent : 'Sem título';
           const desc = descNode ? descNode.textContent : 'Acompanhe nossa programação.';
           
-          newSchedule.push({
-            start: parseXMLTVDate(startStr),
-            end: parseXMLTVDate(stopStr),
-            title: title,
-            desc: desc
-          });
+          newSchedule.push({ start: parseXMLTVDate(startStr), end: parseXMLTVDate(stopStr), title: title, desc: desc });
         }
         
-        // Ordena por horário
         newSchedule.sort((a, b) => a.start - b.start);
         scheduleData = newSchedule;
-        
-        updateEPG(); // Atualiza a tela
+        updateEPG(); 
       } catch (err) {
-        console.error("Erro ao carregar o EPG XML:", err);
+        console.error("Erro EPG:", err);
         document.getElementById('progDesc').innerText = "Erro ao carregar programação.";
       }
     }
 
-    // Atualiza a tela baseada no Array do XML
     function updateEPG() {
       if (scheduleData.length === 0) return;
-
       const now = new Date();
       let currentIndex = scheduleData.findIndex(item => now >= item.start && now < item.end);
       
       let currentProg;
       if (currentIndex === -1) {
-        // Se não encontrar nada passando AGORA (pode ser um buraco no EPG), evita que o app quebre
-        currentProg = {
-          start: now,
-          end: new Date(now.getTime() + 60*60*1000), // Põe 1 hr de duração falsa
-          title: "Radar TV Ao Vivo",
-          desc: "Fique ligado na nossa programação."
-        };
-      } else {
-        currentProg = scheduleData[currentIndex];
-      }
+        currentProg = { start: now, end: new Date(now.getTime() + 60*60*1000), title: "Radar TV Ao Vivo", desc: "Fique ligado na nossa programação." };
+      } else { currentProg = scheduleData[currentIndex]; }
 
       document.getElementById('progTime').innerText = `${formatTime(currentProg.start)} - ${formatTime(currentProg.end)}`;
       document.getElementById('progTitle').innerText = currentProg.title;
       document.getElementById('progDesc').innerText = currentProg.desc; 
 
-      const startMs = currentProg.start.getTime();
-      const endMs = currentProg.end.getTime();
-      const nowMs = now.getTime();
-
-      const totalDuration = endMs - startMs;
-      const elapsed = nowMs - startMs;
+      const totalDuration = currentProg.end.getTime() - currentProg.start.getTime();
+      const elapsed = now.getTime() - currentProg.start.getTime();
       let percentage = (elapsed / totalDuration) * 100;
-      
-      if(percentage < 0) percentage = 0;
-      if(percentage > 100) percentage = 100;
-
+      if(percentage < 0) percentage = 0; if(percentage > 100) percentage = 100;
       document.getElementById('progBar').style.width = `${percentage}%`;
     }
 
-    function openSchedule() {
+    /* ---- Lógica do Modal com Animação e Seletor ---- */
+    
+    // Abre a tela deslizando e reseta a data para HOJE
+    function openScheduleModal() {
+      generateDays();
+      selectedScheduleDate = next7Days[0].dateObj; // Força para hoje
+      updateDateSelectorUI();
+      renderScheduleList();
+      
+      // Adiciona a classe que engatilha a animação CSS
+      document.getElementById('scheduleModal').classList.add('active');
+    }
+
+    function closeScheduleModal() {
+      // Remove a classe para a tela deslizar para baixo e sumir
+      document.getElementById('scheduleModal').classList.remove('active');
+      document.getElementById('dateDropdown').classList.remove('active');
+      document.getElementById('btnDateSelector').classList.remove('open');
+    }
+
+    // Abre e fecha o dropdown das 7 datas
+    function toggleDateMenu() {
+      const dropdown = document.getElementById('dateDropdown');
+      const btn = document.getElementById('btnDateSelector');
+      dropdown.classList.toggle('active');
+      btn.classList.toggle('open');
+      
+      if (dropdown.classList.contains('active')) {
+        dropdown.innerHTML = ''; // Limpa a lista
+        next7Days.forEach((dayInfo, index) => {
+          const btnOption = document.createElement('button');
+          btnOption.className = 'date-option';
+          
+          // Verifica se este botão é a data que está atualmente selecionada
+          const isSelected = selectedScheduleDate.getDate() === dayInfo.dateObj.getDate();
+          if(isSelected) btnOption.classList.add('selected');
+
+          btnOption.innerText = dayInfo.label;
+          btnOption.onclick = () => { selectScheduleDate(index); };
+          dropdown.appendChild(btnOption);
+        });
+      }
+    }
+
+    function selectScheduleDate(dayIndex) {
+      selectedScheduleDate = next7Days[dayIndex].dateObj;
+      updateDateSelectorUI();
+      renderScheduleList();
+      
+      // Fecha o menu após clicar
+      document.getElementById('dateDropdown').classList.remove('active');
+      document.getElementById('btnDateSelector').classList.remove('open');
+    }
+
+    function updateDateSelectorUI() {
+      const dayInfo = next7Days.find(d => d.dateObj.getDate() === selectedScheduleDate.getDate());
+      document.getElementById('btnDateSelector').innerHTML = `${dayInfo.label} <i class="fa-solid fa-chevron-down"></i>`;
+    }
+
+    // Renderiza a lista dependendo da data selecionada
+    function renderScheduleList() {
       const now = new Date();
       
-      // Filtra os programas do XML apenas para o dia de HOJE
-      const todayPrograms = scheduleData.filter(item => {
-        return item.start.getDate() === now.getDate() &&
-               item.start.getMonth() === now.getMonth() &&
-               item.start.getFullYear() === now.getFullYear();
+      // Pega os programas apenas do dia selecionado
+      const targetPrograms = scheduleData.filter(item => {
+        return item.start.getDate() === selectedScheduleDate.getDate() &&
+               item.start.getMonth() === selectedScheduleDate.getMonth() &&
+               item.start.getFullYear() === selectedScheduleDate.getFullYear();
       });
 
       const container = document.getElementById('fullScheduleList');
       container.innerHTML = '';
       
-      if(todayPrograms.length === 0) {
-        container.innerHTML = '<div class="schedule-item"><span>Nenhuma programação disponível para hoje.</span></div>';
+      if(targetPrograms.length === 0) {
+        container.innerHTML = '<div class="schedule-item"><span>Nenhuma programação disponível para esta data.</span></div>';
       }
 
-      todayPrograms.forEach(item => {
+      targetPrograms.forEach(item => {
+        // Checa se está "No Ar" agora (só faz sentido se o dia selecionado for Hoje)
         const isCurrent = (now >= item.start && now < item.end);
         const div = document.createElement('div');
         div.className = `schedule-item ${isCurrent ? 'active' : ''}`;
         
+        // Se estiver no ar, adiciona o icone animado customizado
+        const liveIndicator = isCurrent ? '<div class="live-icon"><span></span><span></span><span></span></div>' : '';
+
         div.innerHTML = `
           <div class="schedule-info">
-            <span class="schedule-name">${item.title} ${isCurrent ? '🔵 (No Ar)' : ''}</span>
+            <span class="schedule-name">${item.title} ${liveIndicator}</span>
             <span class="schedule-desc">${item.desc}</span>
           </div>
           <span class="schedule-time">${formatTime(item.start)} - ${formatTime(item.end)}</span>
         `;
         container.appendChild(div);
       });
-      document.getElementById('scheduleModal').style.display = 'flex';
     }
 
-    /* ---------------------------------------------------- */
+    /* ------------------------------------------------ */
 
     const hlsVideo = document.getElementById('hlsPlayer');
     const ytIframe = document.getElementById('ytPlayer');
     const videoWrapper = document.getElementById('videoWrapper');
     let hlsInstance = null;
     let isYtLiveActive = false;
-    let pollVotes = [0, 0, 0];
-    const COOLDOWN_TIME = 10 * 60 * 1000;
 
-    function resetControlsTimeout() {
-      clearTimeout(controlsTimeout);
-      controlsTimeout = setTimeout(() => {
-        document.getElementById('customControls').classList.add('hidden');
-      }, 3500); 
-    }
-
-    function toggleControls() {
-      const controls = document.getElementById('customControls');
-      if (controls.classList.contains('hidden')) {
-        controls.classList.remove('hidden');
-        resetControlsTimeout(); 
-      } else {
-        controls.classList.add('hidden'); 
-        clearTimeout(controlsTimeout);
-      }
-    }
-
-    function toggleSound(e) {
-      if (e) e.stopPropagation();
-      resetControlsTimeout(); 
-      hlsVideo.muted = !hlsVideo.muted;
-      if (!hlsVideo.muted) { hlsVideo.volume = 1; }
-    }
-
-    function toggleFullscreenAction(e) {
-      if(e) e.stopPropagation();
-      resetControlsTimeout();
-      toggleFullscreen();
-    }
+    function resetControlsTimeout() { clearTimeout(controlsTimeout); controlsTimeout = setTimeout(() => { document.getElementById('customControls').classList.add('hidden'); }, 3500); }
+    function toggleControls() { const controls = document.getElementById('customControls'); if (controls.classList.contains('hidden')) { controls.classList.remove('hidden'); resetControlsTimeout(); } else { controls.classList.add('hidden'); clearTimeout(controlsTimeout); } }
+    function toggleSound(e) { if (e) e.stopPropagation(); resetControlsTimeout(); hlsVideo.muted = !hlsVideo.muted; if (!hlsVideo.muted) { hlsVideo.volume = 1; } }
+    function toggleFullscreenAction(e) { if(e) e.stopPropagation(); resetControlsTimeout(); toggleFullscreen(); }
+    function toggleAirPlay(e) { if(e) e.stopPropagation(); resetControlsTimeout(); if (window.WebKitPlaybackTargetAvailabilityEvent) { hlsVideo.webkitShowPlaybackTargetPicker(); } else { alert("AirPlay nativo não é suportado."); } }
     
-    function toggleAirPlay(e) {
-      if(e) e.stopPropagation();
-      resetControlsTimeout();
-      if (window.WebKitPlaybackTargetAvailabilityEvent) { hlsVideo.webkitShowPlaybackTargetPicker(); } 
-      else { alert("AirPlay nativo não é suportado neste navegador/dispositivo."); }
-    }
-
     hlsVideo.addEventListener('volumechange', () => {
       const volBtn = document.getElementById('volumeBtn');
       if (hlsVideo.muted || hlsVideo.volume === 0) {
-        volBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i> Ativar som';
-        volBtn.classList.remove('is-unmuted');
+        volBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i> Ativar som'; volBtn.classList.remove('is-unmuted');
       } else {
-        volBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Mudo';
-        volBtn.classList.add('is-unmuted');
+        volBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Mudo'; volBtn.classList.add('is-unmuted');
       }
     });
 
+    let pollVotes = [0, 0, 0];
     function renderPollResults() {
       const totalVotes = pollVotes.reduce((a, b) => a + b, 0);
       pollVotes.forEach((votes, index) => {
@@ -596,48 +653,25 @@
     }
 
     function checkPollCooldown() {
-      const lastVote = localStorage.getItem('radar_last_vote_timestamp');
-      const now = Date.now();
-      const optionBtns = document.querySelectorAll('.poll-option-btn');
-
+      const lastVote = localStorage.getItem('radar_last_vote_timestamp'); const now = Date.now(); const optionBtns = document.querySelectorAll('.poll-option-btn');
       if (lastVote && (now - parseInt(lastVote, 10)) < COOLDOWN_TIME) {
         const remainingMinutes = Math.ceil((COOLDOWN_TIME - (now - parseInt(lastVote, 10))) / 60000);
-        document.getElementById('pollStatusMsg').innerText = `Obrigado pelo seu voto! Você poderá votar novamente em ~${remainingMinutes} min.`;
-        optionBtns.forEach(btn => btn.disabled = true);
-      } else {
-        document.getElementById('pollStatusMsg').innerText = `Selecione uma opção para registrar seu voto.`;
-        optionBtns.forEach(btn => btn.disabled = false);
-      }
+        document.getElementById('pollStatusMsg').innerText = `Obrigado pelo seu voto! Você poderá votar novamente em ~${remainingMinutes} min.`; optionBtns.forEach(btn => btn.disabled = true);
+      } else { document.getElementById('pollStatusMsg').innerText = `Selecione uma opção para registrar seu voto.`; optionBtns.forEach(btn => btn.disabled = false); }
     }
 
-    pollRef.on('value', (snapshot) => {
-      const data = snapshot.val();
-      if (data) { pollVotes = [data.op0 || 0, data.op1 || 0, data.op2 || 0]; } 
-      else { pollVotes = [0, 0, 0]; pollRef.set({ op0: 0, op1: 0, op2: 0 }); }
-      renderPollResults();
-      checkPollCooldown();
-    });
-
+    pollRef.on('value', (snapshot) => { const data = snapshot.val(); if (data) { pollVotes = [data.op0 || 0, data.op1 || 0, data.op2 || 0]; } else { pollVotes = [0, 0, 0]; pollRef.set({ op0: 0, op1: 0, op2: 0 }); } renderPollResults(); checkPollCooldown(); });
     function votePoll(optionIndex) {
-      const lastVote = localStorage.getItem('radar_last_vote_timestamp');
-      const now = Date.now();
-
-      if (lastVote && (now - parseInt(lastVote, 10)) < COOLDOWN_TIME) {
-        alert("Você já votou recentemente. Aguarde 10 minutos para votar novamente!"); return;
-      }
+      const lastVote = localStorage.getItem('radar_last_vote_timestamp'); const now = Date.now();
+      if (lastVote && (now - parseInt(lastVote, 10)) < COOLDOWN_TIME) { alert("Você já votou recentemente. Aguarde 10 minutos para votar novamente!"); return; }
       const field = `op${optionIndex}`;
-      pollRef.child(field).transaction((currentVotes) => { return (currentVotes || 0) + 1; }, (error, committed) => {
-        if (committed) { localStorage.setItem('radar_last_vote_timestamp', now.toString()); checkPollCooldown(); }
-      });
+      pollRef.child(field).transaction((currentVotes) => { return (currentVotes || 0) + 1; }, (error, committed) => { if (committed) { localStorage.setItem('radar_last_vote_timestamp', now.toString()); checkPollCooldown(); } });
     }
 
     function sendPollComment() {
       const comment = document.getElementById('pollComment').value.trim();
-      if (!comment) { alert("Por favor, escreva uma sugestão ou comentário antes de enviar."); return; }
-      const subject = encodeURIComponent("Opinião/Sugestão - App Radar TV");
-      const body = encodeURIComponent(`Olá equipe Radar TV / Limeira News,\n\nSegue meu comentário:\n\n"${comment}"`);
-      window.location.href = `mailto:radartvmg@gmail.com?subject=${subject}&body=${body}`;
-      document.getElementById('pollComment').value = '';
+      if (!comment) { alert("Por favor, escreva uma sugestão ou comentário."); return; }
+      const subject = encodeURIComponent("Opinião/Sugestão - App Radar TV"); const body = encodeURIComponent(`Olá equipe Radar TV,\n\n"${comment}"`); window.location.href = `mailto:radartvmg@gmail.com?subject=${subject}&body=${body}`; document.getElementById('pollComment').value = '';
     }
 
     function openMenu() { document.getElementById('sideMenu').classList.add('active'); document.getElementById('menuOverlay').classList.add('active'); }
@@ -655,9 +689,7 @@
         else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
       }
     }
-
     function forcePlayOnExitFullscreen() { if (hlsVideo.paused) { hlsVideo.play().catch(e => console.log('Retomar interceptado', e)); } }
-    
     document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement) forcePlayOnExitFullscreen(); });
     document.addEventListener('webkitfullscreenchange', () => { if (!document.webkitFullscreenElement) forcePlayOnExitFullscreen(); });
     hlsVideo.addEventListener('webkitendfullscreen', () => { forcePlayOnExitFullscreen(); });
@@ -676,12 +708,11 @@
         }
       }
     }
-
     window.addEventListener('orientationchange', handleAutoRotation);
     window.addEventListener('resize', handleAutoRotation);
 
     function shareApp() {
-      if (navigator.share) { navigator.share({ title: 'Radar TV', text: 'Assista à programação ao vivo da Radar TV!', url: window.location.href }).catch(console.error); } 
+      if (navigator.share) { navigator.share({ title: 'Radar TV', text: 'Assista ao vivo!', url: window.location.href }).catch(console.error); } 
       else { navigator.clipboard.writeText(window.location.href); alert('Link copiado!'); }
     }
 
@@ -706,7 +737,6 @@
         const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${YOUTUBE_CHANNEL_ID}&type=video&eventType=live&key=${YOUTUBE_API_KEY}`;
         const response = await fetch(url);
         const data = await response.json();
-
         if (data.items && data.items.length > 0) {
           const videoId = data.items[0].id.videoId;
           if (!isYtLiveActive) enableYouTubeLive(videoId);
@@ -725,34 +755,19 @@
       isYtLiveActive = false; ytIframe.src = ''; ytIframe.style.display = 'none'; hlsVideo.style.display = 'block';
     }
 
-    function closeSchedule() { document.getElementById('scheduleModal').style.display = 'none'; }
-
     initHLS();
-    fetchEPG(); // Inicia o carregamento do XML no load
+    fetchEPG(); 
     requestWakeLock();
-    setInterval(updateEPG, 60000); // Atualiza a barra azul a cada minuto
-    setInterval(fetchEPG, 300000); // Tenta atualizar do GitHub a cada 5 minutos
+    setInterval(updateEPG, 60000); 
+    setInterval(fetchEPG, 300000); 
     setInterval(checkPollCooldown, 30000);
     checkYouTubeLive();
     setInterval(checkYouTubeLive, 30000);
 
     if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(console.error); }
-
-    let deferredPrompt;
-    const pwaBanner = document.getElementById('pwaBanner');
-    const btnInstall = document.getElementById('btnInstall');
-
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault(); deferredPrompt = e; pwaBanner.style.display = 'flex';
-    });
-
-    btnInstall.addEventListener('click', () => {
-      pwaBanner.style.display = 'none';
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then(() => { deferredPrompt = null; });
-      }
-    });
+    let deferredPrompt; const pwaBanner = document.getElementById('pwaBanner'); const btnInstall = document.getElementById('btnInstall');
+    window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; pwaBanner.style.display = 'flex'; });
+    btnInstall.addEventListener('click', () => { pwaBanner.style.display = 'none'; if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(() => { deferredPrompt = null; }); } });
   </script>
 </body>
 </html>
