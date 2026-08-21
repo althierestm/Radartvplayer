@@ -96,7 +96,7 @@
     .fullscreen-btn { position: absolute; bottom: 15px; right: 65px; background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition: transform 0.2s; }
     .fullscreen-btn:active { transform: scale(0.9); }
 
-    /* Barra de Programação */
+    /* Barra de Programação (Abaixo do player) */
     .epg-bar { padding: 20px 16px; background: #181b22; display: flex; flex-direction: column; border-bottom: 1px solid #2a2e39; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; }
     .prog-time { font-size: 0.85rem; color: #a0a5b5; margin-bottom: 6px; font-weight: bold; }
     .prog-title { font-size: 1.2rem; font-weight: bold; color: #ffffff; margin-bottom: 4px; }
@@ -171,7 +171,7 @@
       padding: 12px 16px; background: #12141a; position: relative; border-bottom: 1px solid #2a2e39;
     }
 
-    .modal-body { padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+    .modal-body { padding: 0 15px 15px 15px; overflow-y: auto; display: flex; flex-direction: column; flex: 1; }
 
     /* Seletor de Datas */
     .date-selector-btn {
@@ -196,24 +196,59 @@
     .date-option:hover { background: #181b22; color: #fff; }
     .date-option.selected { color: #4d82ff; }
 
-    /* Lista da Programação */
-    .schedule-item { padding: 16px; background: transparent; display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #212530; }
-    .schedule-item.active { background: #1a202c; border-left: 4px solid #0d47e6; }
-    .schedule-info { display: flex; flex-direction: column; gap: 6px; max-width: 75%; }
-    .schedule-name { font-weight: bold; color: #fff; font-size: 1rem; display: flex; align-items: center; }
-    .schedule-desc { font-size: 0.85rem; color: #8a8f9d; }
-    .schedule-time { font-weight: bold; color: #4d82ff; font-size: 0.9rem; }
+    /* NOVO VISUAL DA LISTA DE PROGRAMAÇÃO (Estilo +SBT / Imagem de Ref) */
+    .schedule-item { 
+      padding: 16px 0; /* padding vertical, sem lateral para alinhar certinho com as bordas virtuais */
+      background: transparent; 
+      display: flex; 
+      flex-direction: column; /* Organização vertical (Hora -> Titulo -> Desc) */
+      align-items: flex-start; 
+      border-bottom: 1px solid #212530; 
+      gap: 4px;
+    }
+    .schedule-item.active { 
+      background: #1a202c; 
+      border-left: 4px solid #0d47e6; 
+      padding-left: 12px; /* espaço para o border left não colar no texto */
+      margin-left: -15px; /* Compensa o padding da modal-body */
+      margin-right: -15px;
+      padding-right: 15px;
+    }
+    
+    .schedule-time { 
+      font-weight: 500; 
+      color: #a0a5b5; 
+      font-size: 0.8rem; 
+      display: flex; 
+      align-items: center; 
+    }
+    
+    .schedule-name { 
+      font-weight: bold; 
+      color: #fff; 
+      font-size: 1.05rem; 
+      display: flex; 
+      align-items: center; 
+      margin-top: 2px;
+    }
+    
+    .schedule-desc { 
+      font-size: 0.85rem; 
+      color: #8a8f9d; 
+      margin-top: 2px; 
+      line-height: 1.3;
+    }
 
     /* Ícone de Transmissão ((o)) Animado */
     .live-broadcast-icon {
       color: #ff0000;
       margin-left: 8px;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
       animation: pulseBroadcast 1.5s infinite;
     }
     @keyframes pulseBroadcast {
       0% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(1.15); }
+      50% { opacity: 0.6; transform: scale(1.15); }
       100% { opacity: 1; transform: scale(1); }
     }
 
@@ -382,7 +417,7 @@
         <div class="date-dropdown" id="dateDropdown"></div>
       </div>
       
-      <!-- Lista de Programação -->
+      <!-- Lista de Programação Empilhada (Visual Moderno) -->
       <div class="modal-body" id="fullScheduleList"></div>
       
     </div>
@@ -601,7 +636,7 @@
       container.innerHTML = '';
       
       if(targetPrograms.length === 0) {
-        container.innerHTML = '<div class="schedule-item"><span>Nenhuma programação disponível para esta data.</span></div>';
+        container.innerHTML = '<div class="schedule-item"><span style="color:#a0a5b5; padding: 10px 0;">Nenhuma programação disponível para esta data.</span></div>';
       }
 
       targetPrograms.forEach(item => {
@@ -609,15 +644,14 @@
         const div = document.createElement('div');
         div.className = `schedule-item ${isCurrent ? 'active' : ''}`;
         
-        // Novo ícone de transmissão usando a antena emissora de ondas: ((o))
+        // Ícone novo de transmissão ((o))
         const liveIndicator = isCurrent ? '<i class="fa-solid fa-tower-broadcast live-broadcast-icon"></i>' : '';
 
+        // Layout empilhado (Hora -> Título -> Desc)
         div.innerHTML = `
-          <div class="schedule-info">
-            <span class="schedule-name">${item.title} ${liveIndicator}</span>
-            <span class="schedule-desc">${item.desc}</span>
-          </div>
-          <span class="schedule-time">${formatTime(item.start)} - ${formatTime(item.end)}</span>
+          <div class="schedule-time">${formatTime(item.start)} - ${formatTime(item.end)}</div>
+          <div class="schedule-name">${item.title} ${liveIndicator}</div>
+          <div class="schedule-desc">${item.desc}</div>
         `;
         container.appendChild(div);
       });
