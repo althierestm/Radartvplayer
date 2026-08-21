@@ -139,29 +139,38 @@
     .modal {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(0,0,0,0.85); z-index: 3000;
-      display: flex; justify-content: center; align-items: flex-end; /* Alinhado ao fundo */
+      display: flex; justify-content: center; align-items: flex-end; 
       visibility: hidden; opacity: 0;
       transition: visibility 0.4s, opacity 0.4s;
     }
     .modal.active { visibility: visible; opacity: 1; }
 
     .modal-content {
-      background: #181b22; width: 100%; max-width: 600px; height: 90vh; /* Ocupa 90% da tela */
-      border-radius: 20px 20px 0 0; /* Arredondado só no topo */
+      background: #181b22; width: 100%; max-width: 600px; height: 90vh;
+      border-radius: 20px 20px 0 0;
       display: flex; flex-direction: column; overflow: hidden;
       transform: translateY(100%);
       transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
     .modal.active .modal-content { transform: translateY(0); }
 
-    .modal-header {
-      padding: 18px; background: #12141a; display: flex; justify-content: space-between; align-items: center;
-      border-bottom: 1px solid #2a2e39; position: relative;
+    /* Topo do Modal (Título e Fechar) */
+    .modal-header-top {
+      padding: 16px; display: flex; justify-content: center; align-items: center;
+      position: relative; border-bottom: 1px solid #1c212d; background: #12141a;
     }
-    .close-btn {
-      background: none; border: none; color: #8a8f9d; font-size: 1.5rem; cursor: pointer;
-      width: 32px; height: 32px; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: #212530;
+    .modal-title { font-size: 1.15rem; font-weight: bold; color: #fff; margin: 0; }
+    .modal-header-top .close-btn {
+      position: absolute; right: 16px;
+      background: #212530; border: none; color: #8a8f9d; font-size: 1.2rem; cursor: pointer;
+      width: 32px; height: 32px; display: flex; justify-content: center; align-items: center; border-radius: 50%;
     }
+    
+    /* Barra do Seletor de Datas */
+    .modal-header-date {
+      padding: 12px 16px; background: #12141a; position: relative; border-bottom: 1px solid #2a2e39;
+    }
+
     .modal-body { padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; flex: 1; }
 
     /* Seletor de Datas */
@@ -172,7 +181,7 @@
     .date-selector-btn i { font-size: 0.9rem; transition: transform 0.3s; }
     .date-selector-btn.open i { transform: rotate(180deg); }
 
-    /* Overlay de Datas (Menu suspenso dentro do modal) */
+    /* Overlay de Datas (Menu suspenso) */
     .date-dropdown {
       position: absolute; top: 100%; left: 0; width: 100%; background: #12141a;
       z-index: 10; display: none; flex-direction: column;
@@ -195,20 +204,17 @@
     .schedule-desc { font-size: 0.85rem; color: #8a8f9d; }
     .schedule-time { font-weight: bold; color: #4d82ff; font-size: 0.9rem; }
 
-    /* Ícone Animado de Transmissão (Barras do Equalizador) */
-    .live-icon {
-      display: inline-flex; align-items: flex-end; gap: 3px; height: 14px; margin-left: 8px;
+    /* Ícone de Transmissão ((o)) Animado */
+    .live-broadcast-icon {
+      color: #ff0000;
+      margin-left: 8px;
+      font-size: 0.9rem;
+      animation: pulseBroadcast 1.5s infinite;
     }
-    .live-icon span {
-      width: 3px; background-color: #ff0000; display: inline-block;
-      animation: pulseLive 1s infinite alternate ease-in-out;
-    }
-    .live-icon span:nth-child(2) { animation-delay: 0.2s; }
-    .live-icon span:nth-child(3) { animation-delay: 0.4s; }
-
-    @keyframes pulseLive {
-      0% { height: 4px; }
-      100% { height: 14px; }
+    @keyframes pulseBroadcast {
+      0% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.15); }
+      100% { opacity: 1; transform: scale(1); }
     }
 
     @media (max-width: 600px) {
@@ -221,7 +227,7 @@
       .player-overlay-logo { height: 28px; bottom: 8px; right: 8px; }
       .fullscreen-btn { right: 45px; bottom: 10px; }
       .volume-btn { bottom: 10px; left: 10px; padding: 6px 12px; font-size: 0.75rem;}
-      .modal-content { max-width: 100%; height: 95vh; } /* No mobile sobe mais */
+      .modal-content { max-width: 100%; height: 95vh; } 
     }
   </style>
 </head>
@@ -359,16 +365,26 @@
   <!-- MODAL DA PROGRAMAÇÃO COM ANIMAÇÃO SLIDE-UP E SELETOR DE DATAS -->
   <div class="modal" id="scheduleModal">
     <div class="modal-content">
-      <div class="modal-header">
+      
+      <!-- Topo: Título Centralizado e Botão de Fechar -->
+      <div class="modal-header-top">
+        <h3 class="modal-title">Programação</h3>
+        <button class="close-btn" onclick="closeScheduleModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <!-- Barra do Seletor de Datas -->
+      <div class="modal-header-date">
         <button class="date-selector-btn" id="btnDateSelector" onclick="toggleDateMenu()">
           Hoje, 21 ago. <i class="fa-solid fa-chevron-down"></i>
         </button>
-        <button class="close-btn" onclick="closeScheduleModal()"><i class="fa-solid fa-xmark"></i></button>
         
         <!-- Menu Suspenso de Datas -->
         <div class="date-dropdown" id="dateDropdown"></div>
       </div>
+      
+      <!-- Lista de Programação -->
       <div class="modal-body" id="fullScheduleList"></div>
+      
     </div>
   </div>
 
@@ -421,10 +437,9 @@
     const EPG_XML_URL = 'https://raw.githubusercontent.com/althierestm/Lista-RadarTV/refs/heads/main/epg.xml';
 
     let scheduleData = []; 
-    let selectedScheduleDate = new Date(); // Controla o dia selecionado no modal
+    let selectedScheduleDate = new Date(); 
     let next7Days = [];
 
-    // Função para formatar as datas bonitinhas no seletor
     const monthsPt = ['jan.', 'fev.', 'mar.', 'abr.', 'mai.', 'jun.', 'jul.', 'ago.', 'set.', 'out.', 'nov.', 'dez.'];
     function formatUIDate(date, offsetIndex) {
       const d = date.getDate();
@@ -434,7 +449,6 @@
       return `${d} ${m}`;
     }
 
-    // Gera o Array com os próximos 7 dias
     function generateDays() {
       const today = new Date();
       next7Days = [];
@@ -448,7 +462,6 @@
       }
     }
 
-    // Tradutor de Data do XMLTV
     function parseXMLTVDate(dateString) {
       if (!dateString) return new Date();
       const year = dateString.substring(0, 4);
@@ -522,27 +535,23 @@
       document.getElementById('progBar').style.width = `${percentage}%`;
     }
 
-    /* ---- Lógica do Modal com Animação e Seletor ---- */
+    /* ---- Lógica do Modal ---- */
     
-    // Abre a tela deslizando e reseta a data para HOJE
     function openScheduleModal() {
       generateDays();
-      selectedScheduleDate = next7Days[0].dateObj; // Força para hoje
+      selectedScheduleDate = next7Days[0].dateObj; 
       updateDateSelectorUI();
       renderScheduleList();
       
-      // Adiciona a classe que engatilha a animação CSS
       document.getElementById('scheduleModal').classList.add('active');
     }
 
     function closeScheduleModal() {
-      // Remove a classe para a tela deslizar para baixo e sumir
       document.getElementById('scheduleModal').classList.remove('active');
       document.getElementById('dateDropdown').classList.remove('active');
       document.getElementById('btnDateSelector').classList.remove('open');
     }
 
-    // Abre e fecha o dropdown das 7 datas
     function toggleDateMenu() {
       const dropdown = document.getElementById('dateDropdown');
       const btn = document.getElementById('btnDateSelector');
@@ -550,12 +559,11 @@
       btn.classList.toggle('open');
       
       if (dropdown.classList.contains('active')) {
-        dropdown.innerHTML = ''; // Limpa a lista
+        dropdown.innerHTML = ''; 
         next7Days.forEach((dayInfo, index) => {
           const btnOption = document.createElement('button');
           btnOption.className = 'date-option';
           
-          // Verifica se este botão é a data que está atualmente selecionada
           const isSelected = selectedScheduleDate.getDate() === dayInfo.dateObj.getDate();
           if(isSelected) btnOption.classList.add('selected');
 
@@ -571,7 +579,6 @@
       updateDateSelectorUI();
       renderScheduleList();
       
-      // Fecha o menu após clicar
       document.getElementById('dateDropdown').classList.remove('active');
       document.getElementById('btnDateSelector').classList.remove('open');
     }
@@ -581,11 +588,9 @@
       document.getElementById('btnDateSelector').innerHTML = `${dayInfo.label} <i class="fa-solid fa-chevron-down"></i>`;
     }
 
-    // Renderiza a lista dependendo da data selecionada
     function renderScheduleList() {
       const now = new Date();
       
-      // Pega os programas apenas do dia selecionado
       const targetPrograms = scheduleData.filter(item => {
         return item.start.getDate() === selectedScheduleDate.getDate() &&
                item.start.getMonth() === selectedScheduleDate.getMonth() &&
@@ -600,13 +605,12 @@
       }
 
       targetPrograms.forEach(item => {
-        // Checa se está "No Ar" agora (só faz sentido se o dia selecionado for Hoje)
         const isCurrent = (now >= item.start && now < item.end);
         const div = document.createElement('div');
         div.className = `schedule-item ${isCurrent ? 'active' : ''}`;
         
-        // Se estiver no ar, adiciona o icone animado customizado
-        const liveIndicator = isCurrent ? '<div class="live-icon"><span></span><span></span><span></span></div>' : '';
+        // Novo ícone de transmissão usando a antena emissora de ondas: ((o))
+        const liveIndicator = isCurrent ? '<i class="fa-solid fa-tower-broadcast live-broadcast-icon"></i>' : '';
 
         div.innerHTML = `
           <div class="schedule-info">
