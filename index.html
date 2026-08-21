@@ -42,7 +42,6 @@
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    /* Trava o puxar para atualizar e remove a barra preta do fundo no topo/fim */
     html, body {
       overscroll-behavior-y: none;
     }
@@ -60,7 +59,6 @@
       -webkit-text-size-adjust: 100%;
     }
 
-    /* Reforço para ocultar barra de progresso, segundos e timeline no player nativo */
     video::-webkit-media-controls-timeline,
     video::-webkit-media-controls-current-time-display,
     video::-webkit-media-controls-time-remaining-display,
@@ -127,10 +125,7 @@
       opacity: 0.95;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
+    @keyframes spin { to { transform: rotate(360deg); } }
     @keyframes pulseLogo {
       0% { transform: scale(0.96); opacity: 0.9; }
       100% { transform: scale(1.04); opacity: 1; }
@@ -148,10 +143,7 @@
       transition: all 0.3s ease;
     }
 
-    .menu-overlay.active {
-      opacity: 1;
-      visibility: visible;
-    }
+    .menu-overlay.active { opacity: 1; visibility: visible; }
 
     .side-menu {
       position: fixed;
@@ -162,12 +154,12 @@
       z-index: 2001;
       display: flex;
       flex-direction: column;
-      transition: left 0.3s ease, box-shadow 0.3s ease; /* Transição para a sombra também */
+      transition: left 0.3s ease, box-shadow 0.3s ease;
     }
 
     .side-menu.active {
       left: 0;
-      box-shadow: 5px 0 25px rgba(0,0,0,0.6); /* A sombra só existe quando o menu está aberto */
+      box-shadow: 5px 0 25px rgba(0,0,0,0.6);
     }
 
     .menu-header {
@@ -178,99 +170,38 @@
       align-items: center;
     }
 
-    .menu-header img {
-      height: 36px;
-      width: auto;
-      object-fit: contain;
-    }
+    .menu-header img { height: 36px; width: auto; object-fit: contain; }
 
     .close-menu-btn {
       background: none; border: none;
-      color: #fff; font-size: 1.5rem;
-      cursor: pointer;
+      color: #fff; font-size: 1.5rem; cursor: pointer;
     }
 
-    .menu-items {
-      display: flex;
-      flex-direction: column;
-      padding: 15px 0;
-      gap: 5px;
-    }
+    .menu-items { display: flex; flex-direction: column; padding: 15px 0; gap: 5px; }
 
     .menu-item {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 14px 20px;
-      color: #e0e0e0;
-      text-decoration: none;
-      font-size: 0.95rem;
-      font-weight: 600;
-      cursor: pointer;
-      border-left: 4px solid transparent;
-      transition: background 0.2s, border-color 0.2s;
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 20px; color: #e0e0e0; text-decoration: none;
+      font-size: 0.95rem; font-weight: 600; cursor: pointer;
+      border-left: 4px solid transparent; transition: background 0.2s, border-color 0.2s;
     }
 
-    .menu-item:hover, .menu-item.active {
-      background: #1c212d;
-      color: #4d82ff;
-      border-left-color: #4d82ff;
-    }
-
-    .menu-item i {
-      font-size: 1.1rem;
-      width: 24px;
-      text-align: center;
-    }
-
-    .menu-divider {
-      height: 1px;
-      background: #2a2e39;
-      margin: 10px 0;
-    }
+    .menu-item:hover, .menu-item.active { background: #1c212d; color: #4d82ff; border-left-color: #4d82ff; }
+    .menu-item i { font-size: 1.1rem; width: 24px; text-align: center; }
+    .menu-divider { height: 1px; background: #2a2e39; margin: 10px 0; }
 
     .install-banner {
-      display: none;
-      width: 100%;
-      max-width: 800px;
+      display: none; width: 100%; max-width: 800px;
       background: linear-gradient(90deg, #0d47e6, #082b8a);
-      color: #fff;
-      padding: 10px 15px;
-      margin-top: 10px;
-      border-radius: 10px;
-      justify-content: space-between;
-      align-items: center;
-      box-shadow: 0 4px 15px rgba(13, 71, 230, 0.3);
+      color: #fff; padding: 10px 15px; margin-top: 10px; border-radius: 10px;
+      justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(13, 71, 230, 0.3);
     }
 
-    .install-banner span {
-      font-size: 0.85rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .install-banner span { font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+    .btn-install { background: #4d82ff; color: #ffffff; border: none; padding: 6px 14px; border-radius: 6px; font-weight: bold; font-size: 0.8rem; cursor: pointer; }
 
-    .btn-install {
-      background: #4d82ff;
-      color: #ffffff;
-      border: none;
-      padding: 6px 14px;
-      border-radius: 6px;
-      font-weight: bold;
-      font-size: 0.8rem;
-      cursor: pointer;
-    }
-
-    .app-wrapper {
-      width: 100%;
-      max-width: 800px;
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
+    .app-wrapper { width: 100%; max-width: 800px; padding: 10px; display: flex; flex-direction: column; align-items: center; }
+    
     .player-container {
       width: 100%;
       background: #181b22;
@@ -279,444 +210,129 @@
       border: 1px solid #2a2e39;
     }
 
-    /* Área Fixa do Player */
     .sticky-player-area {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      background: #181b22;
-      border-top-left-radius: 16px;
-      border-top-right-radius: 16px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      position: sticky; top: 0; z-index: 1000; background: #181b22;
+      border-top-left-radius: 16px; border-top-right-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
 
     .player-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 18px;
-      background: #0d47e6;
-      border-top-left-radius: 16px;
-      border-top-right-radius: 16px;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 18px; background: #0d47e6; border-top-left-radius: 16px; border-top-right-radius: 16px;
     }
 
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .hamburger-btn {
-      background: none; border: none;
-      color: #ffffff; font-size: 1.4rem;
-      cursor: pointer;
-    }
-
-    .brand img {
-      height: 36px;
-      width: auto;
-      object-fit: contain;
-      display: block;
-    }
+    .header-left { display: flex; align-items: center; gap: 14px; }
+    .hamburger-btn { background: none; border: none; color: #ffffff; font-size: 1.4rem; cursor: pointer; }
+    .brand img { height: 36px; width: auto; object-fit: contain; display: block; }
 
     .live-badge {
-      background-color: #4d82ff;
-      color: #ffffff;
-      font-size: 0.75rem;
-      font-weight: bold;
-      padding: 5px 12px;
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      animation: pulse 2s infinite;
+      background-color: #4d82ff; color: #ffffff; font-size: 0.75rem; font-weight: bold;
+      padding: 5px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; animation: pulse 2s infinite;
     }
+    .live-badge::before { content: ''; width: 8px; height: 8px; background-color: #ff0000; border-radius: 50%; }
 
-    .live-badge::before {
-      content: '';
-      width: 8px;
-      height: 8px;
-      background-color: #ff0000;
-      border-radius: 50%;
-    }
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
 
-    @keyframes pulse {
-      0% { opacity: 1; }
-      50% { opacity: 0.7; }
-      100% { opacity: 1; }
-    }
-
-    .video-wrapper {
-      position: relative;
-      width: 100%;
-      padding-top: 56.25%;
-      background: #000;
-    }
-
-    .video-wrapper video,
-    .video-wrapper iframe {
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      border: 0;
-      object-fit: contain;
-    }
+    .video-wrapper { position: relative; width: 100%; padding-top: 56.25%; background: #000; overflow: hidden; }
+    .video-wrapper video, .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; object-fit: contain; }
 
     .player-overlay-logo {
-      position: absolute;
-      bottom: 12px;
-      right: 12px;
-      height: 40px;
-      width: auto;
-      z-index: 10;
-      pointer-events: none;
-      opacity: 0.85;
-      filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.7));
+      position: absolute; bottom: 12px; right: 12px; height: 40px; width: auto;
+      z-index: 10; pointer-events: none; opacity: 0.85; filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.7));
     }
 
-    .quick-actions {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-around;
-      background: #12141a;
-      padding: 10px;
-      border-bottom: 1px solid #2a2e39;
-      gap: 10px;
+    /* ---- Novos Elementos Internos do Player ---- */
+    .player-top-actions {
+      position: absolute; top: 15px; right: 15px; display: flex; gap: 15px; z-index: 20; align-items: center;
+    }
+    .player-top-actions button, .player-top-actions google-cast-launcher {
+      background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+    }
+    .cast-btn { --connected-color: #fff; --disconnected-color: #fff; width: 22px; height: 22px; }
+
+    .unmute-btn {
+      position: absolute; bottom: 15px; left: 15px; background: #ffffff; color: #000000;
+      border: none; border-radius: 30px; padding: 8px 16px; font-weight: bold; font-size: 0.85rem;
+      display: flex; align-items: center; gap: 8px; z-index: 20; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+    .unmute-btn:hover { background: #e0e0e0; }
+
+    .fullscreen-btn {
+      position: absolute; bottom: 15px; right: 65px; /* afastado da logo */
+      background: none; border: none; color: white; font-size: 1.2rem; z-index: 20;
+      cursor: pointer; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
     }
 
-    .action-btn {
-      background: none;
-      border: none;
-      color: #a0a5b5;
-      font-size: 0.8rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      transition: color 0.2s;
-    }
-
-    .action-btn:hover {
-      color: #4d82ff;
-    }
-
-    .cast-btn-wrapper {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
+    /* ---- Novo Estilo da Barra de Programação ---- */
     .epg-bar {
-      padding: 16px;
+      padding: 20px 16px;
       background: #181b22;
       display: flex;
       flex-direction: column;
-      gap: 12px;
       border-bottom: 1px solid #2a2e39;
       border-bottom-left-radius: 16px;
       border-bottom-right-radius: 16px;
     }
 
-    .epg-card {
-      background: #212530;
-      border-radius: 10px;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      border-left: 4px solid #0d47e6;
+    .prog-time { font-size: 0.85rem; color: #a0a5b5; margin-bottom: 6px; }
+    .prog-title { font-size: 1.2rem; font-weight: bold; color: #ffffff; margin-bottom: 4px; }
+    .prog-desc { font-size: 0.9rem; color: #a0a5b5; margin-bottom: 16px; }
+
+    .progress-container {
+      width: 100%; height: 4px; background: #3a3f50; border-radius: 2px; margin-bottom: 20px; overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%; background: #0d47e6; width: 0%; border-radius: 2px; transition: width 1s linear;
     }
 
-    .epg-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
+    .btn-schedule-container { display: flex; justify-content: center; }
+    .btn-schedule-pill {
+      background: transparent; border: 1px solid #4d82ff; color: #ffffff;
+      padding: 10px 24px; border-radius: 30px; font-size: 0.9rem; font-weight: bold; cursor: pointer; transition: background 0.2s;
     }
+    .btn-schedule-pill:hover { background: rgba(77, 130, 255, 0.1); }
 
-    .epg-tag {
-      font-size: 0.65rem;
-      font-weight: bold;
-      padding: 3px 6px;
-      border-radius: 4px;
-      text-transform: uppercase;
-      white-space: nowrap;
-    }
-
-    .tag-now { background: #0d47e6; color: #fff; }
-    .tag-next { background: #3a3f50; color: #a0a5b5; }
-
-    .epg-info { display: flex; flex-direction: column; }
-    .epg-time { font-size: 0.78rem; color: #8a8f9d; }
-    .epg-title { font-size: 0.95rem; font-weight: 600; color: #ffffff; }
-
-    .btn-schedule {
-      width: 100%;
-      background: #2b3040;
-      color: #ffffff;
-      border: 1px solid #3a3f51;
-      padding: 10px;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .poll-section {
-      padding: 18px;
-      background: #181b22;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .poll-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      color: #4d82ff;
-      font-size: 1rem;
-      font-weight: bold;
-    }
-
-    .poll-question {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: #ffffff;
-      line-height: 1.4;
-    }
-
-    .poll-options {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+    .poll-section { padding: 18px; background: #181b22; display: flex; flex-direction: column; gap: 14px; }
+    .poll-header { display: flex; align-items: center; gap: 10px; color: #4d82ff; font-size: 1rem; font-weight: bold; }
+    .poll-question { font-size: 0.95rem; font-weight: 600; color: #ffffff; line-height: 1.4; }
+    .poll-options { display: flex; flex-direction: column; gap: 10px; }
 
     .poll-option-btn {
-      position: relative;
-      background: #212530;
-      border: 1px solid #2a2e39;
-      border-radius: 8px;
-      padding: 12px 14px;
-      color: #ffffff;
-      font-size: 0.88rem;
-      font-weight: 600;
-      text-align: left;
-      cursor: pointer;
-      overflow: hidden;
-      transition: border-color 0.2s, background 0.2s;
+      position: relative; background: #212530; border: 1px solid #2a2e39; border-radius: 8px;
+      padding: 12px 14px; color: #ffffff; font-size: 0.88rem; font-weight: 600; text-align: left; cursor: pointer; overflow: hidden; transition: border-color 0.2s, background 0.2s;
     }
+    .poll-option-btn:hover:not(:disabled) { border-color: #0d47e6; background: #1a202c; }
+    .poll-option-btn:disabled { cursor: default; }
 
-    .poll-option-btn:hover:not(:disabled) {
-      border-color: #0d47e6;
-      background: #1a202c;
-    }
+    .poll-progress-bar { position: absolute; top: 0; left: 0; bottom: 0; background: rgba(13, 71, 230, 0.35); width: 0%; transition: width 0.6s ease; z-index: 1; }
+    .poll-option-content { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; }
+    .poll-percent { font-weight: bold; color: #4d82ff; font-size: 0.85rem; }
+    .poll-status-msg { font-size: 0.78rem; color: #8a8f9d; margin-top: 4px; }
 
-    .poll-option-btn:disabled {
-      cursor: default;
-    }
+    .poll-comment-box { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; padding-top: 12px; border-top: 1px dashed #2a2e39; }
+    .poll-comment-box label { font-size: 0.82rem; color: #a0a5b5; font-weight: 600; }
+    .poll-textarea { width: 100%; background: #12141a; border: 1px solid #2a2e39; border-radius: 8px; padding: 10px; color: #fff; font-size: 0.85rem; resize: vertical; min-height: 60px; outline: none; }
+    .poll-textarea:focus { border-color: #0d47e6; }
 
-    .poll-progress-bar {
-      position: absolute;
-      top: 0; left: 0; bottom: 0;
-      background: rgba(13, 71, 230, 0.35);
-      width: 0%;
-      transition: width 0.6s ease;
-      z-index: 1;
-    }
+    .btn-send-comment { align-self: flex-end; background: #0d47e6; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-size: 0.82rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .btn-send-comment:hover { background: #1a56f0; }
 
-    .poll-option-content {
-      position: relative;
-      z-index: 2;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .poll-percent {
-      font-weight: bold;
-      color: #4d82ff;
-      font-size: 0.85rem;
-    }
-
-    .poll-status-msg {
-      font-size: 0.78rem;
-      color: #8a8f9d;
-      margin-top: 4px;
-    }
-
-    .poll-comment-box {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-top: 8px;
-      padding-top: 12px;
-      border-top: 1px dashed #2a2e39;
-    }
-
-    .poll-comment-box label {
-      font-size: 0.82rem;
-      color: #a0a5b5;
-      font-weight: 600;
-    }
-
-    .poll-textarea {
-      width: 100%;
-      background: #12141a;
-      border: 1px solid #2a2e39;
-      border-radius: 8px;
-      padding: 10px;
-      color: #fff;
-      font-size: 0.85rem;
-      resize: vertical;
-      min-height: 60px;
-      outline: none;
-    }
-
-    .poll-textarea:focus {
-      border-color: #0d47e6;
-    }
-
-    .btn-send-comment {
-      align-self: flex-end;
-      background: #0d47e6;
-      color: #fff;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-size: 0.82rem;
-      font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .btn-send-comment:hover {
-      background: #1a56f0;
-    }
-
-    .app-footer {
-      width: 100%;
-      max-width: 800px;
-      margin-top: 20px;
-      padding: 15px 10px 30px 10px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-      border-top: 1px solid #2a2e39;
-    }
-
-    .social-buttons {
-      display: flex;
-      gap: 12px;
-      width: 100%;
-      justify-content: center;
-    }
-
-    .social-btn {
-      flex: 1;
-      max-width: 200px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px 16px;
-      border-radius: 10px;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 0.9rem;
-      color: #ffffff;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-      transition: transform 0.2s;
-    }
-
-    .social-btn.instagram {
-      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-    }
-
+    .app-footer { width: 100%; max-width: 800px; margin-top: 20px; padding: 15px 10px 30px 10px; display: flex; flex-direction: column; align-items: center; gap: 16px; border-top: 1px solid #2a2e39; }
+    .social-buttons { display: flex; gap: 12px; width: 100%; justify-content: center; }
+    .social-btn { flex: 1; max-width: 200px; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 16px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 0.9rem; color: #ffffff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); transition: transform 0.2s; }
+    .social-btn.instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
     .social-btn.youtube { background: #ff0000; }
     .social-btn:active { transform: scale(0.96); }
+    .footer-credits { font-size: 0.85rem; color: #8a8f9d; text-align: center; }
+    .footer-credits a { color: #4d82ff; text-decoration: none; font-weight: bold; }
 
-    .footer-credits {
-      font-size: 0.85rem;
-      color: #8a8f9d;
-      text-align: center;
-    }
-
-    .footer-credits a {
-      color: #4d82ff;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.85);
-      z-index: 3000;
-      justify-content: center;
-      align-items: center;
-      padding: 15px;
-    }
-
-    .modal-content {
-      background: #181b22;
-      border-radius: 14px;
-      width: 100%;
-      max-width: 500px;
-      max-height: 80vh;
-      display: flex;
-      flex-direction: column;
-      border: 1px solid #2a2e39;
-      overflow: hidden;
-    }
-
-    .modal-header {
-      padding: 12px 16px;
-      background: #12141a;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #2a2e39;
-    }
-
-    .close-btn {
-      background: none; border: none;
-      color: #8a8f9d; font-size: 1.4rem;
-      cursor: pointer;
-    }
-
-    .modal-body {
-      padding: 15px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .schedule-item {
-      padding: 10px;
-      background: #212530;
-      border-radius: 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.88rem;
-    }
-
-    .schedule-item.active {
-      border: 1px solid #0d47e6;
-      background: #101c3d;
-    }
-
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; justify-content: center; align-items: center; padding: 15px; }
+    .modal-content { background: #181b22; border-radius: 14px; width: 100%; max-width: 500px; max-height: 80vh; display: flex; flex-direction: column; border: 1px solid #2a2e39; overflow: hidden; }
+    .modal-header { padding: 12px 16px; background: #12141a; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a2e39; }
+    .close-btn { background: none; border: none; color: #8a8f9d; font-size: 1.4rem; cursor: pointer; }
+    .modal-body { padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+    .schedule-item { padding: 10px; background: #212530; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem; }
+    .schedule-item.active { border: 1px solid #0d47e6; background: #101c3d; }
     .schedule-time { font-weight: bold; color: #4d82ff; }
 
     @media (max-width: 600px) {
@@ -725,10 +341,10 @@
       .sticky-player-area { border-radius: 0; }
       .player-header { border-radius: 0; }
       .brand img { height: 28px; }
-      .epg-bar { padding: 10px; gap: 8px; border-radius: 0; }
-      .epg-info { flex-direction: row; align-items: center; gap: 6px; flex-wrap: wrap; }
-      .epg-title { font-size: 0.85rem; }
+      .epg-bar { padding: 15px 12px; border-radius: 0; }
       .player-overlay-logo { height: 28px; bottom: 8px; right: 8px; }
+      .fullscreen-btn { right: 45px; bottom: 10px; }
+      .unmute-btn { bottom: 10px; left: 10px; padding: 6px 12px; font-size: 0.75rem;}
     }
   </style>
 </head>
@@ -759,17 +375,13 @@
       <div class="menu-item active">
         <i class="fa-solid fa-tv"></i> Radar TV Ao Vivo
       </div>
-
       <div class="menu-divider"></div>
-
       <a href="https://wa.me/5532985109726?text=Ol%C3%A1%21%20Estou%20assistindo%20pelo%20App%20Radar%20TV%21" target="_blank" rel="noopener noreferrer" class="menu-item">
         <i class="fa-brands fa-whatsapp" style="color: #25d366;"></i> WhatsApp no Ar
       </a>
-
       <div class="menu-item" onclick="requestNotificationPermission()">
         <i class="fa-solid fa-bell"></i> Ativar Notificações
       </div>
-
       <div class="menu-item" onclick="shareApp()">
         <i class="fa-solid fa-share-nodes"></i> Compartilhar App
       </div>
@@ -801,31 +413,25 @@
 
         <div class="video-wrapper" id="videoWrapper">
           <img src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1920.png" alt="Radar TV Logo" class="player-overlay-logo">
+          
+          <!-- Ícones no Topo (Cast e AirPlay) -->
+          <div class="player-top-actions">
+            <button onclick="toggleAirPlay()" title="AirPlay"><i class="fa-brands fa-apple"></i></button>
+            <google-cast-launcher class="cast-btn"></google-cast-launcher>
+          </div>
+
+          <!-- Botão Ativar Som -->
+          <button class="unmute-btn" id="unmuteBtn" onclick="activateSound()">
+            <i class="fa-solid fa-volume-xmark"></i> Ativar som
+          </button>
+
+          <!-- Botão Expandir -->
+          <button class="fullscreen-btn" onclick="toggleFullscreen()">
+            <i class="fa-solid fa-expand"></i>
+          </button>
+
           <video id="hlsPlayer" controls autoplay muted playsinline webkit-playsinline x-webkit-airplay="allow" autopictureinpicture style="display: block;"></video>
           <iframe id="ytPlayer" style="display: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-
-        <div class="quick-actions">
-          <button class="action-btn" onclick="toggleFullscreen()">
-            <i class="fa-solid fa-expand"></i> Expandir
-          </button>
-          
-          <button class="action-btn" id="pipBtn" onclick="togglePiP()">
-            <i class="fa-solid fa-clone"></i> Janela (PiP)
-          </button>
-          
-          <button class="action-btn" onclick="toggleAirPlay()">
-            <i class="fa-brands fa-apple"></i> AirPlay
-          </button>
-
-          <button class="action-btn cast-btn-wrapper">
-             <google-cast-launcher style="--connected-color: #4d82ff; --disconnected-color: #a0a5b5; width: 22px; height: 22px; cursor: pointer;"></google-cast-launcher>
-             <span>Cast</span>
-          </button>
-          
-          <button class="action-btn" onclick="shareApp()">
-            <i class="fa-solid fa-share-nodes"></i> Compartilhar
-          </button>
         </div>
       </div>
       <!-- Fim da Área Fixa do Player -->
@@ -833,27 +439,17 @@
       <!-- Início do conteúdo rolável -->
       <main class="view-panel active" id="viewTv">
         <div class="epg-bar">
-          <div class="epg-card">
-            <div class="epg-item">
-              <span class="epg-tag tag-now">NO AR</span>
-              <div class="epg-info">
-                <span class="epg-time" id="nowTime">--:-- - --:--</span>
-                <span class="epg-title" id="nowTitle">Carregando...</span>
-              </div>
-            </div>
-            <hr style="border: 0; border-top: 1px solid #2a2e39;">
-            <div class="epg-item">
-              <span class="epg-tag tag-next">EM SEGUIDA</span>
-              <div class="epg-info">
-                <span class="epg-time" id="nextTime">--:-- - --:--</span>
-                <span class="epg-title" id="nextTitle">--</span>
-              </div>
-            </div>
+          <div class="prog-time" id="progTime">--:-- - --:--</div>
+          <div class="prog-title" id="progTitle">Carregando...</div>
+          <div class="prog-desc" id="progDesc">Radar TV Ao Vivo</div>
+          
+          <div class="progress-container">
+            <div class="progress-bar" id="progBar"></div>
           </div>
 
-          <button class="btn-schedule" onclick="openSchedule()">
-            <i class="fa-regular fa-calendar-days"></i> Grade Completa de Hoje
-          </button>
+          <div class="btn-schedule-container">
+            <button class="btn-schedule-pill" onclick="openSchedule()">Ver programação</button>
+          </div>
         </div>
 
         <section class="poll-section">
@@ -861,11 +457,9 @@
             <i class="fa-solid fa-square-poll-vertical"></i>
             <span>Enquete Rápida (Tempo Real)</span>
           </div>
-
           <p class="poll-question">
             Você curtiu a cobertura do Ruralzão 2026 feita pela RadarTV e Limeira News?
           </p>
-
           <div class="poll-options">
             <button class="poll-option-btn" onclick="votePoll(0)">
               <div class="poll-progress-bar" id="bar0"></div>
@@ -874,7 +468,6 @@
                 <span class="poll-percent" id="percent0">0% (0 votos)</span>
               </div>
             </button>
-
             <button class="poll-option-btn" onclick="votePoll(1)">
               <div class="poll-progress-bar" id="bar1"></div>
               <div class="poll-option-content">
@@ -882,7 +475,6 @@
                 <span class="poll-percent" id="percent1">0% (0 votos)</span>
               </div>
             </button>
-
             <button class="poll-option-btn" onclick="votePoll(2)">
               <div class="poll-progress-bar" id="bar2"></div>
               <div class="poll-option-content">
@@ -891,9 +483,7 @@
               </div>
             </button>
           </div>
-
           <div class="poll-status-msg" id="pollStatusMsg">Conectando à enquete...</div>
-
           <div class="poll-comment-box">
             <label for="pollComment"><i class="fa-regular fa-comment-dots"></i> Deixe um comentário ou sugestão (opcional):</label>
             <textarea id="pollComment" class="poll-textarea" placeholder="Digite sua opinião aqui..."></textarea>
@@ -902,7 +492,6 @@
             </button>
           </div>
         </section>
-
       </main>
 
     </div>
@@ -916,7 +505,6 @@
           <i class="fa-brands fa-youtube"></i> YouTube
         </a>
       </div>
-
       <div class="footer-credits">
         Grupo Radar de Comunicação por <a href="https://instagram.com/althierestm" target="_blank" rel="noopener noreferrer">Althieres Dias</a>
       </div>
@@ -953,16 +541,12 @@
       }, 2200);
     });
 
-    document.addEventListener('gesturestart', function (e) {
-      e.preventDefault();
-    });
+    document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
 
     let lastTouchEnd = 0;
     document.addEventListener('touchend', function (e) {
       const now = (new Date()).getTime();
-      if (now - lastTouchEnd <= 300) {
-        e.preventDefault();
-      }
+      if (now - lastTouchEnd <= 300) { e.preventDefault(); }
       lastTouchEnd = now;
     }, false);
 
@@ -1009,6 +593,19 @@
 
     const COOLDOWN_TIME = 10 * 60 * 1000;
 
+    // Remove o botão de som se for alterado pelo player nativo
+    hlsVideo.addEventListener('volumechange', () => {
+      if(!hlsVideo.muted && hlsVideo.volume > 0) {
+        document.getElementById('unmuteBtn').style.display = 'none';
+      }
+    });
+
+    function activateSound() {
+      hlsVideo.muted = false;
+      hlsVideo.volume = 1;
+      document.getElementById('unmuteBtn').style.display = 'none';
+    }
+
     function renderPollResults() {
       const totalVotes = pollVotes.reduce((a, b) => a + b, 0);
       pollVotes.forEach((votes, index) => {
@@ -1035,12 +632,8 @@
 
     pollRef.on('value', (snapshot) => {
       const data = snapshot.val();
-      if (data) {
-        pollVotes = [data.op0 || 0, data.op1 || 0, data.op2 || 0];
-      } else {
-        pollVotes = [0, 0, 0];
-        pollRef.set({ op0: 0, op1: 0, op2: 0 });
-      }
+      if (data) { pollVotes = [data.op0 || 0, data.op1 || 0, data.op2 || 0]; } 
+      else { pollVotes = [0, 0, 0]; pollRef.set({ op0: 0, op1: 0, op2: 0 }); }
       renderPollResults();
       checkPollCooldown();
     });
@@ -1050,31 +643,19 @@
       const now = Date.now();
 
       if (lastVote && (now - parseInt(lastVote, 10)) < COOLDOWN_TIME) {
-        alert("Você já votou recentemente. Aguarde 10 minutos para votar novamente!");
-        return;
+        alert("Você já votou recentemente. Aguarde 10 minutos para votar novamente!"); return;
       }
-
       const field = `op${optionIndex}`;
-      pollRef.child(field).transaction((currentVotes) => {
-        return (currentVotes || 0) + 1;
-      }, (error, committed) => {
-        if (committed) {
-          localStorage.setItem('radar_last_vote_timestamp', now.toString());
-          checkPollCooldown();
-        }
+      pollRef.child(field).transaction((currentVotes) => { return (currentVotes || 0) + 1; }, (error, committed) => {
+        if (committed) { localStorage.setItem('radar_last_vote_timestamp', now.toString()); checkPollCooldown(); }
       });
     }
 
     function sendPollComment() {
       const comment = document.getElementById('pollComment').value.trim();
-      if (!comment) {
-        alert("Por favor, escreva uma sugestão ou comentário antes de enviar.");
-        return;
-      }
-
+      if (!comment) { alert("Por favor, escreva uma sugestão ou comentário antes de enviar."); return; }
       const subject = encodeURIComponent("Opinião/Sugestão Ruralzão 2026 - App Radar TV");
       const body = encodeURIComponent(`Olá equipe Radar TV / Limeira News,\n\nSegue meu comentário sobre a cobertura do Ruralzão 2026:\n\n"${comment}"`);
-      
       window.location.href = `mailto:radartvmg@gmail.com?subject=${subject}&body=${body}`;
       document.getElementById('pollComment').value = '';
     }
@@ -1090,9 +671,7 @@
     }
 
     async function requestWakeLock() {
-      try {
-        if ('wakeLock' in navigator) await navigator.wakeLock.request('screen');
-      } catch (err) {}
+      try { if ('wakeLock' in navigator) await navigator.wakeLock.request('screen'); } catch (err) {}
     }
 
     function toggleFullscreen() {
@@ -1108,22 +687,12 @@
     }
 
     function forcePlayOnExitFullscreen() {
-      if (hlsVideo.paused) {
-        hlsVideo.play().catch(e => console.log('Tentativa de retomar vídeo interceptada', e));
-      }
+      if (hlsVideo.paused) { hlsVideo.play().catch(e => console.log('Retomar vídeo interceptado', e)); }
     }
     
-    document.addEventListener('fullscreenchange', () => {
-      if (!document.fullscreenElement) forcePlayOnExitFullscreen();
-    });
-    
-    document.addEventListener('webkitfullscreenchange', () => {
-      if (!document.webkitFullscreenElement) forcePlayOnExitFullscreen();
-    });
-
-    hlsVideo.addEventListener('webkitendfullscreen', () => {
-      forcePlayOnExitFullscreen();
-    });
+    document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement) forcePlayOnExitFullscreen(); });
+    document.addEventListener('webkitfullscreenchange', () => { if (!document.webkitFullscreenElement) forcePlayOnExitFullscreen(); });
+    hlsVideo.addEventListener('webkitendfullscreen', () => { forcePlayOnExitFullscreen(); });
 
     function handleAutoRotation() {
       const isLandscape = window.innerWidth > window.innerHeight && window.innerWidth <= 950;
@@ -1143,40 +712,16 @@
     window.addEventListener('orientationchange', handleAutoRotation);
     window.addEventListener('resize', handleAutoRotation);
 
-    async function togglePiP() {
-      try {
-        if (document.pictureInPictureElement) {
-          await document.exitPictureInPicture();
-        } else if (document.pictureInPictureEnabled && hlsVideo.style.display !== 'none') {
-          await hlsVideo.requestPictureInPicture();
-        } else if (hlsVideo.webkitSetPresentationMode) {
-          hlsVideo.webkitSetPresentationMode(hlsVideo.webkitPresentationMode === 'picture-in-picture' ? 'inline' : 'picture-in-picture');
-        } else {
-          alert('A janela flutuante não é suportada neste dispositivo.');
-        }
-      } catch (err) {
-        console.error('Erro PiP:', err);
-      }
-    }
-
     function toggleAirPlay() {
-      if (window.WebKitPlaybackTargetAvailabilityEvent) {
-        hlsVideo.webkitShowPlaybackTargetPicker();
-      } else {
-        alert("AirPlay nativo não é suportado neste navegador/dispositivo.");
-      }
+      if (window.WebKitPlaybackTargetAvailabilityEvent) { hlsVideo.webkitShowPlaybackTargetPicker(); } 
+      else { alert("AirPlay nativo não é suportado neste navegador/dispositivo."); }
     }
 
     function shareApp() {
       if (navigator.share) {
-        navigator.share({
-          title: 'Radar TV',
-          text: 'Assista à programação ao vivo da Radar TV!',
-          url: window.location.href
-        }).catch(console.error);
+        navigator.share({ title: 'Radar TV', text: 'Assista à programação ao vivo da Radar TV!', url: window.location.href }).catch(console.error);
       } else {
-        navigator.clipboard.writeText(window.location.href);
-        alert('Link copiado para a área de transferência!');
+        navigator.clipboard.writeText(window.location.href); alert('Link copiado!');
       }
     }
 
@@ -1187,19 +732,13 @@
           if (permission === 'granted') alert('Notificações ativadas com sucesso!');
           else alert('As notificações foram negadas.');
         });
-      } else {
-        alert('Seu navegador não suporta notificações.');
-      }
+      } else { alert('Seu navegador não suporta notificações.'); }
     }
 
     function initHLS() {
       if (Hls.isSupported()) {
-        hlsInstance = new Hls();
-        hlsInstance.loadSource(HLS_URL);
-        hlsInstance.attachMedia(hlsVideo);
-      } else if (hlsVideo.canPlayType('application/vnd.apple.mpegurl')) {
-        hlsVideo.src = HLS_URL;
-      }
+        hlsInstance = new Hls(); hlsInstance.loadSource(HLS_URL); hlsInstance.attachMedia(hlsVideo);
+      } else if (hlsVideo.canPlayType('application/vnd.apple.mpegurl')) { hlsVideo.src = HLS_URL; }
     }
 
     async function checkYouTubeLive() {
@@ -1214,36 +753,46 @@
         } else {
           if (isYtLiveActive) disableYouTubeLive();
         }
-      } catch (err) {
-        console.error("Erro YouTube:", err);
-      }
+      } catch (err) {}
     }
 
     function enableYouTubeLive(videoId) {
-      isYtLiveActive = true;
-      hlsVideo.pause();
-      hlsVideo.style.display = 'none';
-      ytIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&live=1`;
-      ytIframe.style.display = 'block';
+      isYtLiveActive = true; hlsVideo.pause(); hlsVideo.style.display = 'none';
+      ytIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&live=1`; ytIframe.style.display = 'block';
     }
 
     function disableYouTubeLive() {
-      isYtLiveActive = false;
-      ytIframe.src = '';
-      ytIframe.style.display = 'none';
-      hlsVideo.style.display = 'block';
+      isYtLiveActive = false; ytIframe.src = ''; ytIframe.style.display = 'none'; hlsVideo.style.display = 'block';
     }
 
+    // Calcula barra de progresso baseada no horário atual
     function updateEPG() {
-      const currentHour = (new Date()).getHours();
+      const now = new Date();
+      const currentHour = now.getHours();
+      const currentMinute = now.getMinutes();
+      const currentTotalMinutes = (currentHour * 60) + currentMinute;
+
       let currentIndex = schedule.findIndex(item => currentHour >= item.startH && currentHour < item.endH);
       if (currentIndex === -1) currentIndex = 0;
-      let nextIndex = (currentIndex + 1) % schedule.length;
+      
+      const currentProg = schedule[currentIndex];
 
-      document.getElementById('nowTime').innerText = `${schedule[currentIndex].start} - ${schedule[currentIndex].end}`;
-      document.getElementById('nowTitle').innerText = schedule[currentIndex].name;
-      document.getElementById('nextTime').innerText = `${schedule[nextIndex].start} - ${schedule[nextIndex].end}`;
-      document.getElementById('nextTitle').innerText = schedule[nextIndex].name;
+      document.getElementById('progTime').innerText = `${currentProg.start} - ${currentProg.end}`;
+      document.getElementById('progTitle').innerText = currentProg.name;
+      document.getElementById('progDesc').innerText = currentProg.name; 
+
+      const startTotalMinutes = currentProg.startH * 60;
+      let endTotalMinutes = currentProg.endH * 60;
+      if (currentProg.endH === 24) endTotalMinutes = 24 * 60;
+
+      const totalDuration = endTotalMinutes - startTotalMinutes;
+      const elapsed = currentTotalMinutes - startTotalMinutes;
+      let percentage = (elapsed / totalDuration) * 100;
+      
+      if(percentage < 0) percentage = 0;
+      if(percentage > 100) percentage = 100;
+
+      document.getElementById('progBar').style.width = `${percentage}%`;
     }
 
     function openSchedule() {
@@ -1255,40 +804,31 @@
         const isCurrent = (currentHour >= item.startH && currentHour < item.endH);
         const div = document.createElement('div');
         div.className = `schedule-item ${isCurrent ? 'active' : ''}`;
-        div.innerHTML = `
-          <span>${item.name} ${isCurrent ? '🔵 (No Ar)' : ''}</span>
-          <span class="schedule-time">${item.start} - ${item.end}</span>
-        `;
+        div.innerHTML = `<span>${item.name} ${isCurrent ? '🔵 (No Ar)' : ''}</span><span class="schedule-time">${item.start} - ${item.end}</span>`;
         container.appendChild(div);
       });
-
       document.getElementById('scheduleModal').style.display = 'flex';
     }
 
-    function closeSchedule() {
-      document.getElementById('scheduleModal').style.display = 'none';
-    }
+    function closeSchedule() { document.getElementById('scheduleModal').style.display = 'none'; }
 
     initHLS();
     updateEPG();
     requestWakeLock();
+    // Atualiza EPG e barra de progresso a cada 1 minuto (60000 ms)
     setInterval(updateEPG, 60000);
     setInterval(checkPollCooldown, 30000);
     checkYouTubeLive();
     setInterval(checkYouTubeLive, 30000);
 
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js').catch(console.error);
-    }
+    if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(console.error); }
 
     let deferredPrompt;
     const pwaBanner = document.getElementById('pwaBanner');
     const btnInstall = document.getElementById('btnInstall');
 
     window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      pwaBanner.style.display = 'flex';
+      e.preventDefault(); deferredPrompt = e; pwaBanner.style.display = 'flex';
     });
 
     btnInstall.addEventListener('click', () => {
