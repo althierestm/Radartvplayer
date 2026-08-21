@@ -59,17 +59,6 @@
       -webkit-text-size-adjust: 100%;
     }
 
-    video::-webkit-media-controls-timeline,
-    video::-webkit-media-controls-current-time-display,
-    video::-webkit-media-controls-time-remaining-display,
-    video::-webkit-media-controls-seek-back-button,
-    video::-webkit-media-controls-seek-forward-button {
-        display: none !important;
-        opacity: 0 !important;
-        visibility: hidden !important;
-        pointer-events: none !important;
-    }
-
     .splash-screen {
       position: fixed;
       top: 0;
@@ -240,14 +229,15 @@
       z-index: 10; pointer-events: none; opacity: 0.85; filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.7));
     }
 
-    /* ---- Novos Elementos Internos do Player ---- */
+    /* ---- Controles Customizados Internos ---- */
     .player-top-actions {
       position: absolute; top: 15px; right: 15px; display: flex; gap: 15px; z-index: 20; align-items: center;
     }
     .player-top-actions button, .player-top-actions google-cast-launcher {
       background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition: transform 0.2s;
     }
+    .player-top-actions button:active { transform: scale(0.9); }
     .cast-btn { --connected-color: #fff; --disconnected-color: #fff; width: 22px; height: 22px; }
 
     .unmute-btn {
@@ -260,10 +250,11 @@
     .fullscreen-btn {
       position: absolute; bottom: 15px; right: 65px; /* afastado da logo */
       background: none; border: none; color: white; font-size: 1.2rem; z-index: 20;
-      cursor: pointer; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+      cursor: pointer; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition: transform 0.2s;
     }
+    .fullscreen-btn:active { transform: scale(0.9); }
 
-    /* ---- Novo Estilo da Barra de Programação ---- */
+    /* ---- Barra de Programação ---- */
     .epg-bar {
       padding: 20px 16px;
       background: #181b22;
@@ -352,15 +343,11 @@
 
   <div id="splashScreen" class="splash-screen">
     <div></div>
-    
     <div class="splash-content">
       <img src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1920.png" alt="Radar TV" class="splash-logo">
       <div class="splash-spinner"></div>
     </div>
-
-    <div class="splash-footer-credits">
-      Grupo Radar de Comunicação por Althieres Dias
-    </div>
+    <div class="splash-footer-credits">Grupo Radar de Comunicação por Althieres Dias</div>
   </div>
 
   <div class="menu-overlay" id="menuOverlay" onclick="closeMenu()"></div>
@@ -372,19 +359,13 @@
     </div>
     
     <nav class="menu-items">
-      <div class="menu-item active">
-        <i class="fa-solid fa-tv"></i> Radar TV Ao Vivo
-      </div>
+      <div class="menu-item active"><i class="fa-solid fa-tv"></i> Radar TV Ao Vivo</div>
       <div class="menu-divider"></div>
       <a href="https://wa.me/5532985109726?text=Ol%C3%A1%21%20Estou%20assistindo%20pelo%20App%20Radar%20TV%21" target="_blank" rel="noopener noreferrer" class="menu-item">
         <i class="fa-brands fa-whatsapp" style="color: #25d366;"></i> WhatsApp no Ar
       </a>
-      <div class="menu-item" onclick="requestNotificationPermission()">
-        <i class="fa-solid fa-bell"></i> Ativar Notificações
-      </div>
-      <div class="menu-item" onclick="shareApp()">
-        <i class="fa-solid fa-share-nodes"></i> Compartilhar App
-      </div>
+      <div class="menu-item" onclick="requestNotificationPermission()"><i class="fa-solid fa-bell"></i> Ativar Notificações</div>
+      <div class="menu-item" onclick="shareApp()"><i class="fa-solid fa-share-nodes"></i> Compartilhar App</div>
     </nav>
   </aside>
 
@@ -401,12 +382,8 @@
       <div class="sticky-player-area">
         <header class="player-header">
           <div class="header-left">
-            <button class="hamburger-btn" onclick="openMenu()">
-              <i class="fa-solid fa-bars"></i>
-            </button>
-            <div class="brand">
-              <img src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1920.png" alt="Radar TV">
-            </div>
+            <button class="hamburger-btn" onclick="openMenu()"><i class="fa-solid fa-bars"></i></button>
+            <div class="brand"><img src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1920.png" alt="Radar TV"></div>
           </div>
           <div class="live-badge" id="liveTag">AO VIVO</div>
         </header>
@@ -414,9 +391,15 @@
         <div class="video-wrapper" id="videoWrapper">
           <img src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1920.png" alt="Radar TV Logo" class="player-overlay-logo">
           
-          <!-- Ícones no Topo (Cast e AirPlay) -->
+          <!-- Ícones no Topo (Cast e AirPlay Oficial SVG) -->
           <div class="player-top-actions">
-            <button onclick="toggleAirPlay()" title="AirPlay"><i class="fa-brands fa-apple"></i></button>
+            <button onclick="toggleAirPlay()" title="AirPlay">
+              <!-- SVG do AirPlay (Vazado, idêntico ao Cast) -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"></path>
+                <polygon points="12 15 17 21 7 21 12 15"></polygon>
+              </svg>
+            </button>
             <google-cast-launcher class="cast-btn"></google-cast-launcher>
           </div>
 
@@ -430,7 +413,8 @@
             <i class="fa-solid fa-expand"></i>
           </button>
 
-          <video id="hlsPlayer" controls autoplay muted playsinline webkit-playsinline x-webkit-airplay="allow" autopictureinpicture style="display: block;"></video>
+          <!-- ATENÇÃO: Atributo 'controls' removido para ocultar nativos -->
+          <video id="hlsPlayer" autoplay muted playsinline webkit-playsinline x-webkit-airplay="allow" autopictureinpicture style="display: block;"></video>
           <iframe id="ytPlayer" style="display: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
       </div>
@@ -535,14 +519,11 @@
     window.addEventListener('load', () => {
       setTimeout(() => {
         const splash = document.getElementById('splashScreen');
-        if (splash) {
-          splash.classList.add('hidden');
-        }
+        if (splash) { splash.classList.add('hidden'); }
       }, 2200);
     });
 
     document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
-
     let lastTouchEnd = 0;
     document.addEventListener('touchend', function (e) {
       const now = (new Date()).getTime();
@@ -590,20 +571,14 @@
     let hlsInstance = null;
     let isYtLiveActive = false;
     let pollVotes = [0, 0, 0];
-
     const COOLDOWN_TIME = 10 * 60 * 1000;
 
-    // Remove o botão de som se for alterado pelo player nativo
     hlsVideo.addEventListener('volumechange', () => {
-      if(!hlsVideo.muted && hlsVideo.volume > 0) {
-        document.getElementById('unmuteBtn').style.display = 'none';
-      }
+      if(!hlsVideo.muted && hlsVideo.volume > 0) { document.getElementById('unmuteBtn').style.display = 'none'; }
     });
 
     function activateSound() {
-      hlsVideo.muted = false;
-      hlsVideo.volume = 1;
-      document.getElementById('unmuteBtn').style.display = 'none';
+      hlsVideo.muted = false; hlsVideo.volume = 1; document.getElementById('unmuteBtn').style.display = 'none';
     }
 
     function renderPollResults() {
@@ -660,19 +635,9 @@
       document.getElementById('pollComment').value = '';
     }
 
-    function openMenu() {
-      document.getElementById('sideMenu').classList.add('active');
-      document.getElementById('menuOverlay').classList.add('active');
-    }
-
-    function closeMenu() {
-      document.getElementById('sideMenu').classList.remove('active');
-      document.getElementById('menuOverlay').classList.remove('active');
-    }
-
-    async function requestWakeLock() {
-      try { if ('wakeLock' in navigator) await navigator.wakeLock.request('screen'); } catch (err) {}
-    }
+    function openMenu() { document.getElementById('sideMenu').classList.add('active'); document.getElementById('menuOverlay').classList.add('active'); }
+    function closeMenu() { document.getElementById('sideMenu').classList.remove('active'); document.getElementById('menuOverlay').classList.remove('active'); }
+    async function requestWakeLock() { try { if ('wakeLock' in navigator) await navigator.wakeLock.request('screen'); } catch (err) {} }
 
     function toggleFullscreen() {
       const elem = videoWrapper;
@@ -686,9 +651,7 @@
       }
     }
 
-    function forcePlayOnExitFullscreen() {
-      if (hlsVideo.paused) { hlsVideo.play().catch(e => console.log('Retomar vídeo interceptado', e)); }
-    }
+    function forcePlayOnExitFullscreen() { if (hlsVideo.paused) { hlsVideo.play().catch(e => console.log('Retomar interceptado', e)); } }
     
     document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement) forcePlayOnExitFullscreen(); });
     document.addEventListener('webkitfullscreenchange', () => { if (!document.webkitFullscreenElement) forcePlayOnExitFullscreen(); });
@@ -718,11 +681,8 @@
     }
 
     function shareApp() {
-      if (navigator.share) {
-        navigator.share({ title: 'Radar TV', text: 'Assista à programação ao vivo da Radar TV!', url: window.location.href }).catch(console.error);
-      } else {
-        navigator.clipboard.writeText(window.location.href); alert('Link copiado!');
-      }
+      if (navigator.share) { navigator.share({ title: 'Radar TV', text: 'Assista à programação ao vivo da Radar TV!', url: window.location.href }).catch(console.error); } 
+      else { navigator.clipboard.writeText(window.location.href); alert('Link copiado!'); }
     }
 
     function requestNotificationPermission() {
@@ -765,7 +725,6 @@
       isYtLiveActive = false; ytIframe.src = ''; ytIframe.style.display = 'none'; hlsVideo.style.display = 'block';
     }
 
-    // Calcula barra de progresso baseada no horário atual
     function updateEPG() {
       const now = new Date();
       const currentHour = now.getHours();
@@ -815,7 +774,6 @@
     initHLS();
     updateEPG();
     requestWakeLock();
-    // Atualiza EPG e barra de progresso a cada 1 minuto (60000 ms)
     setInterval(updateEPG, 60000);
     setInterval(checkPollCooldown, 30000);
     checkYouTubeLive();
