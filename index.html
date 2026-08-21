@@ -35,292 +35,94 @@
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    html, body { overscroll-behavior-y: none; }
+    body { background-color: #0f1115; color: #ffffff; display: flex; flex-direction: column; align-items: center; padding: 0; min-height: 100vh; overflow-x: hidden; touch-action: manipulation; -webkit-text-size-adjust: 100%; }
 
-    html, body {
-      overscroll-behavior-y: none;
-    }
-
-    body {
-      background-color: #0f1115;
-      color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 0;
-      min-height: 100vh;
-      overflow-x: hidden;
-      touch-action: manipulation;
-      -webkit-text-size-adjust: 100%;
-    }
-
-    .splash-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: linear-gradient(135deg, #0d47e6 0%, #082b8a 100%);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: center;
-      padding: 40px 20px;
-      z-index: 9999;
-      transition: opacity 0.6s ease, visibility 0.6s ease;
-    }
-
-    .splash-screen.hidden {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-
-    .splash-content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 24px;
-      margin: auto;
-    }
-
-    .splash-logo {
-      max-width: 200px;
-      height: auto;
-      filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
-      animation: pulseLogo 1.5s infinite alternate ease-in-out;
-    }
-
-    .splash-spinner {
-      width: 36px;
-      height: 36px;
-      border: 3px solid rgba(255, 255, 255, 0.2);
-      border-top-color: #4d82ff;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    .splash-footer-credits {
-      font-size: 0.85rem;
-      color: #ffffff;
-      text-align: center;
-      font-weight: 500;
-      letter-spacing: 0.5px;
-      opacity: 0.95;
-    }
-
+    .splash-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(135deg, #0d47e6 0%, #082b8a 100%); display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 40px 20px; z-index: 9999; transition: opacity 0.6s ease, visibility 0.6s ease; }
+    .splash-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+    .splash-content { display: flex; flex-direction: column; align-items: center; gap: 24px; margin: auto; }
+    .splash-logo { max-width: 200px; height: auto; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3)); animation: pulseLogo 1.5s infinite alternate ease-in-out; }
+    .splash-spinner { width: 36px; height: 36px; border: 3px solid rgba(255, 255, 255, 0.2); border-top-color: #4d82ff; border-radius: 50%; animation: spin 0.8s linear infinite; }
+    .splash-footer-credits { font-size: 0.85rem; color: #ffffff; text-align: center; font-weight: 500; letter-spacing: 0.5px; opacity: 0.95; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    @keyframes pulseLogo {
-      0% { transform: scale(0.96); opacity: 0.9; }
-      100% { transform: scale(1.04); opacity: 1; }
-    }
+    @keyframes pulseLogo { 0% { transform: scale(0.96); opacity: 0.9; } 100% { transform: scale(1.04); opacity: 1; } }
 
-    .menu-overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(4px);
-      z-index: 2000;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
-    }
-
+    .menu-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); z-index: 2000; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
     .menu-overlay.active { opacity: 1; visibility: visible; }
-
-    .side-menu {
-      position: fixed;
-      top: 0; left: -280px;
-      width: 280px; height: 100vh;
-      background: #12141a;
-      border-right: 1px solid #2a2e39;
-      z-index: 2001;
-      display: flex;
-      flex-direction: column;
-      transition: left 0.3s ease, box-shadow 0.3s ease;
-    }
-
-    .side-menu.active {
-      left: 0;
-      box-shadow: 5px 0 25px rgba(0,0,0,0.6);
-    }
-
-    .menu-header {
-      padding: 20px;
-      background: #0d47e6;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
+    .side-menu { position: fixed; top: 0; left: -280px; width: 280px; height: 100vh; background: #12141a; border-right: 1px solid #2a2e39; z-index: 2001; display: flex; flex-direction: column; transition: left 0.3s ease, box-shadow 0.3s ease; }
+    .side-menu.active { left: 0; box-shadow: 5px 0 25px rgba(0,0,0,0.6); }
+    .menu-header { padding: 20px; background: #0d47e6; display: flex; justify-content: space-between; align-items: center; }
     .menu-header img { height: 36px; width: auto; object-fit: contain; }
-
-    .close-menu-btn {
-      background: none; border: none;
-      color: #fff; font-size: 1.5rem; cursor: pointer;
-    }
-
+    .close-menu-btn { background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
     .menu-items { display: flex; flex-direction: column; padding: 15px 0; gap: 5px; }
-
-    .menu-item {
-      display: flex; align-items: center; gap: 14px;
-      padding: 14px 20px; color: #e0e0e0; text-decoration: none;
-      font-size: 0.95rem; font-weight: 600; cursor: pointer;
-      border-left: 4px solid transparent; transition: background 0.2s, border-color 0.2s;
-    }
-
+    .menu-item { display: flex; align-items: center; gap: 14px; padding: 14px 20px; color: #e0e0e0; text-decoration: none; font-size: 0.95rem; font-weight: 600; cursor: pointer; border-left: 4px solid transparent; transition: background 0.2s, border-color 0.2s; }
     .menu-item:hover, .menu-item.active { background: #1c212d; color: #4d82ff; border-left-color: #4d82ff; }
     .menu-item i { font-size: 1.1rem; width: 24px; text-align: center; }
     .menu-divider { height: 1px; background: #2a2e39; margin: 10px 0; }
 
-    .install-banner {
-      display: none; width: 100%; max-width: 800px;
-      background: linear-gradient(90deg, #0d47e6, #082b8a);
-      color: #fff; padding: 10px 15px; margin-top: 10px; border-radius: 10px;
-      justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(13, 71, 230, 0.3);
-    }
-
+    .install-banner { display: none; width: 100%; max-width: 800px; background: linear-gradient(90deg, #0d47e6, #082b8a); color: #fff; padding: 10px 15px; margin-top: 10px; border-radius: 10px; justify-content: space-between; align-items: center; box-shadow: 0 4px 15px rgba(13, 71, 230, 0.3); }
     .install-banner span { font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
     .btn-install { background: #4d82ff; color: #ffffff; border: none; padding: 6px 14px; border-radius: 6px; font-weight: bold; font-size: 0.8rem; cursor: pointer; }
 
     .app-wrapper { width: 100%; max-width: 800px; padding: 10px; display: flex; flex-direction: column; align-items: center; }
-    
-    .player-container {
-      width: 100%;
-      background: #181b22;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      border: 1px solid #2a2e39;
-    }
-
-    .sticky-player-area {
-      position: sticky; top: 0; z-index: 1000; background: #181b22;
-      border-top-left-radius: 16px; border-top-right-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-    }
-
-    .player-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 12px 18px; background: #0d47e6; border-top-left-radius: 16px; border-top-right-radius: 16px;
-    }
-
+    .player-container { width: 100%; background: #181b22; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #2a2e39; }
+    .sticky-player-area { position: sticky; top: 0; z-index: 1000; background: #181b22; border-top-left-radius: 16px; border-top-right-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+    .player-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; background: #0d47e6; border-top-left-radius: 16px; border-top-right-radius: 16px; }
     .header-left { display: flex; align-items: center; gap: 14px; }
     .hamburger-btn { background: none; border: none; color: #ffffff; font-size: 1.4rem; cursor: pointer; }
     .brand img { height: 36px; width: auto; object-fit: contain; display: block; }
-
-    .live-badge {
-      background-color: #4d82ff; color: #ffffff; font-size: 0.75rem; font-weight: bold;
-      padding: 5px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; animation: pulse 2s infinite;
-    }
+    .live-badge { background-color: #4d82ff; color: #ffffff; font-size: 0.75rem; font-weight: bold; padding: 5px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; animation: pulse 2s infinite; }
     .live-badge::before { content: ''; width: 8px; height: 8px; background-color: #ff0000; border-radius: 50%; }
 
-    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
-
-    /* Cursor pointer adicionado para indicar que é clicável */
     .video-wrapper { position: relative; width: 100%; padding-top: 56.25%; background: #000; overflow: hidden; cursor: pointer; }
     .video-wrapper video, .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; object-fit: contain; pointer-events: none; }
+    .player-overlay-logo { position: absolute; bottom: 12px; right: 12px; height: 40px; width: auto; z-index: 10; pointer-events: none; opacity: 0.85; filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.7)); }
 
-    .player-overlay-logo {
-      position: absolute; bottom: 12px; right: 12px; height: 40px; width: auto;
-      z-index: 10; pointer-events: none; opacity: 0.85; filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.7));
-    }
-
-    /* ---- Controles Customizados Internos (Ocultáveis) ---- */
-    .custom-controls {
-      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-      z-index: 20; transition: opacity 0.3s ease, visibility 0.3s ease; pointer-events: none;
-    }
-    .custom-controls.hidden { opacity: 0; visibility: hidden; } /* Visibilty hidden desativa 100% os cliques quando invisível */
+    /* Controles Customizados Internos */
+    .custom-controls { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 20; transition: opacity 0.3s ease, visibility 0.3s ease; pointer-events: none; }
+    .custom-controls.hidden { opacity: 0; visibility: hidden; } 
     .custom-controls > * { pointer-events: auto; }
 
-    .player-top-actions {
-      position: absolute; top: 15px; right: 15px; display: flex; gap: 15px; align-items: center;
-    }
-    .player-top-actions button, .player-top-actions google-cast-launcher {
-      background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition: transform 0.2s;
-    }
+    .player-top-actions { position: absolute; top: 15px; right: 15px; display: flex; gap: 15px; align-items: center; }
+    .player-top-actions button, .player-top-actions google-cast-launcher { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition: transform 0.2s; }
     .player-top-actions button:active { transform: scale(0.9); }
     .cast-btn { --connected-color: #fff; --disconnected-color: #fff; width: 22px; height: 22px; }
 
-    /* Estilo do botão de Volume Dinâmico */
-    .volume-btn {
-      position: absolute; bottom: 15px; left: 15px; background: #ffffff; color: #000000;
-      border: none; border-radius: 30px; padding: 8px 16px; font-weight: bold; font-size: 0.85rem;
-      display: flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-      transition: background 0.3s, color 0.3s, border 0.3s;
-    }
+    .volume-btn { position: absolute; bottom: 15px; left: 15px; background: #ffffff; color: #000000; border: none; border-radius: 30px; padding: 8px 16px; font-weight: bold; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: background 0.3s, color 0.3s, border 0.3s; }
     .volume-btn:active { transform: scale(0.95); }
-    
-    /* Quando o som ESTÁ ATIVO, ele fica escurinho e translúcido para não poluir */
-    .volume-btn.is-unmuted {
-      background: rgba(0, 0, 0, 0.5); color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(4px);
-    }
+    .volume-btn.is-unmuted { background: rgba(0, 0, 0, 0.5); color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(4px); }
 
-    .fullscreen-btn {
-      position: absolute; bottom: 15px; right: 65px; /* afastado da logo */
-      background: none; border: none; color: white; font-size: 1.2rem;
-      cursor: pointer; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition: transform 0.2s;
-    }
+    .fullscreen-btn { position: absolute; bottom: 15px; right: 65px; background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition: transform 0.2s; }
     .fullscreen-btn:active { transform: scale(0.9); }
 
-    /* ---- Barra de Programação ---- */
-    .epg-bar {
-      padding: 20px 16px;
-      background: #181b22;
-      display: flex;
-      flex-direction: column;
-      border-bottom: 1px solid #2a2e39;
-      border-bottom-left-radius: 16px;
-      border-bottom-right-radius: 16px;
-    }
-
-    .prog-time { font-size: 0.85rem; color: #a0a5b5; margin-bottom: 6px; }
+    /* Barra de Programação */
+    .epg-bar { padding: 20px 16px; background: #181b22; display: flex; flex-direction: column; border-bottom: 1px solid #2a2e39; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; }
+    .prog-time { font-size: 0.85rem; color: #a0a5b5; margin-bottom: 6px; font-weight: bold; }
     .prog-title { font-size: 1.2rem; font-weight: bold; color: #ffffff; margin-bottom: 4px; }
-    .prog-desc { font-size: 0.9rem; color: #a0a5b5; margin-bottom: 16px; }
-
-    .progress-container {
-      width: 100%; height: 4px; background: #3a3f50; border-radius: 2px; margin-bottom: 20px; overflow: hidden;
-    }
-    .progress-bar {
-      height: 100%; background: #0d47e6; width: 0%; border-radius: 2px; transition: width 1s linear;
-    }
-
+    .prog-desc { font-size: 0.9rem; color: #a0a5b5; margin-bottom: 16px; line-height: 1.4; }
+    .progress-container { width: 100%; height: 4px; background: #3a3f50; border-radius: 2px; margin-bottom: 20px; overflow: hidden; }
+    .progress-bar { height: 100%; background: #0d47e6; width: 0%; border-radius: 2px; transition: width 1s linear; }
     .btn-schedule-container { display: flex; justify-content: center; }
-    .btn-schedule-pill {
-      background: transparent; border: 1px solid #4d82ff; color: #ffffff;
-      padding: 10px 24px; border-radius: 30px; font-size: 0.9rem; font-weight: bold; cursor: pointer; transition: background 0.2s;
-    }
+    .btn-schedule-pill { background: transparent; border: 1px solid #4d82ff; color: #ffffff; padding: 10px 24px; border-radius: 30px; font-size: 0.9rem; font-weight: bold; cursor: pointer; transition: background 0.2s; }
     .btn-schedule-pill:hover { background: rgba(77, 130, 255, 0.1); }
 
+    /* Enquetes e Restante */
     .poll-section { padding: 18px; background: #181b22; display: flex; flex-direction: column; gap: 14px; }
     .poll-header { display: flex; align-items: center; gap: 10px; color: #4d82ff; font-size: 1rem; font-weight: bold; }
     .poll-question { font-size: 0.95rem; font-weight: 600; color: #ffffff; line-height: 1.4; }
     .poll-options { display: flex; flex-direction: column; gap: 10px; }
-
-    .poll-option-btn {
-      position: relative; background: #212530; border: 1px solid #2a2e39; border-radius: 8px;
-      padding: 12px 14px; color: #ffffff; font-size: 0.88rem; font-weight: 600; text-align: left; cursor: pointer; overflow: hidden; transition: border-color 0.2s, background 0.2s;
-    }
+    .poll-option-btn { position: relative; background: #212530; border: 1px solid #2a2e39; border-radius: 8px; padding: 12px 14px; color: #ffffff; font-size: 0.88rem; font-weight: 600; text-align: left; cursor: pointer; overflow: hidden; transition: border-color 0.2s, background 0.2s; }
     .poll-option-btn:hover:not(:disabled) { border-color: #0d47e6; background: #1a202c; }
     .poll-option-btn:disabled { cursor: default; }
-
     .poll-progress-bar { position: absolute; top: 0; left: 0; bottom: 0; background: rgba(13, 71, 230, 0.35); width: 0%; transition: width 0.6s ease; z-index: 1; }
     .poll-option-content { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; }
     .poll-percent { font-weight: bold; color: #4d82ff; font-size: 0.85rem; }
     .poll-status-msg { font-size: 0.78rem; color: #8a8f9d; margin-top: 4px; }
-
     .poll-comment-box { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; padding-top: 12px; border-top: 1px dashed #2a2e39; }
     .poll-comment-box label { font-size: 0.82rem; color: #a0a5b5; font-weight: 600; }
     .poll-textarea { width: 100%; background: #12141a; border: 1px solid #2a2e39; border-radius: 8px; padding: 10px; color: #fff; font-size: 0.85rem; resize: vertical; min-height: 60px; outline: none; }
     .poll-textarea:focus { border-color: #0d47e6; }
-
     .btn-send-comment { align-self: flex-end; background: #0d47e6; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-size: 0.82rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; }
     .btn-send-comment:hover { background: #1a56f0; }
 
@@ -338,9 +140,13 @@
     .modal-header { padding: 12px 16px; background: #12141a; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #2a2e39; }
     .close-btn { background: none; border: none; color: #8a8f9d; font-size: 1.4rem; cursor: pointer; }
     .modal-body { padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
-    .schedule-item { padding: 10px; background: #212530; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem; }
-    .schedule-item.active { border: 1px solid #0d47e6; background: #101c3d; }
-    .schedule-time { font-weight: bold; color: #4d82ff; }
+    
+    .schedule-item { padding: 12px; background: #212530; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; border-left: 3px solid transparent; }
+    .schedule-item.active { border-left-color: #0d47e6; background: #101c3d; }
+    .schedule-info { display: flex; flex-direction: column; gap: 4px; max-width: 75%; }
+    .schedule-name { font-weight: 600; color: #fff; }
+    .schedule-desc { font-size: 0.75rem; color: #8a8f9d; }
+    .schedule-time { font-weight: bold; color: #4d82ff; font-size: 0.85rem; }
 
     @media (max-width: 600px) {
       .app-wrapper { padding: 0; }
@@ -442,8 +248,8 @@
       <main class="view-panel active" id="viewTv">
         <div class="epg-bar">
           <div class="prog-time" id="progTime">--:-- - --:--</div>
-          <div class="prog-title" id="progTitle">Carregando...</div>
-          <div class="prog-desc" id="progDesc">Radar TV Ao Vivo</div>
+          <div class="prog-title" id="progTitle">Carregando programação...</div>
+          <div class="prog-desc" id="progDesc">Buscando do Guia Radar TV</div>
           
           <div class="progress-container">
             <div class="progress-bar" id="progBar"></div>
@@ -517,7 +323,7 @@
   <div class="modal" id="scheduleModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h3><i class="fa-solid fa-list-ul"></i> Programação do Dia</h3>
+        <h3><i class="fa-solid fa-list-ul"></i> Programação de Hoje</h3>
         <button class="close-btn" onclick="closeSchedule()">&times;</button>
       </div>
       <div class="modal-body" id="fullScheduleList"></div>
@@ -534,15 +340,13 @@
       }
     };
 
-    let controlsTimeout; // Variável para controlar o auto-hide
+    let controlsTimeout; 
 
     window.addEventListener('load', () => {
       setTimeout(() => {
         const splash = document.getElementById('splashScreen');
         if (splash) { splash.classList.add('hidden'); }
       }, 2200);
-      
-      // Inicia o timer para ocultar os controles quando o app carregar
       resetControlsTimeout();
     });
 
@@ -573,20 +377,157 @@
     const YOUTUBE_CHANNEL_ID = 'UC7wHmjY4RNruABZ9An1crBA'; 
     const YOUTUBE_API_KEY = 'AIzaSyDaVlWRVlFrq9Qur-Dzv779pIIi3v_XD0g'; 
 
-    const schedule = [
-      { start: "00:00", end: "02:00", name: "Corujão Radar TV", startH: 0, endH: 2 },
-      { start: "02:00", end: "04:00", name: "Madrugada Sertaneja", startH: 2, endH: 4 },
-      { start: "04:00", end: "06:00", name: "Amanhecer no Campo", startH: 4, endH: 6 },
-      { start: "06:00", end: "08:00", name: "Radar Notícias Manhã", startH: 6, endH: 8 },
-      { start: "08:00", end: "10:00", name: "Manhã Especial & Viola", startH: 8, endH: 10 },
-      { start: "10:00", end: "12:00", name: "Radar Esporte Regional", startH: 10, endH: 12 },
-      { start: "12:00", end: "14:00", name: "Jornal Radar TV - 1ª Edição", startH: 12, endH: 14 },
-      { start: "14:00", end: "16:00", name: "Tarde de Prêmios & Shows", startH: 14, endH: 16 },
-      { start: "16:00", end: "18:00", name: "Transmissão Esportiva Ao Vivo", startH: 16, endH: 18 },
-      { start: "18:00", end: "20:00", name: "Resenha Esportiva", startH: 18, endH: 20 },
-      { start: "20:00", end: "22:00", name: "Jornal Radar TV - 2ª Edição", startH: 20, endH: 22 },
-      { start: "22:00", end: "00:00", name: "Radar Night", startH: 22, endH: 24 }
-    ];
+    /* ----------------------------------------------------
+       SISTEMA DE EPG VIA XML DO GITHUB (XMLTV)
+    ----------------------------------------------------- */
+
+    const EPG_XML_URL = 'https://raw.githubusercontent.com/althierestm/Lista-RadarTV/refs/heads/main/epg.xml';
+    let scheduleData = []; // Guardará os programas processados
+
+    // Função para converter o texto de data do XMLTV em objeto Date do Javascript
+    // Exemplo de formato XMLTV: "20260821140000 -0300"
+    function parseXMLTVDate(dateString) {
+      if (!dateString) return new Date();
+      
+      const year = dateString.substring(0, 4);
+      const month = dateString.substring(4, 6);
+      const day = dateString.substring(6, 8);
+      const hour = dateString.substring(8, 10);
+      const min = dateString.substring(10, 12);
+      const sec = dateString.substring(12, 14);
+      
+      let tz = "";
+      if (dateString.length > 15) {
+        tz = dateString.substring(15).trim(); 
+        if (tz.length === 5) {
+          tz = tz.substring(0, 3) + ":" + tz.substring(3, 5); // Ex: -03:00
+        }
+      } else {
+        tz = "-03:00"; 
+      }
+      
+      const isoString = `${year}-${month}-${day}T${hour}:${min}:${sec}${tz}`;
+      return new Date(isoString);
+    }
+
+    // Função que formata a hora (Ex: 08:30)
+    function formatTime(date) {
+      return String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
+    }
+
+    async function fetchEPG() {
+      try {
+        const response = await fetch(EPG_XML_URL);
+        const text = await response.text();
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(text, "text/xml");
+        
+        const programs = xmlDoc.getElementsByTagName('programme');
+        let newSchedule = [];
+        
+        for (let i = 0; i < programs.length; i++) {
+          const prog = programs[i];
+          const startStr = prog.getAttribute('start');
+          const stopStr = prog.getAttribute('stop');
+          
+          const titleNode = prog.getElementsByTagName('title')[0];
+          const descNode = prog.getElementsByTagName('desc')[0];
+          
+          const title = titleNode ? titleNode.textContent : 'Sem título';
+          const desc = descNode ? descNode.textContent : 'Acompanhe nossa programação.';
+          
+          newSchedule.push({
+            start: parseXMLTVDate(startStr),
+            end: parseXMLTVDate(stopStr),
+            title: title,
+            desc: desc
+          });
+        }
+        
+        // Ordena por horário
+        newSchedule.sort((a, b) => a.start - b.start);
+        scheduleData = newSchedule;
+        
+        updateEPG(); // Atualiza a tela
+      } catch (err) {
+        console.error("Erro ao carregar o EPG XML:", err);
+        document.getElementById('progDesc').innerText = "Erro ao carregar programação.";
+      }
+    }
+
+    // Atualiza a tela baseada no Array do XML
+    function updateEPG() {
+      if (scheduleData.length === 0) return;
+
+      const now = new Date();
+      let currentIndex = scheduleData.findIndex(item => now >= item.start && now < item.end);
+      
+      let currentProg;
+      if (currentIndex === -1) {
+        // Se não encontrar nada passando AGORA (pode ser um buraco no EPG), evita que o app quebre
+        currentProg = {
+          start: now,
+          end: new Date(now.getTime() + 60*60*1000), // Põe 1 hr de duração falsa
+          title: "Radar TV Ao Vivo",
+          desc: "Fique ligado na nossa programação."
+        };
+      } else {
+        currentProg = scheduleData[currentIndex];
+      }
+
+      document.getElementById('progTime').innerText = `${formatTime(currentProg.start)} - ${formatTime(currentProg.end)}`;
+      document.getElementById('progTitle').innerText = currentProg.title;
+      document.getElementById('progDesc').innerText = currentProg.desc; 
+
+      const startMs = currentProg.start.getTime();
+      const endMs = currentProg.end.getTime();
+      const nowMs = now.getTime();
+
+      const totalDuration = endMs - startMs;
+      const elapsed = nowMs - startMs;
+      let percentage = (elapsed / totalDuration) * 100;
+      
+      if(percentage < 0) percentage = 0;
+      if(percentage > 100) percentage = 100;
+
+      document.getElementById('progBar').style.width = `${percentage}%`;
+    }
+
+    function openSchedule() {
+      const now = new Date();
+      
+      // Filtra os programas do XML apenas para o dia de HOJE
+      const todayPrograms = scheduleData.filter(item => {
+        return item.start.getDate() === now.getDate() &&
+               item.start.getMonth() === now.getMonth() &&
+               item.start.getFullYear() === now.getFullYear();
+      });
+
+      const container = document.getElementById('fullScheduleList');
+      container.innerHTML = '';
+      
+      if(todayPrograms.length === 0) {
+        container.innerHTML = '<div class="schedule-item"><span>Nenhuma programação disponível para hoje.</span></div>';
+      }
+
+      todayPrograms.forEach(item => {
+        const isCurrent = (now >= item.start && now < item.end);
+        const div = document.createElement('div');
+        div.className = `schedule-item ${isCurrent ? 'active' : ''}`;
+        
+        div.innerHTML = `
+          <div class="schedule-info">
+            <span class="schedule-name">${item.title} ${isCurrent ? '🔵 (No Ar)' : ''}</span>
+            <span class="schedule-desc">${item.desc}</span>
+          </div>
+          <span class="schedule-time">${formatTime(item.start)} - ${formatTime(item.end)}</span>
+        `;
+        container.appendChild(div);
+      });
+      document.getElementById('scheduleModal').style.display = 'flex';
+    }
+
+    /* ---------------------------------------------------- */
 
     const hlsVideo = document.getElementById('hlsPlayer');
     const ytIframe = document.getElementById('ytPlayer');
@@ -596,31 +537,27 @@
     let pollVotes = [0, 0, 0];
     const COOLDOWN_TIME = 10 * 60 * 1000;
 
-    // Renova o tempo para ocultar a UI automaticamente
     function resetControlsTimeout() {
       clearTimeout(controlsTimeout);
       controlsTimeout = setTimeout(() => {
         document.getElementById('customControls').classList.add('hidden');
-      }, 3500); // 3.5 segundos até sumir
+      }, 3500); 
     }
 
-    // Função para ocultar/mostrar a interface de botões com clique no vídeo
     function toggleControls() {
       const controls = document.getElementById('customControls');
       if (controls.classList.contains('hidden')) {
         controls.classList.remove('hidden');
-        resetControlsTimeout(); // Aciona o timer para esconder depois de um tempo
+        resetControlsTimeout(); 
       } else {
-        controls.classList.add('hidden'); // Esconde imediatamente se já estava visível e a pessoa tocou na tela
+        controls.classList.add('hidden'); 
         clearTimeout(controlsTimeout);
       }
     }
 
-    // Função para alternar entre com som e sem som
     function toggleSound(e) {
       if (e) e.stopPropagation();
-      resetControlsTimeout(); // Mantém a barra visível enquanto interage
-      
+      resetControlsTimeout(); 
       hlsVideo.muted = !hlsVideo.muted;
       if (!hlsVideo.muted) { hlsVideo.volume = 1; }
     }
@@ -638,7 +575,6 @@
       else { alert("AirPlay nativo não é suportado neste navegador/dispositivo."); }
     }
 
-    // Escuta mudanças de volume no player para atualizar visual do botão
     hlsVideo.addEventListener('volumechange', () => {
       const volBtn = document.getElementById('volumeBtn');
       if (hlsVideo.muted || hlsVideo.volume === 0) {
@@ -698,8 +634,8 @@
     function sendPollComment() {
       const comment = document.getElementById('pollComment').value.trim();
       if (!comment) { alert("Por favor, escreva uma sugestão ou comentário antes de enviar."); return; }
-      const subject = encodeURIComponent("Opinião/Sugestão Ruralzão 2026 - App Radar TV");
-      const body = encodeURIComponent(`Olá equipe Radar TV / Limeira News,\n\nSegue meu comentário sobre a cobertura do Ruralzão 2026:\n\n"${comment}"`);
+      const subject = encodeURIComponent("Opinião/Sugestão - App Radar TV");
+      const body = encodeURIComponent(`Olá equipe Radar TV / Limeira News,\n\nSegue meu comentário:\n\n"${comment}"`);
       window.location.href = `mailto:radartvmg@gmail.com?subject=${subject}&body=${body}`;
       document.getElementById('pollComment').value = '';
     }
@@ -789,56 +725,13 @@
       isYtLiveActive = false; ytIframe.src = ''; ytIframe.style.display = 'none'; hlsVideo.style.display = 'block';
     }
 
-    function updateEPG() {
-      const now = new Date();
-      const currentHour = now.getHours();
-      const currentMinute = now.getMinutes();
-      const currentTotalMinutes = (currentHour * 60) + currentMinute;
-
-      let currentIndex = schedule.findIndex(item => currentHour >= item.startH && currentHour < item.endH);
-      if (currentIndex === -1) currentIndex = 0;
-      
-      const currentProg = schedule[currentIndex];
-
-      document.getElementById('progTime').innerText = `${currentProg.start} - ${currentProg.end}`;
-      document.getElementById('progTitle').innerText = currentProg.name;
-      document.getElementById('progDesc').innerText = currentProg.name; 
-
-      const startTotalMinutes = currentProg.startH * 60;
-      let endTotalMinutes = currentProg.endH * 60;
-      if (currentProg.endH === 24) endTotalMinutes = 24 * 60;
-
-      const totalDuration = endTotalMinutes - startTotalMinutes;
-      const elapsed = currentTotalMinutes - startTotalMinutes;
-      let percentage = (elapsed / totalDuration) * 100;
-      
-      if(percentage < 0) percentage = 0;
-      if(percentage > 100) percentage = 100;
-
-      document.getElementById('progBar').style.width = `${percentage}%`;
-    }
-
-    function openSchedule() {
-      const currentHour = (new Date()).getHours();
-      const container = document.getElementById('fullScheduleList');
-      container.innerHTML = '';
-
-      schedule.forEach(item => {
-        const isCurrent = (currentHour >= item.startH && currentHour < item.endH);
-        const div = document.createElement('div');
-        div.className = `schedule-item ${isCurrent ? 'active' : ''}`;
-        div.innerHTML = `<span>${item.name} ${isCurrent ? '🔵 (No Ar)' : ''}</span><span class="schedule-time">${item.start} - ${item.end}</span>`;
-        container.appendChild(div);
-      });
-      document.getElementById('scheduleModal').style.display = 'flex';
-    }
-
     function closeSchedule() { document.getElementById('scheduleModal').style.display = 'none'; }
 
     initHLS();
-    updateEPG();
+    fetchEPG(); // Inicia o carregamento do XML no load
     requestWakeLock();
-    setInterval(updateEPG, 60000);
+    setInterval(updateEPG, 60000); // Atualiza a barra azul a cada minuto
+    setInterval(fetchEPG, 300000); // Tenta atualizar do GitHub a cada 5 minutos
     setInterval(checkPollCooldown, 30000);
     checkYouTubeLive();
     setInterval(checkYouTubeLive, 30000);
