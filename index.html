@@ -1,3 +1,7 @@
+Isso vai dar um toque incrível para o seu aplicativo! O verdadeiro "Tudum" da Radar TV! 🤩
+Já inseri a tag de áudio puxando exatamente o link Logo%20Sonora%20RadarTV.mp3 do seu repositório do GitHub e configurei a lógica no JavaScript para que ela toque no volume ideal assim que o aplicativo carregar, sincronizado com o tempo da tela de abertura (Splash Screen).
+Como te avisei na mensagem anterior, nos navegadores (como Chrome e Safari), às vezes o som automático é bloqueado na primeira vez que a pessoa acessa pelo link, mas quando a pessoa instalar o aplicativo no celular (Adicionar à Tela Inicial) e abrir, o som tem passe livre para tocar! Mesmo que o navegador bloqueie na versão web, o código está protegido e o app não vai travar.
+Aqui está o código 100% completo e atualizado com o som de abertura. É só copiar e colar no index.html:
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -11,7 +15,6 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Radar TV">
 
-  <!-- OneSignal -->
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   <script>
     window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -22,7 +25,6 @@
     });
   </script>
 
-  <!-- Google Cast SDK -->
   <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
 
   <link rel="icon" type="image/png" href="Logo%20RadarTV%201080x1080.png">
@@ -206,6 +208,8 @@
 </head>
 <body>
 
+  <audio id="splashSound" src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20Sonora%20RadarTV.mp3"></audio>
+
   <div id="splashScreen" class="splash-screen">
     <div></div>
     <div class="splash-content">
@@ -226,7 +230,6 @@
       <div class="menu-item active" onclick="closeMenu()"><i class="fa-solid fa-tv"></i> Radar TV Ao Vivo</div>
       <div class="menu-divider"></div>
       
-      <!-- MENU ATUALIZADO -->
       <a href="#" class="menu-item" onclick="alert('Em breve: Notícias de Rosário da Limeira e região!')">
         <i class="fa-regular fa-newspaper" style="color: #4d82ff;"></i> Limeira News
       </a>
@@ -341,7 +344,6 @@
 
   </div>
 
-  <!-- MODAL DA PROGRAMAÇÃO -->
   <div class="modal" id="scheduleModal">
     <div class="modal-content">
       <div class="modal-header-top">
@@ -356,7 +358,6 @@
     </div>
   </div>
 
-  <!-- NOVO MODAL: TABELA DE CAMPEONATOS -->
   <div class="modal" id="standingsModal">
     <div class="modal-content">
       <div class="modal-header-top">
@@ -364,13 +365,11 @@
         <button class="close-btn" onclick="closeStandingsModal()"><i class="fa-solid fa-xmark"></i></button>
       </div>
       
-      <!-- Abas dos Campeonatos -->
       <div class="tabs-header">
         <button class="tab-btn active" id="tabSerieA" onclick="switchStandingsTab('serieA')">Série A</button>
         <button class="tab-btn" id="tabMineiro" onclick="switchStandingsTab('mineiro')">Mineiro Sub-20</button>
       </div>
       
-      <!-- Tabela em si -->
       <div class="modal-body" style="padding: 0;">
         <table class="standings-table">
           <thead>
@@ -384,8 +383,7 @@
             </tr>
           </thead>
           <tbody id="standingsTableBody">
-            <!-- As linhas da tabela serão geradas pelo JavaScript -->
-          </tbody>
+            </tbody>
         </table>
       </div>
     </div>
@@ -403,7 +401,15 @@
 
     let controlsTimeout; 
 
+    // NOVO: Função de inicialização e toque do áudio
     window.addEventListener('load', () => {
+      // Tenta tocar a vinheta
+      const introSound = document.getElementById('splashSound');
+      if(introSound) {
+        introSound.volume = 0.6; // Volume ideal (60%)
+        introSound.play().catch(e => console.log('O navegador bloqueou o áudio automático.'));
+      }
+
       setTimeout(() => {
         const splash = document.getElementById('splashScreen');
         if (splash) { splash.classList.add('hidden'); }
@@ -440,8 +446,6 @@
     const EPG_XML_URL = 'https://raw.githubusercontent.com/althierestm/Lista-RadarTV/refs/heads/main/epg.xml';
 
     /* ---- Lógica Tabela de Esportes ---- */
-    
-    // Dados simulados. Futuramente você pode usar o fetch() para puxar um "tabela.json" do seu Github!
     const mockStandings = {
       "serieA": [
         { pos: 1, team: "Botafogo", pts: 46, jogos: 23, vitorias: 14, sg: 18, zone: "zone-libertadores" },
@@ -466,7 +470,7 @@
 
     function openStandingsModal() {
       document.getElementById('standingsModal').classList.add('active');
-      renderStandings('serieA'); // Carrega Brasileirão por padrão
+      renderStandings('serieA'); 
     }
 
     function closeStandingsModal() {
@@ -600,7 +604,7 @@
 
     /* ---- Player e Funções Base ---- */
     const hlsVideo = document.getElementById('hlsPlayer'); const ytIframe = document.getElementById('ytPlayer'); const videoWrapper = document.getElementById('videoWrapper');
-    let hlsInstance = null; let isYtLiveActive = false; const COOLDOWN_TIME = 10 * 60 * 1000; let pollVotes = [0, 0, 0];
+    let hlsInstance = null; let isYtLiveActive = false;
 
     function resetControlsTimeout() { clearTimeout(controlsTimeout); controlsTimeout = setTimeout(() => { document.getElementById('customControls').classList.add('hidden'); }, 3500); }
     function toggleControls() { const controls = document.getElementById('customControls'); if (controls.classList.contains('hidden')) { controls.classList.remove('hidden'); resetControlsTimeout(); } else { controls.classList.add('hidden'); clearTimeout(controlsTimeout); } }
@@ -614,6 +618,7 @@
       else { volBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Mudo'; volBtn.classList.add('is-unmuted'); }
     });
 
+    let pollVotes = [0, 0, 0];
     function renderPollResults() {
       const totalVotes = pollVotes.reduce((a, b) => a + b, 0);
       pollVotes.forEach((votes, index) => {
@@ -688,3 +693,4 @@
   </script>
 </body>
 </html>
+
