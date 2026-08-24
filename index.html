@@ -84,7 +84,6 @@
     .custom-controls.hidden { opacity: 0; visibility: hidden; } 
     .custom-controls > * { pointer-events: auto; }
 
-    /* Botão Play Central */
     .center-play-btn {
       position: absolute;
       top: 50%;
@@ -112,9 +111,7 @@
       transform: translate(-50%, -50%) scale(1.1);
       border-color: transparent;
     }
-    .center-play-btn.hidden {
-      display: none;
-    }
+    .center-play-btn.hidden { display: none; }
 
     .player-top-actions { position: absolute; top: 15px; right: 15px; display: flex; gap: 15px; align-items: center; }
     .player-top-actions button, .player-top-actions google-cast-launcher { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition: transform 0.2s; }
@@ -128,7 +125,6 @@
     .fullscreen-btn { position: absolute; bottom: 15px; right: 65px; background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition: transform 0.2s; }
     .fullscreen-btn:active { transform: scale(0.9); }
 
-    /* Barra de Programação */
     .epg-bar { padding: 20px 16px; background: #181b22; display: flex; flex-direction: column; border-bottom: 1px solid #2a2e39; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; }
     .prog-time { font-size: 0.85rem; color: #a0a5b5; margin-bottom: 6px; font-weight: bold; }
     .prog-title { font-size: 1.2rem; font-weight: bold; color: #ffffff; margin-bottom: 4px; }
@@ -139,7 +135,6 @@
     .btn-schedule-pill { background: transparent; border: 1px solid #4d82ff; color: #ffffff; padding: 10px 24px; border-radius: 30px; font-size: 0.9rem; font-weight: bold; cursor: pointer; transition: background 0.2s; }
     .btn-schedule-pill:hover { background: rgba(77, 130, 255, 0.1); }
 
-    /* Enquetes */
     .poll-section { padding: 18px; background: #181b22; display: flex; flex-direction: column; gap: 14px; }
     .poll-header { display: flex; align-items: center; gap: 10px; color: #4d82ff; font-size: 1rem; font-weight: bold; }
     .poll-question { font-size: 0.95rem; font-weight: 600; color: #ffffff; line-height: 1.4; }
@@ -161,7 +156,6 @@
     .footer-credits { font-size: 0.85rem; color: #8a8f9d; text-align: center; }
     .footer-credits a { color: #4d82ff; text-decoration: none; font-weight: bold; }
 
-    /* ---- Estilo Geral de Modais ---- */
     .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; display: flex; justify-content: center; align-items: flex-end; visibility: hidden; opacity: 0; transition: visibility 0.4s, opacity 0.4s; }
     .modal.active { visibility: visible; opacity: 1; }
     .modal-content { background: #181b22; width: 100%; max-width: 600px; height: 90vh; border-radius: 20px 20px 0 0; display: flex; flex-direction: column; overflow: hidden; transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); }
@@ -171,7 +165,6 @@
     .modal-header-top .close-btn { position: absolute; right: 16px; background: #212530; border: none; color: #8a8f9d; font-size: 1.2rem; cursor: pointer; width: 32px; height: 32px; display: flex; justify-content: center; align-items: center; border-radius: 50%; }
     .modal-body { padding: 0 15px 15px 15px; overflow-y: auto; display: flex; flex-direction: column; flex: 1; }
 
-    /* ---- Modal Programação ---- */
     .modal-header-date { padding: 12px 16px; background: #12141a; position: relative; border-bottom: 1px solid #2a2e39; }
     .date-selector-btn { background: none; border: none; color: #fff; font-size: 1.1rem; font-weight: bold; display: flex; align-items: center; gap: 8px; cursor: pointer; }
     .date-selector-btn i { font-size: 0.9rem; transition: transform 0.3s; }
@@ -190,7 +183,6 @@
     .live-broadcast-icon { color: #ff0000; margin-left: 8px; font-size: 0.95rem; animation: pulseBroadcast 1.5s infinite; }
     @keyframes pulseBroadcast { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.6; transform: scale(1.15); } 100% { opacity: 1; transform: scale(1); } }
 
-    /* ---- Modal Tabela (Standings) ---- */
     .tabs-header { display: flex; background: #12141a; border-bottom: 1px solid #2a2e39; }
     .tab-btn { flex: 1; padding: 14px; background: none; border: none; color: #8a8f9d; font-weight: bold; font-size: 0.9rem; cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.2s, border-bottom 0.2s; }
     .tab-btn.active { color: #4d82ff; border-bottom-color: #4d82ff; }
@@ -416,7 +408,6 @@
 
     // ---- Carregamento Seguro da Splash e Áudio ----
     window.addEventListener('load', () => {
-      
       const splash = document.getElementById('splashScreen');
       const introSound = document.getElementById('splashSound');
 
@@ -425,22 +416,15 @@
           introSound.volume = 0.6;
           const playPromise = introSound.play();
           if (playPromise !== undefined) {
-            playPromise.catch(error => {
-              console.log("Áudio de abertura silenciado pelo navegador.");
-            });
+            playPromise.catch(error => { console.log("Áudio de abertura silenciado pelo navegador."); });
           }
         }
-      } catch (err) {
-        console.log("Erro de Áudio:", err);
-      }
+      } catch (err) { console.log("Erro de Áudio:", err); }
 
       setTimeout(() => {
-        if (splash) {
-          splash.classList.add('hidden');
-        }
+        if (splash) { splash.classList.add('hidden'); }
         resetControlsTimeout();
       }, 2200);
-
     });
 
     document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
@@ -467,10 +451,9 @@
     const pollRef = db.ref('enquete_ruralzao_2026');
 
     // ================= CONFIGURAÇÕES CENTRAIS =================
-    // LINK DO GITHUB PARA BUSCAR O SINAL DO VÍDEO
-    const GITHUB_HLS_TXT_URL = 'https://raw.githubusercontent.com/althierestm/Lista-RadarTV/refs/heads/main/link-player.txt';
+    // LENDO DIRETO DA SUA LISTA M3U NO GITHUB
+    const GITHUB_M3U_URL = 'https://raw.githubusercontent.com/althierestm/Lista-RadarTV/refs/heads/main/lista.m3u';
     
-    // LINK DO GITHUB PARA BUSCAR O EPG (GUIA DE PROGRAMAÇÃO)
     const EPG_XML_URL = 'https://raw.githubusercontent.com/althierestm/Lista-RadarTV/refs/heads/main/epg.xml';
 
     const YOUTUBE_CHANNEL_ID = 'UC7wHmjY4RNruABZ9An1crBA'; 
@@ -500,430 +483,184 @@
       ]
     };
 
-    function openStandingsModal() { 
-      document.getElementById('standingsModal').classList.add('active'); 
-      renderStandings('serieA'); 
-    }
-    
-    function closeStandingsModal() { 
-      document.getElementById('standingsModal').classList.remove('active'); 
-    }
+    function openStandingsModal() { document.getElementById('standingsModal').classList.add('active'); renderStandings('serieA'); }
+    function closeStandingsModal() { document.getElementById('standingsModal').classList.remove('active'); }
 
     function switchStandingsTab(championship) {
-      document.getElementById('tabSerieA').classList.remove('active'); 
-      document.getElementById('tabMineiro').classList.remove('active');
-      
-      if(championship === 'serieA') { 
-        document.getElementById('tabSerieA').classList.add('active'); 
-      } else { 
-        document.getElementById('tabMineiro').classList.add('active'); 
-      }
-      
+      document.getElementById('tabSerieA').classList.remove('active'); document.getElementById('tabMineiro').classList.remove('active');
+      if(championship === 'serieA') { document.getElementById('tabSerieA').classList.add('active'); } else { document.getElementById('tabMineiro').classList.add('active'); }
       renderStandings(championship);
     }
 
     function renderStandings(championship) {
-      const tbody = document.getElementById('standingsTableBody'); 
-      tbody.innerHTML = ''; 
+      const tbody = document.getElementById('standingsTableBody'); tbody.innerHTML = ''; 
       const data = mockStandings[championship];
-      
       data.forEach(team => {
-        const tr = document.createElement('tr'); 
-        if(team.zone) tr.classList.add(team.zone);
-        
+        const tr = document.createElement('tr'); if(team.zone) tr.classList.add(team.zone);
         tr.innerHTML = `
-          <td>${team.pos}</td>
-          <td>${team.team}</td>
-          <td style="color:#fff;">${team.pts}</td>
-          <td style="color:#8a8f9d;">${team.jogos}</td>
-          <td style="color:#8a8f9d;">${team.vitorias}</td>
-          <td style="color:#8a8f9d;">${team.sg}</td>
+          <td>${team.pos}</td><td>${team.team}</td><td style="color:#fff;">${team.pts}</td>
+          <td style="color:#8a8f9d;">${team.jogos}</td><td style="color:#8a8f9d;">${team.vitorias}</td><td style="color:#8a8f9d;">${team.sg}</td>
         `;
         tbody.appendChild(tr);
       });
     }
 
     /* ---- Lógica EPG XML ---- */
-    let scheduleData = []; 
-    let selectedScheduleDate = new Date(); 
-    let next7Days = [];
-    
+    let scheduleData = []; let selectedScheduleDate = new Date(); let next7Days = [];
     const monthsPt = ['jan.', 'fev.', 'mar.', 'abr.', 'mai.', 'jun.', 'jul.', 'ago.', 'set.', 'out.', 'nov.', 'dez.'];
     
     function formatUIDate(date, offsetIndex) { 
-      const d = date.getDate(); 
-      const m = monthsPt[date.getMonth()]; 
-      
-      if (offsetIndex === 0) return `Hoje, ${d} ${m}`; 
-      if (offsetIndex === 1) return `Amanhã, ${d} ${m}`; 
-      return `${d} ${m}`; 
+      const d = date.getDate(); const m = monthsPt[date.getMonth()]; 
+      if (offsetIndex === 0) return `Hoje, ${d} ${m}`; if (offsetIndex === 1) return `Amanhã, ${d} ${m}`; return `${d} ${m}`; 
     }
 
     function generateDays() {
-      const today = new Date(); 
-      next7Days = [];
+      const today = new Date(); next7Days = [];
       for (let i = 0; i < 7; i++) { 
-        let loopDate = new Date(today); 
-        loopDate.setDate(today.getDate() + i); 
-        next7Days.push({ 
-          dateObj: loopDate, 
-          label: formatUIDate(loopDate, i) 
-        }); 
+        let loopDate = new Date(today); loopDate.setDate(today.getDate() + i); 
+        next7Days.push({ dateObj: loopDate, label: formatUIDate(loopDate, i) }); 
       }
     }
 
     function parseXMLTVDate(dateString) {
       if (!dateString) return new Date();
-      const year = dateString.substring(0, 4); 
-      const month = dateString.substring(4, 6); 
-      const day = dateString.substring(6, 8); 
-      const hour = dateString.substring(8, 10); 
-      const min = dateString.substring(10, 12); 
-      const sec = dateString.substring(12, 14);
-      
+      const year = dateString.substring(0, 4); const month = dateString.substring(4, 6); const day = dateString.substring(6, 8); 
+      const hour = dateString.substring(8, 10); const min = dateString.substring(10, 12); const sec = dateString.substring(12, 14);
       let tz = ""; 
-      if (dateString.length > 15) { 
-        tz = dateString.substring(15).trim(); 
-        if (tz.length === 5) {
-          tz = tz.substring(0, 3) + ":" + tz.substring(3, 5); 
-        }
-      } else { 
-        tz = "-03:00"; 
-      }
-      
+      if (dateString.length > 15) { tz = dateString.substring(15).trim(); if (tz.length === 5) { tz = tz.substring(0, 3) + ":" + tz.substring(3, 5); } } 
+      else { tz = "-03:00"; }
       return new Date(`${year}-${month}-${day}T${hour}:${min}:${sec}${tz}`);
     }
 
-    function formatTime(date) { 
-      return String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0'); 
-    }
+    function formatTime(date) { return String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0'); }
 
     async function fetchEPG() {
       try {
-        const response = await fetch(EPG_XML_URL); 
-        const text = await response.text(); 
-        const parser = new DOMParser(); 
-        const xmlDoc = parser.parseFromString(text, "text/xml"); 
-        const programs = xmlDoc.getElementsByTagName('programme'); 
-        let newSchedule = [];
+        const response = await fetch(EPG_XML_URL); const text = await response.text(); 
+        const parser = new DOMParser(); const xmlDoc = parser.parseFromString(text, "text/xml"); 
+        const programs = xmlDoc.getElementsByTagName('programme'); let newSchedule = [];
         
         for (let i = 0; i < programs.length; i++) {
-          const prog = programs[i]; 
-          const startStr = prog.getAttribute('start'); 
-          const stopStr = prog.getAttribute('stop'); 
-          const titleNode = prog.getElementsByTagName('title')[0]; 
-          const descNode = prog.getElementsByTagName('desc')[0];
-          
-          const title = titleNode ? titleNode.textContent : 'Sem título'; 
-          const desc = descNode ? descNode.textContent : 'Acompanhe nossa programação.';
-          
-          newSchedule.push({ 
-            start: parseXMLTVDate(startStr), 
-            end: parseXMLTVDate(stopStr), 
-            title: title, 
-            desc: desc 
-          });
+          const prog = programs[i]; const startStr = prog.getAttribute('start'); const stopStr = prog.getAttribute('stop'); 
+          const titleNode = prog.getElementsByTagName('title')[0]; const descNode = prog.getElementsByTagName('desc')[0];
+          newSchedule.push({ start: parseXMLTVDate(startStr), end: parseXMLTVDate(stopStr), title: titleNode ? titleNode.textContent : 'Sem título', desc: descNode ? descNode.textContent : 'Acompanhe nossa programação.' });
         }
-        
-        newSchedule.sort((a, b) => a.start - b.start); 
-        scheduleData = newSchedule; 
-        updateEPG(); 
-      } catch (err) { 
-        console.error("Erro EPG:", err); 
-        document.getElementById('progDesc').innerText = "Erro ao carregar programação."; 
-      }
+        newSchedule.sort((a, b) => a.start - b.start); scheduleData = newSchedule; updateEPG(); 
+      } catch (err) { document.getElementById('progDesc').innerText = "Erro ao carregar programação."; }
     }
 
     function updateEPG() {
       if (scheduleData.length === 0) return;
-      const now = new Date(); 
-      let currentIndex = scheduleData.findIndex(item => now >= item.start && now < item.end);
-      
-      let currentProg; 
-      
-      if (currentIndex === -1) { 
-        currentProg = { 
-          start: now, 
-          end: new Date(now.getTime() + 60*60*1000), 
-          title: "Radar TV Ao Vivo", 
-          desc: "Fique ligado na nossa programação." 
-        }; 
-      } else { 
-        currentProg = scheduleData[currentIndex]; 
-      }
-
+      const now = new Date(); let currentIndex = scheduleData.findIndex(item => now >= item.start && now < item.end);
+      let currentProg = currentIndex === -1 ? { start: now, end: new Date(now.getTime() + 60*60*1000), title: "Radar TV Ao Vivo", desc: "Fique ligado na nossa programação." } : scheduleData[currentIndex]; 
       document.getElementById('progTime').innerText = `${formatTime(currentProg.start)} - ${formatTime(currentProg.end)}`; 
-      document.getElementById('progTitle').innerText = currentProg.title; 
-      document.getElementById('progDesc').innerText = currentProg.desc; 
+      document.getElementById('progTitle').innerText = currentProg.title; document.getElementById('progDesc').innerText = currentProg.desc; 
       
-      const totalDuration = currentProg.end.getTime() - currentProg.start.getTime(); 
-      const elapsed = now.getTime() - currentProg.start.getTime(); 
+      const totalDuration = currentProg.end.getTime() - currentProg.start.getTime(); const elapsed = now.getTime() - currentProg.start.getTime(); 
       let percentage = (elapsed / totalDuration) * 100;
-      
-      if(percentage < 0) percentage = 0; 
-      if(percentage > 100) percentage = 100; 
-      
+      if(percentage < 0) percentage = 0; if(percentage > 100) percentage = 100; 
       document.getElementById('progBar').style.width = `${percentage}%`;
     }
 
-    function openScheduleModal() { 
-      generateDays(); 
-      selectedScheduleDate = next7Days[0].dateObj; 
-      updateDateSelectorUI(); 
-      renderScheduleList(); 
-      document.getElementById('scheduleModal').classList.add('active'); 
-    }
-    
-    function closeScheduleModal() { 
-      document.getElementById('scheduleModal').classList.remove('active'); 
-      document.getElementById('dateDropdown').classList.remove('active'); 
-      document.getElementById('btnDateSelector').classList.remove('open'); 
-    }
+    function openScheduleModal() { generateDays(); selectedScheduleDate = next7Days[0].dateObj; updateDateSelectorUI(); renderScheduleList(); document.getElementById('scheduleModal').classList.add('active'); }
+    function closeScheduleModal() { document.getElementById('scheduleModal').classList.remove('active'); document.getElementById('dateDropdown').classList.remove('active'); document.getElementById('btnDateSelector').classList.remove('open'); }
     
     function toggleDateMenu() {
-      const dropdown = document.getElementById('dateDropdown'); 
-      const btn = document.getElementById('btnDateSelector'); 
-      dropdown.classList.toggle('active'); 
-      btn.classList.toggle('open');
-      
+      const dropdown = document.getElementById('dateDropdown'); const btn = document.getElementById('btnDateSelector'); 
+      dropdown.classList.toggle('active'); btn.classList.toggle('open');
       if (dropdown.classList.contains('active')) {
         dropdown.innerHTML = ''; 
         next7Days.forEach((dayInfo, index) => {
-          const btnOption = document.createElement('button'); 
-          btnOption.className = 'date-option';
-          const isSelected = selectedScheduleDate.getDate() === dayInfo.dateObj.getDate(); 
-          if(isSelected) btnOption.classList.add('selected');
-          
-          btnOption.innerText = dayInfo.label; 
-          btnOption.onclick = () => { selectScheduleDate(index); }; 
-          dropdown.appendChild(btnOption);
+          const btnOption = document.createElement('button'); btnOption.className = 'date-option';
+          if(selectedScheduleDate.getDate() === dayInfo.dateObj.getDate()) btnOption.classList.add('selected');
+          btnOption.innerText = dayInfo.label; btnOption.onclick = () => { selectScheduleDate(index); }; dropdown.appendChild(btnOption);
         });
       }
     }
     
-    function selectScheduleDate(dayIndex) { 
-      selectedScheduleDate = next7Days[dayIndex].dateObj; 
-      updateDateSelectorUI(); 
-      renderScheduleList(); 
-      document.getElementById('dateDropdown').classList.remove('active'); 
-      document.getElementById('btnDateSelector').classList.remove('open'); 
-    }
-    
-    function updateDateSelectorUI() { 
-      const dayInfo = next7Days.find(d => d.dateObj.getDate() === selectedScheduleDate.getDate()); 
-      document.getElementById('btnDateSelector').innerHTML = `${dayInfo.label} <i class="fa-solid fa-chevron-down"></i>`; 
-    }
+    function selectScheduleDate(dayIndex) { selectedScheduleDate = next7Days[dayIndex].dateObj; updateDateSelectorUI(); renderScheduleList(); document.getElementById('dateDropdown').classList.remove('active'); document.getElementById('btnDateSelector').classList.remove('open'); }
+    function updateDateSelectorUI() { const dayInfo = next7Days.find(d => d.dateObj.getDate() === selectedScheduleDate.getDate()); document.getElementById('btnDateSelector').innerHTML = `${dayInfo.label} <i class="fa-solid fa-chevron-down"></i>`; }
     
     function renderScheduleList() {
       const now = new Date();
-      const targetPrograms = scheduleData.filter(item => { 
-        return item.start.getDate() === selectedScheduleDate.getDate() && 
-               item.start.getMonth() === selectedScheduleDate.getMonth() && 
-               item.start.getFullYear() === selectedScheduleDate.getFullYear(); 
-      });
-      
-      const container = document.getElementById('fullScheduleList'); 
-      container.innerHTML = '';
-      
-      if(targetPrograms.length === 0) { 
-        container.innerHTML = '<div class="schedule-item"><span style="color:#a0a5b5; padding: 10px 0;">Nenhuma programação disponível para esta data.</span></div>'; 
-      }
-      
+      const targetPrograms = scheduleData.filter(item => { return item.start.getDate() === selectedScheduleDate.getDate() && item.start.getMonth() === selectedScheduleDate.getMonth() && item.start.getFullYear() === selectedScheduleDate.getFullYear(); });
+      const container = document.getElementById('fullScheduleList'); container.innerHTML = '';
+      if(targetPrograms.length === 0) { container.innerHTML = '<div class="schedule-item"><span style="color:#a0a5b5; padding: 10px 0;">Nenhuma programação disponível para esta data.</span></div>'; }
       targetPrograms.forEach(item => {
-        const isCurrent = (now >= item.start && now < item.end); 
-        const div = document.createElement('div'); 
-        div.className = `schedule-item ${isCurrent ? 'active' : ''}`;
-        
+        const isCurrent = (now >= item.start && now < item.end); const div = document.createElement('div'); div.className = `schedule-item ${isCurrent ? 'active' : ''}`;
         const liveIndicator = isCurrent ? '<i class="fa-solid fa-tower-broadcast live-broadcast-icon"></i>' : '';
-        div.innerHTML = `
-          <div class="schedule-time">${formatTime(item.start)} - ${formatTime(item.end)}</div>
-          <div class="schedule-name">${item.title} ${liveIndicator}</div>
-          <div class="schedule-desc">${item.desc}</div>
-        `;
+        div.innerHTML = `<div class="schedule-time">${formatTime(item.start)} - ${formatTime(item.end)}</div><div class="schedule-name">${item.title} ${liveIndicator}</div><div class="schedule-desc">${item.desc}</div>`;
         container.appendChild(div);
       });
     }
 
-    /* ---- Player ---- */
-    const hlsVideo = document.getElementById('hlsPlayer'); 
-    const ytIframe = document.getElementById('ytPlayer'); 
-    const videoWrapper = document.getElementById('videoWrapper');
-    let hlsInstance = null; 
-    let isYtLiveActive = false;
+    /* ---- Player e Controles ---- */
+    const hlsVideo = document.getElementById('hlsPlayer'); const ytIframe = document.getElementById('ytPlayer'); const videoWrapper = document.getElementById('videoWrapper'); const centerPlayBtn = document.getElementById('centerPlayBtn');
+    let hlsInstance = null; let isYtLiveActive = false;
 
-    /* ---- Lógica do Botão Play Central ---- */
-    const centerPlayBtn = document.getElementById('centerPlayBtn');
+    hlsVideo.addEventListener('pause', () => { centerPlayBtn.classList.remove('hidden'); });
+    hlsVideo.addEventListener('play', () => { centerPlayBtn.classList.add('hidden'); });
 
-    hlsVideo.addEventListener('pause', () => {
-      centerPlayBtn.classList.remove('hidden');
-    });
+    function resumePlay(e) { if (e) e.stopPropagation(); hlsVideo.play().catch(err => console.log('Erro ao retomar reprodução:', err)); resetControlsTimeout(); }
 
-    hlsVideo.addEventListener('play', () => {
-      centerPlayBtn.classList.add('hidden');
-    });
-
-    function resumePlay(e) {
-      if (e) e.stopPropagation();
-      hlsVideo.play().catch(err => console.log('Erro ao retomar reprodução:', err));
-      resetControlsTimeout();
-    }
-
-    /* ---- Lógica do Picture-in-Picture (PiP) ---- */
     async function togglePiP(e) {
-      if (e) e.stopPropagation();
-      resetControlsTimeout();
+      if (e) e.stopPropagation(); resetControlsTimeout();
       try {
-        if (hlsVideo !== document.pictureInPictureElement) {
-          await hlsVideo.requestPictureInPicture();
-        } else {
-          await document.exitPictureInPicture();
-        }
-      } catch (error) {
-        console.error("PiP falhou:", error);
-        alert("O recurso Picture-in-Picture não é suportado ou foi bloqueado neste momento.");
-      }
+        if (hlsVideo !== document.pictureInPictureElement) { await hlsVideo.requestPictureInPicture(); } else { await document.exitPictureInPicture(); }
+      } catch (error) { alert("O recurso Picture-in-Picture não é suportado ou foi bloqueado neste momento."); }
     }
 
-    function resetControlsTimeout() { 
-      clearTimeout(controlsTimeout); 
-      controlsTimeout = setTimeout(() => { 
-        document.getElementById('customControls').classList.add('hidden'); 
-      }, 3500); 
-    }
-    
-    function toggleControls() { 
-      const controls = document.getElementById('customControls'); 
-      if (controls.classList.contains('hidden')) { 
-        controls.classList.remove('hidden'); 
-        resetControlsTimeout(); 
-      } else { 
-        controls.classList.add('hidden'); 
-        clearTimeout(controlsTimeout); 
-      } 
-    }
-    
-    function toggleSound(e) { 
-      if (e) e.stopPropagation(); 
-      resetControlsTimeout(); 
-      hlsVideo.muted = !hlsVideo.muted; 
-      if (!hlsVideo.muted) { hlsVideo.volume = 1; } 
-    }
-    
-    function toggleFullscreenAction(e) { 
-      if(e) e.stopPropagation(); 
-      resetControlsTimeout(); 
-      toggleFullscreen(); 
-    }
-    
-    function toggleAirPlay(e) { 
-      if(e) e.stopPropagation(); 
-      resetControlsTimeout(); 
-      if (window.WebKitPlaybackTargetAvailabilityEvent) { 
-        hlsVideo.webkitShowPlaybackTargetPicker(); 
-      } else { 
-        alert("AirPlay nativo não é suportado neste aparelho."); 
-      } 
-    }
+    function resetControlsTimeout() { clearTimeout(controlsTimeout); controlsTimeout = setTimeout(() => { document.getElementById('customControls').classList.add('hidden'); }, 3500); }
+    function toggleControls() { const controls = document.getElementById('customControls'); if (controls.classList.contains('hidden')) { controls.classList.remove('hidden'); resetControlsTimeout(); } else { controls.classList.add('hidden'); clearTimeout(controlsTimeout); } }
+    function toggleSound(e) { if (e) e.stopPropagation(); resetControlsTimeout(); hlsVideo.muted = !hlsVideo.muted; if (!hlsVideo.muted) { hlsVideo.volume = 1; } }
+    function toggleFullscreenAction(e) { if(e) e.stopPropagation(); resetControlsTimeout(); toggleFullscreen(); }
+    function toggleAirPlay(e) { if(e) e.stopPropagation(); resetControlsTimeout(); if (window.WebKitPlaybackTargetAvailabilityEvent) { hlsVideo.webkitShowPlaybackTargetPicker(); } else { alert("AirPlay nativo não é suportado neste aparelho."); } }
     
     hlsVideo.addEventListener('volumechange', () => {
       const volBtn = document.getElementById('volumeBtn');
-      if (hlsVideo.muted || hlsVideo.volume === 0) { 
-        volBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i> Ativar som'; 
-        volBtn.classList.remove('is-unmuted'); 
-      } else { 
-        volBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Mudo'; 
-        volBtn.classList.add('is-unmuted'); 
-      }
+      if (hlsVideo.muted || hlsVideo.volume === 0) { volBtn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i> Ativar som'; volBtn.classList.remove('is-unmuted'); } else { volBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> Mudo'; volBtn.classList.add('is-unmuted'); }
     });
 
-    let pollVotes = [0, 0, 0];
-    const COOLDOWN_TIME = 10 * 60 * 1000;
+    let pollVotes = [0, 0, 0]; const COOLDOWN_TIME = 10 * 60 * 1000;
     
     function renderPollResults() {
       const totalVotes = pollVotes.reduce((a, b) => a + b, 0);
       pollVotes.forEach((votes, index) => {
         const percentage = totalVotes > 0 ? Math.round((votes / totalVotes) * 100) : 0;
-        document.getElementById(`percent${index}`).innerText = `${percentage}% (${votes} ${votes === 1 ? 'voto' : 'votos'})`; 
-        document.getElementById(`bar${index}`).style.width = `${percentage}%`;
+        document.getElementById(`percent${index}`).innerText = `${percentage}% (${votes} ${votes === 1 ? 'voto' : 'votos'})`; document.getElementById(`bar${index}`).style.width = `${percentage}%`;
       });
     }
 
     function checkPollCooldown() {
-      const lastVote = localStorage.getItem('radar_last_vote_timestamp'); 
-      const now = Date.now(); 
-      const optionBtns = document.querySelectorAll('.poll-option-btn');
-      
+      const lastVote = localStorage.getItem('radar_last_vote_timestamp'); const now = Date.now(); const optionBtns = document.querySelectorAll('.poll-option-btn');
       if (lastVote && (now - parseInt(lastVote, 10)) < COOLDOWN_TIME) {
         const remainingMinutes = Math.ceil((COOLDOWN_TIME - (now - parseInt(lastVote, 10))) / 60000);
-        document.getElementById('pollStatusMsg').innerText = `Obrigado pelo seu voto! Você poderá votar novamente em ~${remainingMinutes} min.`; 
-        optionBtns.forEach(btn => btn.disabled = true);
+        document.getElementById('pollStatusMsg').innerText = `Obrigado pelo seu voto! Você poderá votar novamente em ~${remainingMinutes} min.`; optionBtns.forEach(btn => btn.disabled = true);
       } else { 
-        document.getElementById('pollStatusMsg').innerText = `Selecione uma opção para registrar seu voto.`; 
-        optionBtns.forEach(btn => btn.disabled = false); 
+        document.getElementById('pollStatusMsg').innerText = `Selecione uma opção para registrar seu voto.`; optionBtns.forEach(btn => btn.disabled = false); 
       }
     }
 
-    pollRef.on('value', (snapshot) => { 
-      const data = snapshot.val(); 
-      if (data) { 
-        pollVotes = [data.op0 || 0, data.op1 || 0, data.op2 || 0]; 
-      } else { 
-        pollVotes = [0, 0, 0]; pollRef.set({ op0: 0, op1: 0, op2: 0 }); 
-      } 
-      renderPollResults(); 
-      checkPollCooldown(); 
-    });
+    pollRef.on('value', (snapshot) => { const data = snapshot.val(); if (data) { pollVotes = [data.op0 || 0, data.op1 || 0, data.op2 || 0]; } else { pollVotes = [0, 0, 0]; pollRef.set({ op0: 0, op1: 0, op2: 0 }); } renderPollResults(); checkPollCooldown(); });
     
     function votePoll(optionIndex) {
-      const lastVote = localStorage.getItem('radar_last_vote_timestamp'); 
-      const now = Date.now();
-      
-      if (lastVote && (now - parseInt(lastVote, 10)) < COOLDOWN_TIME) { 
-        alert("Você já votou recentemente. Aguarde 10 minutos para votar novamente!"); return; 
-      }
-      
+      const lastVote = localStorage.getItem('radar_last_vote_timestamp'); const now = Date.now();
+      if (lastVote && (now - parseInt(lastVote, 10)) < COOLDOWN_TIME) { alert("Você já votou recentemente. Aguarde 10 minutos para votar novamente!"); return; }
       const field = `op${optionIndex}`; 
-      pollRef.child(field).transaction((currentVotes) => { 
-        return (currentVotes || 0) + 1; 
-      }, (error, committed) => { 
-        if (committed) { 
-          localStorage.setItem('radar_last_vote_timestamp', now.toString()); 
-          checkPollCooldown(); 
-        } 
-      });
+      pollRef.child(field).transaction((currentVotes) => { return (currentVotes || 0) + 1; }, (error, committed) => { if (committed) { localStorage.setItem('radar_last_vote_timestamp', now.toString()); checkPollCooldown(); } });
     }
 
-    function sendPollComment() {
-      const comment = document.getElementById('pollComment').value.trim(); 
-      if (!comment) { alert("Por favor, escreva uma sugestão ou comentário."); return; }
-      
-      const subject = encodeURIComponent("Opinião/Sugestão - App Radar TV"); 
-      const body = encodeURIComponent(`Olá equipe Radar TV,\n\n"${comment}"`); 
-      window.location.href = `mailto:radartvmg@gmail.com?subject=${subject}&body=${body}`; 
-      document.getElementById('pollComment').value = '';
-    }
-
+    function sendPollComment() { const comment = document.getElementById('pollComment').value.trim(); if (!comment) { alert("Por favor, escreva uma sugestão ou comentário."); return; } const subject = encodeURIComponent("Opinião/Sugestão - App Radar TV"); const body = encodeURIComponent(`Olá equipe Radar TV,\n\n"${comment}"`); window.location.href = `mailto:radartvmg@gmail.com?subject=${subject}&body=${body}`; document.getElementById('pollComment').value = ''; }
     function openMenu() { document.getElementById('sideMenu').classList.add('active'); document.getElementById('menuOverlay').classList.add('active'); }
     function closeMenu() { document.getElementById('sideMenu').classList.remove('active'); document.getElementById('menuOverlay').classList.remove('active'); }
     async function requestWakeLock() { try { if ('wakeLock' in navigator) await navigator.wakeLock.request('screen'); } catch (err) {} }
 
     function toggleFullscreen() {
       const elem = videoWrapper;
-      if (!document.fullscreenElement && !document.webkitFullscreenElement) { 
-        if (elem.requestFullscreen) elem.requestFullscreen(); 
-        else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen(); 
-        else if (hlsVideo.webkitEnterFullscreen) hlsVideo.webkitEnterFullscreen(); 
-      } else { 
-        if (document.exitFullscreen) document.exitFullscreen(); 
-        else if (document.webkitExitFullscreen) document.webkitExitFullscreen(); 
-      }
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) { if (elem.requestFullscreen) elem.requestFullscreen(); else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen(); else if (hlsVideo.webkitEnterFullscreen) hlsVideo.webkitEnterFullscreen(); } else { if (document.exitFullscreen) document.exitFullscreen(); else if (document.webkitExitFullscreen) document.webkitExitFullscreen(); }
     }
     
-    function forcePlayOnExitFullscreen() { 
-      if (hlsVideo.paused) { 
-        hlsVideo.play().catch(e => console.log('Retomar interceptado', e)); 
-      } 
-    }
+    function forcePlayOnExitFullscreen() { if (hlsVideo.paused) { hlsVideo.play().catch(e => console.log('Retomar interceptado', e)); } }
     
     document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement) forcePlayOnExitFullscreen(); });
     document.addEventListener('webkitfullscreenchange', () => { if (!document.webkitFullscreenElement) forcePlayOnExitFullscreen(); });
@@ -931,54 +668,33 @@
 
     function handleAutoRotation() {
       const isLandscape = window.innerWidth > window.innerHeight && window.innerWidth <= 950;
-      if (isLandscape) { 
-        if (!document.fullscreenElement && !document.webkitFullscreenElement) { 
-          if (videoWrapper.requestFullscreen) videoWrapper.requestFullscreen().catch(() => {}); 
-          else if (hlsVideo.webkitEnterFullscreen) hlsVideo.webkitEnterFullscreen(); 
-        } 
-      } else { 
-        if (document.fullscreenElement || document.webkitFullscreenElement) { 
-          if (document.exitFullscreen) document.exitFullscreen().catch(() => {}); 
-          else if (document.webkitExitFullscreen) document.webkitExitFullscreen().catch(() => {}); 
-        } 
-      }
+      if (isLandscape) { if (!document.fullscreenElement && !document.webkitFullscreenElement) { if (videoWrapper.requestFullscreen) videoWrapper.requestFullscreen().catch(() => {}); else if (hlsVideo.webkitEnterFullscreen) hlsVideo.webkitEnterFullscreen(); } } else { if (document.fullscreenElement || document.webkitFullscreenElement) { if (document.exitFullscreen) document.exitFullscreen().catch(() => {}); else if (document.webkitExitFullscreen) document.webkitExitFullscreen().catch(() => {}); } }
     }
-    
-    window.addEventListener('orientationchange', handleAutoRotation); 
-    window.addEventListener('resize', handleAutoRotation);
+    window.addEventListener('orientationchange', handleAutoRotation); window.addEventListener('resize', handleAutoRotation);
+    function shareApp() { if (navigator.share) { navigator.share({ title: 'Radar TV', text: 'Assista ao vivo!', url: window.location.href }).catch(console.error); } else { navigator.clipboard.writeText(window.location.href); alert('Link copiado!'); } }
+    function requestNotificationPermission() { closeMenu(); if ('Notification' in window) { Notification.requestPermission().then(permission => { if (permission === 'granted') alert('Notificações ativadas com sucesso!'); else alert('As notificações foram negadas.'); }); } else { alert('Seu navegador não suporta notificações.'); } }
 
-    function shareApp() { 
-      if (navigator.share) { 
-        navigator.share({ title: 'Radar TV', text: 'Assista ao vivo!', url: window.location.href }).catch(console.error); 
-      } else { 
-        navigator.clipboard.writeText(window.location.href); alert('Link copiado!'); 
-      } 
-    }
-    
-    function requestNotificationPermission() { 
-      closeMenu(); 
-      if ('Notification' in window) { 
-        Notification.requestPermission().then(permission => { 
-          if (permission === 'granted') alert('Notificações ativadas com sucesso!'); 
-          else alert('As notificações foram negadas.'); 
-        }); 
-      } else { 
-        alert('Seu navegador não suporta notificações.'); 
-      } 
-    }
-
-    /* ---- Lógica de Fetch do Link M3U8 no GitHub ---- */
+    /* ---- Lógica Inteligente: Lendo do lista.m3u ---- */
     async function initHLS() { 
       let streamUrl = 'https://video01.logicahost.com.br/fcvtv/fcvtv/playlist.m3u8'; // Link reserva
       
       try {
-        const response = await fetch(GITHUB_HLS_TXT_URL);
+        const response = await fetch(GITHUB_M3U_URL);
         if (response.ok) {
-          const fetchedLink = await response.text();
-          if (fetchedLink.trim().length > 10) streamUrl = fetchedLink.trim();
+          const textData = await response.text();
+          // Divide o arquivo em linhas
+          const linhas = textData.split('\n');
+          // Procura a primeira linha que começa com http (o seu link de vídeo)
+          for (let linha of linhas) {
+            linha = linha.trim();
+            if (linha.startsWith('http')) {
+              streamUrl = linha;
+              break;
+            }
+          }
         }
       } catch (e) {
-        console.log("Aviso: Usando link reserva. Não foi possível acessar o arquivo do GitHub.");
+        console.log("Aviso: Usando link reserva.");
       }
 
       if (Hls.isSupported()) { 
@@ -993,41 +709,15 @@
     async function checkYouTubeLive() {
       try {
         const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${YOUTUBE_CHANNEL_ID}&type=video&eventType=live&key=${YOUTUBE_API_KEY}`;
-        const response = await fetch(url); 
-        const data = await response.json();
-        
-        if (data.items && data.items.length > 0) { 
-          const videoId = data.items[0].id.videoId; 
-          if (!isYtLiveActive) enableYouTubeLive(videoId); 
-        } else { 
-          if (isYtLiveActive) disableYouTubeLive(); 
-        }
+        const response = await fetch(url); const data = await response.json();
+        if (data.items && data.items.length > 0) { const videoId = data.items[0].id.videoId; if (!isYtLiveActive) enableYouTubeLive(videoId); } else { if (isYtLiveActive) disableYouTubeLive(); }
       } catch (err) {}
     }
 
-    function enableYouTubeLive(videoId) { 
-      isYtLiveActive = true; 
-      hlsVideo.pause(); 
-      hlsVideo.style.display = 'none'; 
-      ytIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&live=1`; 
-      ytIframe.style.display = 'block'; 
-    }
-    
-    function disableYouTubeLive() { 
-      isYtLiveActive = false; 
-      ytIframe.src = ''; 
-      ytIframe.style.display = 'none'; 
-      hlsVideo.style.display = 'block'; 
-    }
+    function enableYouTubeLive(videoId) { isYtLiveActive = true; hlsVideo.pause(); hlsVideo.style.display = 'none'; ytIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&live=1`; ytIframe.style.display = 'block'; document.getElementById('liveTag').innerText = 'AO VIVO - YOUTUBE'; }
+    function disableYouTubeLive() { isYtLiveActive = false; ytIframe.src = ''; ytIframe.style.display = 'none'; hlsVideo.style.display = 'block'; document.getElementById('liveTag').innerText = 'AO VIVO'; }
 
-    initHLS(); 
-    fetchEPG(); 
-    requestWakeLock(); 
-    setInterval(updateEPG, 60000); 
-    setInterval(fetchEPG, 300000); 
-    setInterval(checkPollCooldown, 30000); 
-    checkYouTubeLive(); 
-    setInterval(checkYouTubeLive, 30000);
+    initHLS(); fetchEPG(); requestWakeLock(); setInterval(updateEPG, 60000); setInterval(fetchEPG, 300000); setInterval(checkPollCooldown, 30000); checkYouTubeLive(); setInterval(checkYouTubeLive, 30000);
 
     if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(console.error); }
     let deferredPrompt; const pwaBanner = document.getElementById('pwaBanner'); const btnInstall = document.getElementById('btnInstall');
