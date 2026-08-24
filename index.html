@@ -284,7 +284,6 @@
         <div class="video-wrapper" id="videoWrapper" onclick="toggleControls()">
           <img src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1920.png" alt="Radar TV Logo" class="player-overlay-logo">
           
-          <!-- Controles Atualizados com o Botão Play Central e PiP -->
           <div id="customControls" class="custom-controls">
             
             <button id="centerPlayBtn" class="center-play-btn hidden" onclick="resumePlay(event)">
@@ -421,7 +420,6 @@
       const splash = document.getElementById('splashScreen');
       const introSound = document.getElementById('splashSound');
 
-      // Tenta tocar o áudio. Se falhar, o código continua normalmente.
       try {
         if (introSound) {
           introSound.volume = 0.6;
@@ -436,7 +434,6 @@
         console.log("Erro de Áudio:", err);
       }
 
-      // Aguarda 2.2 segundos e esconde a tela de abertura
       setTimeout(() => {
         if (splash) {
           splash.classList.add('hidden');
@@ -469,10 +466,16 @@
     const db = firebase.database();
     const pollRef = db.ref('enquete_ruralzao_2026');
 
-    const HLS_URL = 'https://video01.logicahost.com.br/fcvtv/fcvtv/playlist.m3u8';
+    // ================= CONFIGURAÇÕES CENTRAIS =================
+    // LINK DO GITHUB PARA BUSCAR O SINAL DO VÍDEO
+    const GITHUB_HLS_TXT_URL = 'https://raw.githubusercontent.com/althierestm/Lista-RadarTV/refs/heads/main/link-player.txt';
+    
+    // LINK DO GITHUB PARA BUSCAR O EPG (GUIA DE PROGRAMAÇÃO)
+    const EPG_XML_URL = 'https://raw.githubusercontent.com/althierestm/Lista-RadarTV/refs/heads/main/epg.xml';
+
     const YOUTUBE_CHANNEL_ID = 'UC7wHmjY4RNruABZ9An1crBA'; 
     const YOUTUBE_API_KEY = 'AIzaSyDaVlWRVlFrq9Qur-Dzv779pIIi3v_XD0g'; 
-    const EPG_XML_URL = 'https://raw.githubusercontent.com/althierestm/Lista-RadarTV/refs/heads/main/epg.xml';
+    // ==========================================================
 
     /* ---- Lógica Tabela de Esportes ---- */
     const mockStandings = {
@@ -964,13 +967,26 @@
       } 
     }
 
-    function initHLS() { 
+    /* ---- Lógica de Fetch do Link M3U8 no GitHub ---- */
+    async function initHLS() { 
+      let streamUrl = 'https://video01.logicahost.com.br/fcvtv/fcvtv/playlist.m3u8'; // Link reserva
+      
+      try {
+        const response = await fetch(GITHUB_HLS_TXT_URL);
+        if (response.ok) {
+          const fetchedLink = await response.text();
+          if (fetchedLink.trim().length > 10) streamUrl = fetchedLink.trim();
+        }
+      } catch (e) {
+        console.log("Aviso: Usando link reserva. Não foi possível acessar o arquivo do GitHub.");
+      }
+
       if (Hls.isSupported()) { 
         hlsInstance = new Hls(); 
-        hlsInstance.loadSource(HLS_URL); 
+        hlsInstance.loadSource(streamUrl); 
         hlsInstance.attachMedia(hlsVideo); 
       } else if (hlsVideo.canPlayType('application/vnd.apple.mpegurl')) { 
-        hlsVideo.src = HLS_URL; 
+        hlsVideo.src = streamUrl; 
       } 
     }
 
