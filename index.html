@@ -84,6 +84,38 @@
     .custom-controls.hidden { opacity: 0; visibility: hidden; } 
     .custom-controls > * { pointer-events: auto; }
 
+    /* Botão Play Central */
+    .center-play-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.6);
+      color: #ffffff;
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      width: 65px;
+      height: 65px;
+      font-size: 1.5rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      z-index: 30;
+      backdrop-filter: blur(4px);
+      transition: all 0.3s ease;
+      padding-left: 5px; 
+      pointer-events: auto;
+    }
+    .center-play-btn:hover {
+      background: rgba(13, 71, 230, 0.9); 
+      transform: translate(-50%, -50%) scale(1.1);
+      border-color: transparent;
+    }
+    .center-play-btn.hidden {
+      display: none;
+    }
+
     .player-top-actions { position: absolute; top: 15px; right: 15px; display: flex; gap: 15px; align-items: center; }
     .player-top-actions button, .player-top-actions google-cast-launcher { background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition: transform 0.2s; }
     .player-top-actions button:active { transform: scale(0.9); }
@@ -119,13 +151,7 @@
     .poll-option-content { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; }
     .poll-percent { font-weight: bold; color: #4d82ff; font-size: 0.85rem; }
     .poll-status-msg { font-size: 0.78rem; color: #8a8f9d; margin-top: 4px; }
-    .poll-comment-box { display: flex; flex-direction: column; gap: 8px; margin-top: 8px; padding-top: 12px; border-top: 1px dashed #2a2e39; }
-    .poll-comment-box label { font-size: 0.82rem; color: #a0a5b5; font-weight: 600; }
-    .poll-textarea { width: 100%; background: #12141a; border: 1px solid #2a2e39; border-radius: 8px; padding: 10px; color: #fff; font-size: 0.85rem; resize: vertical; min-height: 60px; outline: none; }
-    .poll-textarea:focus { border-color: #0d47e6; }
-    .btn-send-comment { align-self: flex-end; background: #0d47e6; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-size: 0.82rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 6px; }
-    .btn-send-comment:hover { background: #1a56f0; }
-
+    
     .app-footer { width: 100%; max-width: 800px; margin-top: 20px; padding: 15px 10px 30px 10px; display: flex; flex-direction: column; align-items: center; gap: 16px; border-top: 1px solid #2a2e39; }
     .social-buttons { display: flex; gap: 12px; width: 100%; justify-content: center; }
     .social-btn { flex: 1; max-width: 200px; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 16px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 0.9rem; color: #ffffff; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); transition: transform 0.2s; }
@@ -258,8 +284,21 @@
         <div class="video-wrapper" id="videoWrapper" onclick="toggleControls()">
           <img src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1920.png" alt="Radar TV Logo" class="player-overlay-logo">
           
+          <!-- Controles Atualizados com o Botão Play Central e PiP -->
           <div id="customControls" class="custom-controls">
+            
+            <button id="centerPlayBtn" class="center-play-btn hidden" onclick="resumePlay(event)">
+              <i class="fa-solid fa-play"></i>
+            </button>
+
             <div class="player-top-actions" onclick="event.stopPropagation()">
+              <button onclick="togglePiP(event)" title="Picture-in-Picture">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="18" height="14" rx="2" ry="2"></rect>
+                  <rect x="12" y="10" width="7" height="5" rx="1" ry="1"></rect>
+                </svg>
+              </button>
+
               <button onclick="toggleAirPlay(event)" title="AirPlay">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"></path>
@@ -709,6 +748,39 @@
     let hlsInstance = null; 
     let isYtLiveActive = false;
 
+    /* ---- Lógica do Botão Play Central ---- */
+    const centerPlayBtn = document.getElementById('centerPlayBtn');
+
+    hlsVideo.addEventListener('pause', () => {
+      centerPlayBtn.classList.remove('hidden');
+    });
+
+    hlsVideo.addEventListener('play', () => {
+      centerPlayBtn.classList.add('hidden');
+    });
+
+    function resumePlay(e) {
+      if (e) e.stopPropagation();
+      hlsVideo.play().catch(err => console.log('Erro ao retomar reprodução:', err));
+      resetControlsTimeout();
+    }
+
+    /* ---- Lógica do Picture-in-Picture (PiP) ---- */
+    async function togglePiP(e) {
+      if (e) e.stopPropagation();
+      resetControlsTimeout();
+      try {
+        if (hlsVideo !== document.pictureInPictureElement) {
+          await hlsVideo.requestPictureInPicture();
+        } else {
+          await document.exitPictureInPicture();
+        }
+      } catch (error) {
+        console.error("PiP falhou:", error);
+        alert("O recurso Picture-in-Picture não é suportado ou foi bloqueado neste momento.");
+      }
+    }
+
     function resetControlsTimeout() { 
       clearTimeout(controlsTimeout); 
       controlsTimeout = setTimeout(() => { 
@@ -948,4 +1020,3 @@
   </script>
 </body>
 </html>
-
