@@ -676,18 +676,17 @@
 
     /* ---- Lógica Inteligente: Lendo do lista.m3u ---- */
     async function initHLS() { 
-      let streamUrl = 'https://video01.logicahost.com.br/fcvtv/fcvtv/playlist.m3u8'; // Link reserva
+      let streamUrl = 'https://radartv.s.gy/radartvaovivo'; // Link reserva atualizado para o seu encurtador
       
       try {
         const response = await fetch(GITHUB_M3U_URL);
         if (response.ok) {
           const textData = await response.text();
-          // Divide o arquivo em linhas
           const linhas = textData.split('\n');
-          // Procura a primeira linha que começa com http (o seu link de vídeo)
           for (let linha of linhas) {
             linha = linha.trim();
-            if (linha.startsWith('http')) {
+            // Pula se for linha vazia, comentário ou o link do EPG para pegar o link de vídeo correto
+            if (linha.startsWith('http') && !linha.includes('epg.xml')) {
               streamUrl = linha;
               break;
             }
