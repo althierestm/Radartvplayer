@@ -29,6 +29,9 @@
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     html, body { overscroll-behavior-y: none; }
@@ -220,9 +223,6 @@
       <div class="menu-item active" onclick="closeMenu()"><i class="fa-solid fa-tv"></i> Radar TV Ao Vivo</div>
       <div class="menu-divider"></div>
       
-      <a href="#" class="menu-item" onclick="alert('Em breve: Notícias de Rosário da Limeira e região!')">
-        <i class="fa-regular fa-newspaper" style="color: #4d82ff;"></i> Limeira News
-      </a>
       <a href="#" class="menu-item" onclick="openStandingsModal(); closeMenu();">
         <i class="fa-solid fa-trophy" style="color: #f1c40f;"></i> Tabela Radar Esportes
       </a>
