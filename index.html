@@ -254,7 +254,6 @@
     </nav>
   </aside>
 
-  <!-- Container Base do App -->
   <div class="app-wrapper" id="appWrapper">
 
     <!-- ==========================================
@@ -300,7 +299,7 @@
         <button class="btn-schedule-pill" onclick="openScheduleModal()">Programação</button>
       </div>
 
-      <!-- TOP 5 INTELIGENTE -->
+      <!-- TOP 5 INTELIGENTE (BASEADO NOS CLIQUES) -->
       <section class="block-section">
         <div class="block-header">
           <div class="block-title"><i class="fa-solid fa-fire" style="color: #ff3838;"></i> Top 5 Mais Assistidos</div>
@@ -417,7 +416,6 @@
     const PLAYLIST_BALDANZA = 'PLzfuSmZBMwIpRXDvRQPzJbIGcpGImYr4n'; 
     // =================================================
 
-    // Guarda os vídeos recentes para o ranking do Top 5
     let globalRecentVideos = [];
 
     window.addEventListener('load', () => {
@@ -612,7 +610,7 @@
       document.getElementById('vodIframe').src = '';
     }
 
-    /* ---- EPG (7 Dias) ---- */
+    /* ---- EPG (7 Dias) + MEDIA SESSION ATUALIZADA ---- */
     let scheduleData = []; let selectedScheduleDate = new Date(); let next7Days = [];
     const monthsPt = ['jan.', 'fev.', 'mar.', 'abr.', 'mai.', 'jun.', 'jul.', 'ago.', 'set.', 'out.', 'nov.', 'dez.'];
     
@@ -667,6 +665,17 @@
       
       let pct = ((now.getTime() - p.start.getTime()) / (p.end.getTime() - p.start.getTime())) * 100;
       document.getElementById('progBar').style.width = `${Math.max(0, Math.min(pct, 100))}%`;
+
+      // Atualiza o Media Player Nativo do iOS/Android
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: p.title,
+          artist: 'Radar TV',
+          artwork: [
+            { src: 'https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1080.png', sizes: '1080x1080', type: 'image/png' }
+          ]
+        });
+      }
     }
 
     function openScheduleModal() { 
