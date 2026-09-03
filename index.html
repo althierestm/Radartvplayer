@@ -155,7 +155,6 @@
     .see-more-card { flex: 0 0 120px; background: rgba(255,255,255,0.03); border: 1px dashed var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--primary-light); }
     .see-more-card i { font-size: 1.5rem; }
 
-    /* Rodapé Minimalista Integrado via Firebase */
     .app-footer { width: 100%; max-width: 800px; padding: 20px 15px calc(30px + env(safe-area-inset-bottom, 0px)) 15px; display: flex; flex-direction: column; align-items: center; gap: 16px; border-top: 1px solid var(--border); margin-top: 10px; }
     .social-buttons { display: flex; gap: 25px; width: 100%; justify-content: center; }
     .social-btn { display: flex; align-items: center; justify-content: center; background: none; border: none; color: var(--text-muted); font-size: 1.8rem; text-decoration: none; transition: color 0.2s, transform 0.2s; }
@@ -230,10 +229,7 @@
       <div class="menu-item" id="nav-play" onclick="switchView('play')"><i class="fa-brands fa-youtube" style="color: #ff0000;"></i> RadarTV Play</div>
       <div class="menu-divider"></div>
       
-      <!-- MENU SINCRONIZADO COM FIREBASE -->
-      <a href="https://www.limeiranews.com/" target="_blank" class="menu-item" id="linkMenuNews"><i class="fa-regular fa-newspaper" style="color: #4d82ff;"></i> Limeira News</a>
-      <a href="https://wa.me/5532985109726?text=Ol%C3%A1%21%20Gostaria%20de%20enviar%20uma%20sugest%C3%A3o%20de%20pauta%2Fv%C3%ADdeo%21" target="_blank" class="menu-item" id="linkMenuPauta"><i class="fa-solid fa-camera-retro" style="color: #e74c3c;"></i> Envie sua Pauta/Vídeo</a>
-      <a href="https://wa.me/5532985109726?text=Ol%C3%A1%21%20Estou%20assistindo%20a%20RadarTV%21" target="_blank" class="menu-item" id="linkMenuNoAr"><i class="fa-brands fa-whatsapp" style="color: #25d366;"></i> WhatsApp no Ar</a>
+      <div id="dynamicMenuContainer"></div>
       
       <div class="menu-divider"></div>
       <div class="menu-item" onclick="shareApp()"><i class="fa-solid fa-share-nodes"></i> Compartilhar App</div>
@@ -242,6 +238,9 @@
 
   <div class="app-wrapper" id="appWrapper">
 
+    <!-- ==========================================
+         VIEW 1: AO VIVO AGORA
+         ========================================== -->
     <div id="view-home" class="view-panel active">
       
       <div class="sticky-player-area">
@@ -300,6 +299,9 @@
 
     </div>
 
+    <!-- ==========================================
+         VIEW 2: RADARTV PLAY
+         ========================================== -->
     <div id="view-play" class="view-panel">
       
       <div class="sticky-player-area">
@@ -334,11 +336,7 @@
     </div>
 
     <footer class="app-footer">
-      <!-- REDES SOCIAIS SINCRONIZADAS COM FIREBASE -->
-      <div class="social-buttons" id="footerSocial">
-        <a href="https://instagram.com/radartvmg" target="_blank" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
-        <a href="https://youtube.com/@radartvmg" target="_blank" class="social-btn"><i class="fa-brands fa-youtube"></i></a>
-      </div>
+      <div class="social-buttons" id="footerSocial"></div>
       <div class="footer-credits">Desenvolvido por <a href="https://instagram.com/althierestm" target="_blank">Althieres Dias</a></div>
     </footer>
 
@@ -375,9 +373,6 @@
   </div>
 
   <script>
-    // ========================================================
-    // INTEGRAÇÃO COM FIREBASE (LENDO DADOS DO PAINEL ADMIN)
-    // ========================================================
     const firebaseConfig = {
       apiKey: "AIzaSyCsDzEzcwZ_cuRbxlN_CAtl-7jJO7TH67Y",
       authDomain: "admradartv.firebaseapp.com",
@@ -391,42 +386,58 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // Ouvinte em tempo real das alterações do Painel
+    let MAIN_SITE_URL = 'https://www.limeiranews.com/';
+    let WIX_RSS_URL = 'https://www.limeiranews.com/blog-feed.xml'; 
+    let GITHUB_M3U_URL = 'https://raw.githubusercontent.com/althierestm/Lista-RadarTV/refs/heads/main/lista.m3u';
+    let EPG_XML_URL = 'https://raw.githubusercontent.com/althierestm/Lista-RadarTV/refs/heads/main/epg.xml';
+    let PLAYLIST_RECENT = 'PLzfuSmZBMwIoLYSVMxQhgjDR3yCpBpRbV'; 
+    let PLAYLIST_BALDANZA = 'PLzfuSmZBMwIpRXDvRQPzJbIGcpGImYr4n'; 
+    const YOUTUBE_API_KEY = 'AIzaSyDaVlWRVlFrq9Qur-Dzv779pIIi3v_XD0g'; 
+    const YOUTUBE_CHANNEL_ID = 'UC7wHmjY4RNruABZ9An1crBA'; 
+
     db.ref('appConfig').on('value', (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        // Atualiza Menus dinamicamente
-        if (data.menu) {
-          if (data.menu.news) document.getElementById('linkMenuNews').href = data.menu.news;
-          if (data.menu.pauta) document.getElementById('linkMenuPauta').href = data.menu.pauta;
-          if (data.menu.noar) document.getElementById('linkMenuNoAr').href = data.menu.noar;
+        if (data.settings) {
+          if (data.settings.mainUrl) MAIN_SITE_URL = data.settings.mainUrl;
+          if (data.settings.wixUrl) WIX_RSS_URL = data.settings.wixUrl;
+          if (data.settings.m3uUrl) GITHUB_M3U_URL = data.settings.m3uUrl;
+          if (data.settings.epgUrl) EPG_XML_URL = data.settings.epgUrl;
+          if (data.settings.playlistRecent) PLAYLIST_RECENT = data.settings.playlistRecent;
+          if (data.settings.playlistBaldanza) PLAYLIST_BALDANZA = data.settings.playlistBaldanza;
         }
-        // Atualiza Redes Sociais no rodapé dinamicamente
+
+        if (data.menu) {
+          const menuContainer = document.getElementById('dynamicMenuContainer');
+          menuContainer.innerHTML = ''; 
+          data.menu.forEach(item => {
+            const a = document.createElement('a');
+            a.href = item.url;
+            a.target = '_blank';
+            a.className = 'menu-item';
+            let icClass = item.icon;
+            if(!icClass.includes('fa-')) icClass = 'fa-solid ' + icClass;
+            a.innerHTML = `<i class="${icClass}" style="color: ${item.color || '#4d82ff'};"></i> ${item.title}`;
+            menuContainer.appendChild(a);
+          });
+        }
+
         if (data.social) {
           const socialContainer = document.getElementById('footerSocial');
-          socialContainer.innerHTML = ''; // Limpa os botões padrão
+          socialContainer.innerHTML = ''; 
           data.social.forEach(item => {
             const a = document.createElement('a');
             a.href = item.url;
             a.target = '_blank';
             a.className = 'social-btn';
-            a.innerHTML = `<i class="fa-brands ${item.icon}"></i>`;
+            let icClass = item.icon;
+            if(!icClass.includes('fa-')) icClass = 'fa-brands ' + icClass;
+            a.innerHTML = `<i class="${icClass}"></i>`;
             socialContainer.appendChild(a);
           });
         }
       }
     });
-
-    // ========================================================
-    // ========================================================
-    const MAIN_SITE_URL = 'https://www.limeiranews.com/';
-    const WIX_RSS_URL = 'https://www.limeiranews.com/blog-feed.xml'; 
-    const GITHUB_M3U_URL = 'https://raw.githubusercontent.com/althierestm/Lista-RadarTV/refs/heads/main/lista.m3u';
-    const EPG_XML_URL = 'https://raw.githubusercontent.com/althierestm/Lista-RadarTV/refs/heads/main/epg.xml';
-    const YOUTUBE_API_KEY = 'AIzaSyDaVlWRVlFrq9Qur-Dzv779pIIi3v_XD0g'; 
-    const YOUTUBE_CHANNEL_ID = 'UC7wHmjY4RNruABZ9An1crBA'; 
-    const PLAYLIST_RECENT = 'PLzfuSmZBMwIoLYSVMxQhgjDR3yCpBpRbV'; 
-    const PLAYLIST_BALDANZA = 'PLzfuSmZBMwIpRXDvRQPzJbIGcpGImYr4n'; 
 
     let globalRecentVideos = [];
 
@@ -456,7 +467,7 @@
       }
       
       closeMenu();
-      document.getElementById('appWrapper').scrollTo(0, 0); 
+      window.scrollTo(0, 0); 
     }
 
     async function fetchCatalogPlaylists() {
@@ -674,7 +685,6 @@
       let pct = ((now.getTime() - p.start.getTime()) / (p.end.getTime() - p.start.getTime())) * 100;
       document.getElementById('progBar').style.width = `${Math.max(0, Math.min(pct, 100))}%`;
 
-      // Atualiza o Media Player Nativo do iOS/Android
       if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
           title: p.title,
