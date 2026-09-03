@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Admin - Radar TV</title>
+  
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root { --primary: #0d47e6; --bg-color: #0f1115; --surface: #181b22; --text: #fff; --border: rgba(255,255,255,0.1); }
+    body { background: var(--bg-color); color: var(--text); font-family: 'Segoe UI', sans-serif; padding: 20px; display: flex; justify-content: center; }
+    .admin-container { width: 100%; max-width: 600px; background: var(--surface); padding: 30px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    h1 { margin-top: 0; color: var(--primary); font-size: 1.5rem; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+    
+    .section-title { font-size: 1.1rem; font-weight: bold; margin: 25px 0 15px 0; color: #a0a5b5; }
+    .form-group { margin-bottom: 15px; display: flex; flex-direction: column; gap: 5px; }
+    label { font-size: 0.9rem; font-weight: 600; }
+    input[type="text"], input[type="url"] { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: #12141a; color: #fff; font-size: 0.95rem; outline: none; transition: border 0.2s; }
+    input:focus { border-color: var(--primary); }
+    
+    .social-list { display: flex; flex-direction: column; gap: 10px; }
+    .social-row { display: flex; gap: 10px; align-items: center; background: #12141a; padding: 10px; border-radius: 8px; border: 1px solid var(--border); }
+    .btn-remove { background: #ff3333; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; }
+    
+    .btn-add { background: transparent; border: 1px dashed var(--primary); color: var(--primary); padding: 10px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+    .btn-add:hover { background: rgba(13, 71, 230, 0.1); }
+    
+    .btn-save { background: var(--primary); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; font-size: 1.1rem; cursor: pointer; margin-top: 30px; transition: transform 0.2s; }
+    .btn-save:active { transform: scale(0.98); }
+    
+    #statusMsg { text-align: center; margin-top: 15px; font-weight: bold; font-size: 0.9rem; }
+    .success { color: #2ecc71; }
+    .error { color: #e74c3c; }
+  </style>
+</head>
+<body>
+
+  <div class="admin-container">
+    <h1><i class="fa-solid fa-sliders"></i> Radar TV - Painel de Controle</h1>
+
+    <div class="section-title">Links do Menu Lateral</div>
+    <div class="form-group">
+      <label>Link: Limeira News</label>
+      <input type="url" id="linkNews" placeholder="https://www.limeiranews.com/">
+    </div>
+    <div class="form-group">
+      <label>Link: Envie sua Pauta (WhatsApp)</label>
+      <input type="url" id="linkPauta" placeholder="https://wa.me/...">
+    </div>
+    <div class="form-group">
+      <label>Link: WhatsApp no Ar</label>
+      <input type="url" id="linkNoAr" placeholder="https://wa.me/...">
+    </div>
+
+    <div class="section-title">Redes Sociais (Rodapé)</div>
+    <div id="socialContainer" class="social-list">
+      <!-- Redes sociais geradas pelo JS -->
+    </div>
+    <button class="btn-add" onclick="addSocialRow()"><i class="fa-solid fa-plus"></i> Adicionar Rede Social</button>
+
+    <button class="btn-save" onclick="saveData()">SALVAR ALTERAÇÕES</button>
+    <div id="statusMsg"></div>
+  </div>
+
+  <script>
+   const firebaseConfig = {
+      apiKey: "AIzaSyCsDzEzcwZ_cuRbxlN_CAtl-7jJO7TH67Y",
+      authDomain: "admradartv.firebaseapp.com",
+      databaseURL: "https://admradartv-default-rtdb.firebaseio.com", // Adicionado manualmente
+      projectId: "admradartv",
+      storageBucket: "admradartv.firebasestorage.app",
+      messagingSenderId: "973686947592",
+      appId: "1:973686947592:web:4ac42cf2a9931cea46b6bd"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // Carrega os dados atuais do banco
+    db.ref('appConfig').once('value', (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        if (data.menu) {
+          document.getElementById('linkNews').value = data.menu.news || '';
+          document.getElementById('linkPauta').value = data.menu.pauta || '';
+          document.getElementById('linkNoAr').value = data.menu.noar || '';
+        }
+        if (data.social) {
+          document.getElementById('socialContainer').innerHTML = '';
+          data.social.forEach(social => addSocialRow(social.icon, social.url));
+        }
+      }
+      if(document.getElementById('socialContainer').children.length === 0) {
+        addSocialRow('fa-instagram', ''); // Padrão
+      }
+    });
+
+    function addSocialRow(iconVal = 'fa-instagram', urlVal = '') {
+      const container = document.getElementById('socialContainer');
+      const row = document.createElement('div');
+      row.className = 'social-row';
+      row.innerHTML = `
+        <input type="text" class="social-icon" placeholder="Ícone (ex: fa-instagram, fa-tiktok, fa-x-twitter)" value="${iconVal}" style="width: 40%;">
+        <input type="url" class="social-url" placeholder="https://..." value="${urlVal}" style="width: 60%;">
+        <button class="btn-remove" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash"></i></button>
+      `;
+      container.appendChild(row);
+    }
+
+    function saveData() {
+      const btn = document.querySelector('.btn-save');
+      btn.innerText = "Salvando...";
+
+      const socialRows = document.querySelectorAll('.social-row');
+      const socialData = [];
+      socialRows.forEach(row => {
+        const icon = row.querySelector('.social-icon').value;
+        const url = row.querySelector('.social-url').value;
+        if(icon && url) socialData.push({ icon, url });
+      });
+
+      const configData = {
+        menu: {
+          news: document.getElementById('linkNews').value,
+          pauta: document.getElementById('linkPauta').value,
+          noar: document.getElementById('linkNoAr').value
+        },
+        social: socialData
+      };
+
+      db.ref('appConfig').set(configData)
+        .then(() => {
+          showMsg("✅ Alterações publicadas no aplicativo com sucesso!", "success");
+          btn.innerText = "SALVAR ALTERAÇÕES";
+        })
+        .catch((error) => {
+          showMsg("❌ Erro ao salvar: " + error.message, "error");
+          btn.innerText = "SALVAR ALTERAÇÕES";
+        });
+    }
+
+    function showMsg(text, type) {
+      const msg = document.getElementById('statusMsg');
+      msg.innerText = text;
+      msg.className = type;
+      setTimeout(() => msg.innerText = '', 5000);
+    }
+  </script>
+</body>
+</html>
