@@ -40,33 +40,27 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
     
-    /* Configuração App Nativo (Bloqueia Efeito Elástico/Bounce) */
+    /* Configuração Nativa Limpa (Remove o Elástico sem quebrar o iOS) */
     html, body { 
-      position: fixed; /* Trava o navegador base */
-      width: 100vw; 
-      height: 100vh; 
-      overflow: hidden; 
-      overscroll-behavior: none; 
-      background-color: var(--primary); /* Barra do iOS sólida */
+      background-color: var(--bg-color); 
       color: var(--text); 
+      min-height: 100vh; 
+      overscroll-behavior-y: none; /* Corta o efeito elástico nativamente */
       -webkit-text-size-adjust: 100%;
     }
 
-    /* O Scroll ocorre apenas aqui dentro agora (Simula App Nativio perfeitamente) */
+    ::-webkit-scrollbar { display: none; }
+
+    /* Chassi Centralizado do App */
     .app-wrapper {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: var(--bg-color);
-      overflow-y: auto;
-      overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
+      width: 100%; 
+      max-width: 800px; 
+      margin: 0 auto;
       display: flex; 
       flex-direction: column; 
       align-items: center; 
-      scrollbar-width: none; /* Firefox */
-      -ms-overflow-style: none;  /* IE and Edge */
+      min-height: 100vh;
     }
-    .app-wrapper::-webkit-scrollbar { display: none; }
 
     /* Splash Screen */
     .splash-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(135deg, var(--primary) 0%, #082b8a 100%); display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 40px 20px; z-index: 9999; transition: opacity 0.6s ease, visibility 0.6s ease; }
@@ -93,10 +87,10 @@
     .menu-divider { height: 1px; background: var(--border); margin: 10px 0; }
 
     /* Telas (Views) */
-    .view-panel { width: 100%; max-width: 800px; display: none; flex-direction: column; gap: 15px; padding: 0; padding-bottom: 20px; }
+    .view-panel { width: 100%; display: none; flex-direction: column; gap: 15px; padding: 0; padding-bottom: 20px; }
     .view-panel.active { display: flex; }
 
-    /* Player Fixo (Sticky) Agora funciona perfeitamente */
+    /* Player Fixo (Sticky) Restaurado e Perfeito */
     .sticky-player-area { position: -webkit-sticky; position: sticky; top: 0; z-index: 1000; background: var(--primary); width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
     .player-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; background: var(--primary); width: 100%; }
     .header-left { display: flex; align-items: center; gap: 14px; }
@@ -133,14 +127,14 @@
     .btn-schedule-pill:active { background: rgba(255,255,255,0.1); }
 
     /* Blocos Carrosséis (Top 5, VOD, News) */
-    .block-section { padding: 15px 0 5px 0; display: flex; flex-direction: column; background: var(--surface); border-radius: 16px; border: 1px solid var(--border); margin: 0 10px; }
+    .block-section { padding: 15px 0 5px 0; display: flex; flex-direction: column; background: var(--surface); border-radius: 16px; border: 1px solid var(--border); margin: 0 10px; width: calc(100% - 20px); align-self: center; }
     .block-header { padding: 0 15px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
     .block-title { font-size: 1.1rem; font-weight: bold; color: #fff; display: flex; align-items: center; gap: 8px; }
     .block-title i { color: var(--primary-light); }
     
     .carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 14px; padding: 0 15px 15px 15px; scroll-behavior: smooth; }
 
-    /* Top 5 Estilo Netflix */
+    /* TOP 5 Netflix Style */
     .top5-item { display: flex; align-items: center; position: relative; flex: 0 0 auto; width: 220px; height: 100px; cursor: pointer; scroll-snap-align: start; }
     .top5-item:active { transform: scale(0.96); }
     .top5-rank { font-size: 7.5rem; font-weight: 900; font-family: Impact, 'Arial Black', sans-serif; color: var(--surface); -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.75); position: absolute; left: 0; bottom: -15px; z-index: 1; letter-spacing: -4px; user-select: none; }
@@ -216,8 +210,8 @@
     /* Ajustes Mobile */
     @media (max-width: 600px) {
       .brand img { height: 28px; }
-      .epg-bar { border-radius: 0; margin: 0; border-left: none; border-right: none; border-bottom: 1px solid var(--border); }
-      .block-section { border-radius: 0; margin: 0; border-left: none; border-right: none; }
+      .epg-bar { border-radius: 0; margin: 0; border-left: none; border-right: none; border-bottom: 1px solid var(--border); width: 100%; }
+      .block-section { border-radius: 0; margin: 0; border-left: none; border-right: none; width: 100%; }
       .play-header-title { padding-top: 15px; font-size: 1.4rem; }
     }
   </style>
@@ -256,8 +250,7 @@
     </nav>
   </aside>
 
-  <!-- Container de Fundo que Permite o Scroll Liso do App -->
-  <div class="app-wrapper" id="appWrapper">
+  <div class="app-wrapper">
 
     <!-- ==========================================
          VIEW 1: AO VIVO AGORA
@@ -293,7 +286,6 @@
         </div>
       </div>
 
-      <!-- Conteúdo Rolável -->
       <div class="epg-bar">
         <div class="prog-time" id="progTime">--:-- - --:--</div>
         <div class="prog-title" id="progTitle">Carregando programação...</div>
@@ -302,13 +294,13 @@
         <button class="btn-schedule-pill" onclick="openScheduleModal()">Programação</button>
       </div>
 
-      <!-- TOP 5 INTELIGENTE (BASEADO NOS CLIQUES) -->
+      <!-- TOP 5 INTELIGENTE -->
       <section class="block-section">
         <div class="block-header">
           <div class="block-title"><i class="fa-solid fa-fire" style="color: #ff3838;"></i> Top 5 Mais Assistidos</div>
         </div>
         <div class="carousel" id="top5Carousel">
-          <div style="padding: 20px; color: #8a8f9d;">Buscando vídeos...</div>
+          <div style="padding: 20px; color: #8a8f9d;">Carregando Top 5...</div>
         </div>
       </section>
 
@@ -329,7 +321,6 @@
          ========================================== -->
     <div id="view-play" class="view-panel">
       
-      <!-- Cabeçalho Idêntico para a Aba Play -->
       <div class="sticky-player-area">
         <header class="player-header">
           <div class="header-left">
@@ -419,7 +410,6 @@
     const PLAYLIST_BALDANZA = 'PLzfuSmZBMwIpRXDvRQPzJbIGcpGImYr4n'; 
     // =================================================
 
-    // Guarda os vídeos recentes para o ranking do Top 5
     let globalRecentVideos = [];
 
     window.addEventListener('load', () => {
@@ -448,10 +438,10 @@
       }
       
       closeMenu();
-      document.getElementById('appWrapper').scrollTo(0, 0); // Rola para o topo corretamente no novo wrapper
+      window.scrollTo(0, 0);
     }
 
-    /* ---- Lógica RADARTV PLAY E TOP 5 INTELIGENTE (Com aviso de Cota) ---- */
+    /* ---- Lógica RADARTV PLAY E TOP 5 INTELIGENTE ---- */
     async function fetchCatalogPlaylists() {
       fetchPlaylistRow(PLAYLIST_BALDANZA, 'carousel-baldanza');
 
@@ -460,10 +450,9 @@
         const response = await fetch(urlRecent); 
         const data = await response.json();
         
-        // Tratamento de Cota Excedida do YouTube
         if (data.error) {
            document.getElementById('carousel-recent').innerHTML = `<div style="padding:15px; color:#ff3333; font-weight:bold;">Limite diário do YouTube atingido. Tente amanhã.</div>`;
-           document.getElementById('top5Carousel').innerHTML = `<div style="padding:15px; color:#ff3333; font-weight:bold;">Limite diário do YouTube atingido.</div>`;
+           document.getElementById('top5Carousel').innerHTML = `<div style="padding:15px; color:#ff3333; font-weight:bold;">Limite diário atingido.</div>`;
            return;
         }
 
@@ -505,7 +494,6 @@
       });
     }
 
-    // Top 5 Inteligente: Ordena pelos cliques do usuário
     function renderTop5() {
       const container = document.getElementById('top5Carousel');
       if (!globalRecentVideos || globalRecentVideos.length === 0) return;
