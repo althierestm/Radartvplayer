@@ -21,7 +21,6 @@
   </script>
 
   <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
-  
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
@@ -29,7 +28,6 @@
   <link rel="apple-touch-icon" href="Logo%20RadarTV%201080x1080.png">
 
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-  <!-- Font Awesome Atualizado para 6.6.0 -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
   <style>
@@ -55,14 +53,7 @@
 
     ::-webkit-scrollbar { display: none; }
 
-    .app-wrapper {
-      width: 100%; 
-      max-width: 800px; 
-      margin: 0 auto;
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-    }
+    .app-wrapper { width: 100%; max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
 
     .splash-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(135deg, var(--primary) 0%, #082b8a 100%); display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: calc(40px + env(safe-area-inset-top, 0px)) 20px 40px; z-index: 9999; transition: opacity 0.6s ease, visibility 0.6s ease; }
     .splash-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
@@ -91,7 +82,6 @@
     .view-panel.active { display: flex; }
 
     .sticky-player-area { position: -webkit-sticky; position: sticky; top: 0; z-index: 1000; background: var(--primary); width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.6); }
-    
     .player-header { display: flex; align-items: center; justify-content: space-between; padding: calc(12px + env(safe-area-inset-top, 0px)) 18px 12px 18px; background: var(--primary); width: 100%; }
     .header-left { display: flex; align-items: center; gap: 14px; }
     .hamburger-btn { background: none; border: none; color: #ffffff; font-size: 1.4rem; cursor: pointer; }
@@ -178,7 +168,7 @@
     .date-selector-btn.open i { transform: rotate(180deg); }
     .date-dropdown { position: absolute; top: 100%; left: 0; width: 100%; background: #12141a; z-index: 10; display: none; flex-direction: column; border-bottom: 1px solid var(--border); max-height: 40vh; overflow-y: auto; }
     .date-dropdown.active { display: flex; }
-    .date-option { padding: 16px 20px; color: var(--text-muted); font-size: 0.95rem; font-weight: 600; text-align: left; border: none; background: none; border-bottom: 1px solid rgba(255,255,255,0.03); cursor: pointer; }
+    .date-option { padding: 16px 20px; color: var(--text-muted); font-size: 0.95rem; font-weight: 600; text-align: left; border: none; background: none; border-bottom: 1px solid rgba(255,255,255,0.03); cursor: pointer; width: 100%; }
     .date-option:hover { background: var(--surface); color: #fff; }
     .date-option.selected { color: var(--primary-light); }
     .schedule-item { padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.03); display: flex; flex-direction: column; gap: 4px; }
@@ -226,14 +216,24 @@
       <button class="close-menu-btn" onclick="closeMenu()">&times;</button>
     </div>
     <nav class="menu-items">
+      
+      <!-- ABAS FIXAS LIGADAS AO FIREBASE -->
       <div class="menu-item active" id="nav-home" onclick="switchView('home')"><i class="fa-solid fa-tv"></i> Ao Vivo Agora</div>
       <div class="menu-item" id="nav-play" onclick="switchView('play')"><i class="fa-brands fa-youtube" style="color: #ff0000;"></i> RadarTV Play</div>
       <div class="menu-divider"></div>
       
+      <!-- MENU CUSTOMIZÁVEL LIGADO AO FIREBASE -->
       <div id="dynamicMenuContainer"></div>
       
       <div class="menu-divider"></div>
+
+      <!-- NOVO TIMER DE SUSPENSÃO -->
+      <div class="menu-item" onclick="openTimerModal()"><i class="fa-solid fa-stopwatch"></i> Timer de Suspensão <span id="timerDisplay" style="color:var(--primary-light); font-size:0.8rem; margin-left:auto;"></span></div>
+      
       <div class="menu-item" onclick="shareApp()"><i class="fa-solid fa-share-nodes"></i> Compartilhar App</div>
+      
+      <!-- VERSÃO DO APP FIREBASE -->
+      <div class="menu-item" style="color: var(--text-muted); font-size: 0.8rem; justify-content: center; cursor: default; background: transparent;" id="appVersionDisplay">Versão 1.0</div>
     </nav>
   </aside>
 
@@ -303,7 +303,7 @@
         <header class="player-header">
           <div class="header-left">
             <button class="hamburger-btn" onclick="openMenu()"><i class="fa-solid fa-bars"></i></button>
-            <div class="brand" style="color:#fff; font-weight:bold; font-size:1.1rem; display:flex; align-items:center; gap:8px;">
+            <div class="brand" style="color:#fff; font-weight:bold; font-size:1.1rem; display:flex; align-items:center; gap:8px;" id="headerTabPlay">
               <i class="fa-solid fa-play" style="color:#ff0000;"></i> RadarTV Play
             </div>
           </div>
@@ -337,6 +337,7 @@
 
   </div>
 
+  <!-- MODAL: Programação -->
   <div class="modal" id="scheduleModal">
     <div class="modal-content">
       <div class="modal-header-top">
@@ -351,6 +352,25 @@
     </div>
   </div>
 
+  <!-- MODAL: Sleeptimer -->
+  <div class="modal" id="timerModal">
+    <div class="modal-content">
+      <div class="modal-header-top">
+        <h3 class="modal-title"><i class="fa-solid fa-stopwatch"></i> Timer de Suspensão</h3>
+        <button class="close-btn" onclick="closeTimerModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" style="padding: 10px 0;">
+        <button class="date-option" onclick="setSleepTimer(15)"><i class="fa-regular fa-clock"></i> 15 Minutos</button>
+        <button class="date-option" onclick="setSleepTimer(30)"><i class="fa-regular fa-clock"></i> 30 Minutos</button>
+        <button class="date-option" onclick="setSleepTimer(45)"><i class="fa-regular fa-clock"></i> 45 Minutos</button>
+        <button class="date-option" onclick="setSleepTimer(60)"><i class="fa-regular fa-clock"></i> 60 Minutos</button>
+        <button class="date-option" onclick="setSleepTimer(90)"><i class="fa-regular fa-clock"></i> 1 Hora e 30 Minutos</button>
+        <button class="date-option" onclick="setSleepTimer(0)" style="color: #ff3333; font-weight: bold;"><i class="fa-solid fa-ban"></i> Desativar Timer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Cinema VOD -->
   <div class="modal" id="vodModal">
     <div class="modal-content vod-modal-content">
       <button class="vod-close-float" onclick="closeVODModal()"><i class="fa-solid fa-xmark"></i></button>
@@ -400,6 +420,22 @@
           if (data.settings.epgUrl) EPG_XML_URL = data.settings.epgUrl;
           if (data.settings.playlistRecent) PLAYLIST_RECENT = data.settings.playlistRecent;
           if (data.settings.playlistBaldanza) PLAYLIST_BALDANZA = data.settings.playlistBaldanza;
+          
+          // Preenche a Versão
+          document.getElementById('appVersionDisplay').innerText = `Versão ${data.settings.appVersion || '1.0'}`;
+          
+          // Preenche o nome e ícone das Abas
+          if(data.settings.tabHomeText) {
+            let ic = data.settings.tabHomeIcon || 'fa-solid fa-tv';
+            if(!ic.includes('fa-')) ic = 'fa-solid ' + ic;
+            document.getElementById('nav-home').innerHTML = `<i class="${ic}"></i> ${data.settings.tabHomeText}`;
+          }
+          if(data.settings.tabPlayText) {
+            let ic = data.settings.tabPlayIcon || 'fa-brands fa-youtube';
+            if(!ic.includes('fa-')) ic = 'fa-brands ' + ic;
+            document.getElementById('nav-play').innerHTML = `<i class="${ic}" style="color: #ff0000;"></i> ${data.settings.tabPlayText}`;
+            document.getElementById('headerTabPlay').innerHTML = `<i class="${ic}" style="color: #ff0000;"></i> ${data.settings.tabPlayText}`;
+          }
         }
 
         if (data.menu) {
@@ -435,6 +471,50 @@
     });
 
     let globalRecentVideos = [];
+
+    // ==========================================
+    // API NATIVA PARA MANTER TELA ACESA (WakeLock)
+    // ==========================================
+    let wakeLock = null;
+    async function requestWakeLock() {
+      try {
+        if ('wakeLock' in navigator) {
+          wakeLock = await navigator.wakeLock.request('screen');
+        }
+      } catch (err) {}
+    }
+    function releaseWakeLock() {
+      if (wakeLock !== null) { wakeLock.release(); wakeLock = null; }
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (wakeLock !== null && document.visibilityState === 'visible') { requestWakeLock(); }
+    });
+
+
+    // ==========================================
+    // LÓGICA DO TIMER DE SUSPENSÃO
+    // ==========================================
+    let sleepTimerTimeout = null;
+    
+    function openTimerModal() { document.getElementById('timerModal').classList.add('active'); closeMenu(); }
+    function closeTimerModal() { document.getElementById('timerModal').classList.remove('active'); }
+    
+    function setSleepTimer(mins) {
+      clearTimeout(sleepTimerTimeout);
+      closeTimerModal();
+      const display = document.getElementById('timerDisplay');
+      
+      if(mins === 0) { display.innerText = ''; return; }
+      display.innerText = `${mins} min`;
+      
+      sleepTimerTimeout = setTimeout(() => {
+        const hls = document.getElementById('hlsPlayer');
+        const yt = document.getElementById('ytPlayer');
+        if(hls && !hls.paused) hls.pause();
+        if(yt && isYtLiveActive) yt.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+        display.innerText = '';
+      }, mins * 60000);
+    }
 
     window.addEventListener('load', () => {
       const splash = document.getElementById('splashScreen');
@@ -617,7 +697,7 @@
       document.getElementById('vodTitle').innerText = title;
       document.getElementById('vodDesc').innerText = desc || "Nenhuma descrição informada na plataforma.";
       document.getElementById('vodYoutubeLink').href = `https://www.youtube.com/watch?v=${videoId}`;
-      document.getElementById('vodIframe').src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+      document.getElementById('vodIframe').src = `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`; // Added enablejsapi for Timer support
     }
 
     function closeVODModal() {
@@ -742,8 +822,9 @@
     const hlsVideo = document.getElementById('hlsPlayer'); const ytIframe = document.getElementById('ytPlayer'); const centerPlayBtn = document.getElementById('centerPlayBtn');
     let hlsInstance = null; let isYtLiveActive = false; let controlsTimeout;
 
-    hlsVideo.addEventListener('pause', () => centerPlayBtn.classList.remove('hidden'));
-    hlsVideo.addEventListener('play', () => centerPlayBtn.classList.add('hidden'));
+    // WakeLock para quando houver player ativo
+    hlsVideo.addEventListener('play', () => { centerPlayBtn.classList.add('hidden'); requestWakeLock(); });
+    hlsVideo.addEventListener('pause', () => { centerPlayBtn.classList.remove('hidden'); releaseWakeLock(); });
 
     function resumePlay(e) { if(e) e.stopPropagation(); hlsVideo.play(); resetControlsTimeout(); }
     function resetControlsTimeout() { clearTimeout(controlsTimeout); controlsTimeout = setTimeout(() => { document.getElementById('customControls').classList.add('hidden'); }, 3500); }
@@ -779,7 +860,8 @@
         if (data.items && data.items.length > 0) {
           if (!isYtLiveActive) {
             isYtLiveActive = true; hlsVideo.pause(); hlsVideo.style.display = 'none';
-            ytIframe.src = `https://www.youtube.com/embed/${data.items[0].id.videoId}?autoplay=1&live=1`; ytIframe.style.display = 'block';
+            // Added enablejsapi for Sleeptimer support on Youtube Live
+            ytIframe.src = `https://www.youtube.com/embed/${data.items[0].id.videoId}?autoplay=1&live=1&enablejsapi=1`; ytIframe.style.display = 'block';
             document.getElementById('liveTag').innerText = 'YT LIVE';
           }
         } else {
