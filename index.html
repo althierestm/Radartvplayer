@@ -106,11 +106,7 @@
       padding-left: 5px; 
       pointer-events: auto;
     }
-    .center-play-btn:hover {
-      background: rgba(13, 71, 230, 0.9); 
-      transform: translate(-50%, -50%) scale(1.1);
-      border-color: transparent;
-    }
+    .center-play-btn:hover { background: rgba(13, 71, 230, 0.9); transform: translate(-50%, -50%) scale(1.1); border-color: transparent; }
     .center-play-btn.hidden { display: none; }
 
     .player-top-actions { position: absolute; top: 15px; right: 15px; display: flex; gap: 15px; align-items: center; }
@@ -125,7 +121,7 @@
     .fullscreen-btn { position: absolute; bottom: 15px; right: 65px; background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); transition: transform 0.2s; }
     .fullscreen-btn:active { transform: scale(0.9); }
 
-    .epg-bar { padding: 20px 16px; background: #181b22; display: flex; flex-direction: column; border-bottom: 1px solid #2a2e39; border-bottom-left-radius: 16px; border-bottom-right-radius: 16px; }
+    .epg-bar { padding: 20px 16px; background: #181b22; display: flex; flex-direction: column; }
     .prog-time { font-size: 0.85rem; color: #a0a5b5; margin-bottom: 6px; font-weight: bold; }
     .prog-title { font-size: 1.2rem; font-weight: bold; color: #ffffff; margin-bottom: 4px; }
     .prog-desc { font-size: 0.9rem; color: #a0a5b5; margin-bottom: 16px; line-height: 1.4; }
@@ -134,6 +130,20 @@
     .btn-schedule-container { display: flex; justify-content: center; gap: 10px;}
     .btn-schedule-pill { background: transparent; border: 1px solid #4d82ff; color: #ffffff; padding: 10px 24px; border-radius: 30px; font-size: 0.9rem; font-weight: bold; cursor: pointer; transition: background 0.2s; }
     .btn-schedule-pill:hover { background: rgba(77, 130, 255, 0.1); }
+
+    /* ---- ESTILOS DA SESSÃO DE NOTÍCIAS (LIMEIRA NEWS) ---- */
+    .news-section { padding: 18px; background: #181b22; display: flex; flex-direction: column; gap: 14px; border-top: 1px solid #2a2e39; }
+    .news-header { display: flex; align-items: center; justify-content: space-between; color: #4d82ff; font-size: 1rem; font-weight: bold; }
+    .news-header-left { display: flex; align-items: center; gap: 10px;}
+    .news-header-link { font-size: 0.8rem; color: #8a8f9d; text-decoration: none; font-weight: normal; }
+    .news-container { display: flex; flex-direction: column; gap: 12px; }
+    .news-card { display: flex; gap: 12px; background: #212530; border: 1px solid #2a2e39; border-radius: 8px; padding: 10px; text-decoration: none; color: #ffffff; transition: border-color 0.2s, background 0.2s; }
+    .news-card:hover { border-color: #0d47e6; background: #1a202c; }
+    .news-img { width: 75px; height: 75px; border-radius: 6px; object-fit: cover; background: #12141a; flex-shrink: 0; }
+    .news-content { display: flex; flex-direction: column; justify-content: center; gap: 6px; overflow: hidden; }
+    .news-title { font-size: 0.85rem; font-weight: 600; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .news-date { font-size: 0.7rem; color: #8a8f9d; }
+    .news-loading { font-size: 0.8rem; color: #8a8f9d; text-align: center; padding: 10px 0;}
     
     .app-footer { width: 100%; max-width: 800px; margin-top: 20px; padding: 15px 10px 30px 10px; display: flex; flex-direction: column; align-items: center; gap: 16px; border-top: 1px solid #2a2e39; }
     .social-buttons { display: flex; gap: 12px; width: 100%; justify-content: center; }
@@ -191,7 +201,6 @@
       .sticky-player-area { border-radius: 0; }
       .player-header { border-radius: 0; }
       .brand img { height: 28px; }
-      .epg-bar { padding: 15px 12px; border-radius: 0; }
       .player-overlay-logo { height: 28px; bottom: 8px; right: 8px; }
       .fullscreen-btn { right: 45px; bottom: 10px; }
       .volume-btn { bottom: 10px; left: 10px; padding: 6px 12px; font-size: 0.75rem;}
@@ -223,6 +232,10 @@
       <div class="menu-item active" onclick="closeMenu()"><i class="fa-solid fa-tv"></i> Radar TV Ao Vivo</div>
       <div class="menu-divider"></div>
       
+      <!-- Atualizado para abrir o site Limeira News -->
+      <a href="#" target="_blank" rel="noopener noreferrer" class="menu-item" id="menuNewsLink">
+        <i class="fa-regular fa-newspaper" style="color: #4d82ff;"></i> Limeira News
+      </a>
       <a href="#" class="menu-item" onclick="openStandingsModal(); closeMenu();">
         <i class="fa-solid fa-trophy" style="color: #f1c40f;"></i> Tabela Radar Esportes
       </a>
@@ -262,7 +275,6 @@
           <img src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1920.png" alt="Radar TV Logo" class="player-overlay-logo">
           
           <div id="customControls" class="custom-controls">
-            
             <button id="centerPlayBtn" class="center-play-btn hidden" onclick="resumePlay(event)">
               <i class="fa-solid fa-play"></i>
             </button>
@@ -312,6 +324,22 @@
             <button class="btn-schedule-pill" onclick="openScheduleModal()">Ver programação</button>
           </div>
         </div>
+
+        <!-- Seção de Notícias do Wix Limeira News (Substitui a Enquete) -->
+        <section class="news-section">
+          <div class="news-header">
+            <div class="news-header-left">
+              <i class="fa-regular fa-newspaper"></i>
+              <span>Últimas Notícias</span>
+            </div>
+            <a href="#" target="_blank" rel="noopener noreferrer" class="news-header-link" id="newsSectionLink">Ver todas</a>
+          </div>
+          
+          <div class="news-container" id="newsContainer">
+            <div class="news-loading">Buscando do Limeira News...</div>
+          </div>
+        </section>
+
       </main>
 
     </div>
@@ -371,7 +399,6 @@
 
     let controlsTimeout; 
 
-    // ---- Carregamento Seguro da Splash e Áudio ----
     window.addEventListener('load', () => {
       const splash = document.getElementById('splashScreen');
       const introSound = document.getElementById('splashSound');
@@ -400,15 +427,72 @@
       lastTouchEnd = now;
     }, false);
 
-    // ================= CONFIGURAÇÕES CENTRAIS =================
-    // LENDO DIRETO DA SUA LISTA M3U NO GITHUB
-    const GITHUB_M3U_URL = 'https://raw.githubusercontent.com/althierestm/Lista-RadarTV/refs/heads/main/lista.m3u';
+    // ================= CONFIGURAÇÕES CENTRAIS E NOTÍCIAS =================
     
-    const EPG_XML_URL = 'https://raw.githubusercontent.com/althierestm/Lista-RadarTV/refs/heads/main/epg.xml';
+    // --- 1. SEU SITE WIX (LIMEIRA NEWS) ---
+    // Coloque a URL do seu site, mas MANTENHA o "blog-feed.xml" no final.
+    // Exemplo: 'https://www.seusite.com.br/blog-feed.xml'
+    const WIX_RSS_URL = 'https://www.limeiranews.com/blog-feed.xml'; 
 
+    // Também coloque a URL normal do seu site para o menu lateral
+    const MAIN_SITE_URL = 'https://www.limeiranews.com';
+    
+    // --- 2. LISTAS DA WEBTV ---
+    const GITHUB_M3U_URL = 'https://raw.githubusercontent.com/althierestm/Lista-RadarTV/refs/heads/main/lista.m3u';
+    const EPG_XML_URL = 'https://raw.githubusercontent.com/althierestm/Lista-RadarTV/refs/heads/main/epg.xml';
     const YOUTUBE_CHANNEL_ID = 'UC7wHmjY4RNruABZ9An1crBA'; 
     const YOUTUBE_API_KEY = 'AIzaSyDaVlWRVlFrq9Qur-Dzv779pIIi3v_XD0g'; 
-    // ==========================================================
+    // ======================================================================
+
+    // Atualiza os links do Menu e da Seção para apontarem para o seu site
+    document.getElementById('menuNewsLink').href = MAIN_SITE_URL;
+    document.getElementById('newsSectionLink').href = MAIN_SITE_URL;
+
+    /* ---- Lógica para Puxar as Notícias do Wix ---- */
+    async function fetchLimeiraNews() {
+      // Usamos a API gratuita do rss2json para ler o feed do Wix e evitar bloqueios do navegador
+      const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(WIX_RSS_URL)}`;
+      const container = document.getElementById('newsContainer');
+      
+      try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+        
+        if (data.status === 'ok' && data.items && data.items.length > 0) {
+          container.innerHTML = ''; // Remove o texto "Carregando..."
+          
+          // Pega apenas as 3 últimas notícias
+          const latestNews = data.items.slice(0, 3);
+          
+          latestNews.forEach(item => {
+            // Tenta pegar a imagem do Wix, se não tiver, usa a logo da RadarTV
+            let imgUrl = item.thumbnail || 'https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1080.png';
+            // Formata a data para padrão brasileiro
+            let pubDate = new Date(item.pubDate).toLocaleDateString('pt-BR');
+            
+            const card = document.createElement('a');
+            card.className = 'news-card';
+            card.href = item.link;
+            card.target = '_blank';
+            card.rel = 'noopener noreferrer';
+            
+            card.innerHTML = `
+              <img src="${imgUrl}" class="news-img" alt="Notícia">
+              <div class="news-content">
+                <div class="news-title">${item.title}</div>
+                <div class="news-date">${pubDate}</div>
+              </div>
+            `;
+            container.appendChild(card);
+          });
+        } else {
+          container.innerHTML = '<div class="news-loading">Nenhuma notícia encontrada no momento.</div>';
+        }
+      } catch (err) {
+        console.error("Erro ao buscar notícias:", err);
+        container.innerHTML = '<div class="news-loading">Erro ao conectar com Limeira News.</div>';
+      }
+    }
 
     /* ---- Lógica Tabela de Esportes ---- */
     const mockStandings = {
@@ -596,15 +680,13 @@
 
     /* ---- Lógica Inteligente: Lendo do lista.m3u ---- */
     async function initHLS() { 
-      let streamUrl = 'https://video01.logicahost.com.br/fcvtv/fcvtv/playlist.m3u8'; // Link reserva
+      let streamUrl = 'https://video01.logicahost.com.br/fcvtv/fcvtv/playlist.m3u8';
       
       try {
         const response = await fetch(GITHUB_M3U_URL);
         if (response.ok) {
           const textData = await response.text();
-          // Divide o arquivo em linhas
           const linhas = textData.split('\n');
-          // Procura a primeira linha que começa com http (o seu link de vídeo)
           for (let linha of linhas) {
             linha = linha.trim();
             if (linha.startsWith('http')) {
@@ -637,7 +719,15 @@
     function enableYouTubeLive(videoId) { isYtLiveActive = true; hlsVideo.pause(); hlsVideo.style.display = 'none'; ytIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&live=1`; ytIframe.style.display = 'block'; document.getElementById('liveTag').innerText = 'AO VIVO - YOUTUBE'; }
     function disableYouTubeLive() { isYtLiveActive = false; ytIframe.src = ''; ytIframe.style.display = 'none'; hlsVideo.style.display = 'block'; document.getElementById('liveTag').innerText = 'AO VIVO'; }
 
-    initHLS(); fetchEPG(); requestWakeLock(); setInterval(updateEPG, 60000); setInterval(fetchEPG, 300000); checkYouTubeLive(); setInterval(checkYouTubeLive, 30000);
+    // Chamadas iniciais
+    initHLS(); 
+    fetchEPG(); 
+    fetchLimeiraNews(); 
+    requestWakeLock(); 
+    setInterval(updateEPG, 60000); 
+    setInterval(fetchEPG, 300000); 
+    checkYouTubeLive(); 
+    setInterval(checkYouTubeLive, 30000);
 
     if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(console.error); }
     let deferredPrompt; const pwaBanner = document.getElementById('pwaBanner'); const btnInstall = document.getElementById('btnInstall');
