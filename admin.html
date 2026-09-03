@@ -14,7 +14,6 @@
     * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-color); color: var(--text); margin: 0; display: flex; height: 100vh; overflow: hidden; }
 
-    
     .login-wrapper { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: radial-gradient(circle at top right, #082b8a, var(--bg-color)); display: flex; justify-content: center; align-items: center; z-index: 9999; }
     .login-box { background: var(--surface); padding: 40px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 15px 40px rgba(0,0,0,0.6); width: 100%; max-width: 400px; text-align: center; }
     .login-box img { max-width: 150px; margin-bottom: 20px; }
@@ -25,29 +24,26 @@
     .btn-login:hover { background: #4d82ff; }
     .login-error { color: #ff3333; margin-top: 15px; font-size: 0.9rem; font-weight: bold; height: 20px; }
 
-    
     #adminPanel { display: none; width: 100%; height: 100%; }
 
-    
     .sidebar { width: 280px; background-color: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
     .sidebar-header { padding: 20px; background: var(--primary); font-size: 1.2rem; font-weight: bold; display: flex; align-items: center; gap: 10px; }
     .nav-btn { background: none; border: none; color: #a0a5b5; padding: 18px 20px; text-align: left; font-size: 1rem; cursor: pointer; border-left: 4px solid transparent; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
     .nav-btn:hover { background: rgba(255,255,255,0.05); color: #fff; }
     .nav-btn.active { background: rgba(13, 71, 230, 0.1); color: var(--primary); border-left-color: var(--primary); font-weight: bold; }
 
-    
     .main-content { flex: 1; padding: 40px; overflow-y: auto; background: var(--bg-color); padding-bottom: 100px; }
     .tab-content { display: none; max-width: 800px; margin: 0 auto; background: var(--surface); padding: 30px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
     .tab-content.active { display: block; animation: fadeIn 0.3s; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
     h2 { margin-top: 0; border-bottom: 1px solid var(--border); padding-bottom: 15px; color: #fff; }
+    .section-title { font-size: 1.1rem; font-weight: bold; margin: 25px 0 15px 0; color: #a0a5b5; }
     
     .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
     label { font-size: 0.9rem; font-weight: 600; color: #a0a5b5; }
     input[type="text"], input[type="url"], input[type="color"] { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: #12141a; color: #fff; font-size: 0.95rem; outline: none; transition: 0.2s; }
     input:focus { border-color: var(--primary); }
-    
     
     .dynamic-list { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
     .dynamic-row { display: flex; gap: 10px; align-items: center; background: #12141a; padding: 15px; border-radius: 8px; border: 1px solid var(--border); }
@@ -58,7 +54,6 @@
     .btn-add { background: transparent; border: 2px dashed var(--border); color: #a0a5b5; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
     .btn-add:hover { border-color: var(--primary); color: var(--primary); }
 
-    
     .save-bar { position: fixed; bottom: 0; left: 280px; right: 0; background: var(--surface); padding: 15px 40px; border-top: 1px solid var(--border); display: none; justify-content: flex-end; align-items: center; gap: 20px; z-index: 100; }
     .btn-save { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 10px rgba(13, 71, 230, 0.4); transition: 0.2s; }
     .btn-save:hover { transform: translateY(-2px); }
@@ -67,7 +62,6 @@
 </head>
 <body>
 
-  
   <div id="loginScreen" class="login-wrapper">
     <div class="login-box">
       <img src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1920.png" alt="Radar TV">
@@ -79,23 +73,23 @@
     </div>
   </div>
 
-  
   <div id="adminPanel">
-    
     
     <div class="sidebar">
       <div class="sidebar-header"><i class="fa-solid fa-satellite-dish"></i> Admin RadarTV</div>
       <button class="nav-btn active" onclick="switchTab('tab-links')"><i class="fa-solid fa-link"></i> Config. de Sistema</button>
-      <button class="nav-btn" onclick="switchTab('tab-menu')"><i class="fa-solid fa-bars-staggered"></i> Menu Lateral do App</button>
+      <button class="nav-btn" onclick="switchTab('tab-menu')"><i class="fa-solid fa-bars-staggered"></i> Menu e Abas do App</button>
       <button class="nav-btn" onclick="switchTab('tab-social')"><i class="fa-solid fa-hashtag"></i> Redes Sociais</button>
     </div>
 
-   
     <div class="main-content">
       
-      
       <div id="tab-links" class="tab-content active">
-        <h2><i class="fa-solid fa-link"></i> URLs do Sistema</h2>
+        <h2><i class="fa-solid fa-link"></i> Configurações do Sistema</h2>
+        <div class="form-group">
+          <label>Versão do Aplicativo (Mostrada no Menu)</label>
+          <input type="text" id="conf-appVer" placeholder="Ex: 1.0">
+        </div>
         <div class="form-group">
           <label>URL do Site Limeira News (Ao Clicar em "Veja Mais")</label>
           <input type="url" id="conf-mainUrl" placeholder="https://www.limeiranews.com/">
@@ -122,16 +116,25 @@
         </div>
       </div>
 
-     
       <div id="tab-menu" class="tab-content">
-        <h2><i class="fa-solid fa-bars-staggered"></i> Itens do Menu Lateral</h2>
-        <p style="color:#a0a5b5; font-size:0.9rem; margin-bottom:20px;">Use classes do FontAwesome para ícones (ex: <i>fa-brands fa-whatsapp</i> ou <i>fa-regular fa-newspaper</i>).</p>
+        <h2><i class="fa-solid fa-bars-staggered"></i> Abas e Menus do App</h2>
         
+        <div class="section-title">Telas Principais (Fixas)</div>
+        <div class="dynamic-row" style="margin-bottom:10px;">
+          <input type="text" id="conf-tabHomeText" placeholder="Texto (ex: Ao Vivo Agora)">
+          <input type="text" id="conf-tabHomeIcon" placeholder="Ícone (ex: fa-solid fa-tv)">
+        </div>
+        <div class="dynamic-row" style="margin-bottom:20px;">
+          <input type="text" id="conf-tabPlayText" placeholder="Texto (ex: RadarTV Play)">
+          <input type="text" id="conf-tabPlayIcon" placeholder="Ícone (ex: fa-solid fa-play)">
+        </div>
+
+        <div class="section-title">Menu Customizável (Links Adicionais)</div>
+        <p style="color:#a0a5b5; font-size:0.9rem; margin-bottom:20px;">Use classes do FontAwesome para os ícones.</p>
         <div id="menuContainer" class="dynamic-list"></div>
         <button class="btn-add" onclick="addMenuRow()"><i class="fa-solid fa-plus"></i> Adicionar Novo Botão ao Menu</button>
       </div>
 
-     
       <div id="tab-social" class="tab-content">
         <h2><i class="fa-solid fa-hashtag"></i> Redes Sociais do Rodapé</h2>
         <div id="socialContainer" class="dynamic-list"></div>
@@ -140,7 +143,6 @@
 
     </div>
 
-    
     <div class="save-bar" id="saveBar">
       <div id="statusMsg"></div>
       <button class="btn-save" onclick="saveAllData()"><i class="fa-solid fa-cloud-arrow-up"></i> SALVAR NO APLICATIVO</button>
@@ -149,13 +151,11 @@
   </div>
 
   <script>
-    
     function autenticar() {
       const u = document.getElementById('userInp').value.trim();
       const p = document.getElementById('passInp').value.trim();
       const err = document.getElementById('loginError');
 
-      
       if (btoa(u) === "QWx0aGllcmVz" && btoa(p) === "QHJhZGFydHYyNg==") {
         document.getElementById('loginScreen').style.display = 'none';
         document.getElementById('adminPanel').style.display = 'flex';
@@ -166,13 +166,10 @@
       }
     }
 
-   
     document.getElementById('passInp').addEventListener('keypress', function (e) {
       if (e.key === 'Enter') autenticar();
     });
 
-
-    
     let db;
     function carregarBanco() {
       const firebaseConfig = {
@@ -188,11 +185,9 @@
       firebase.initializeApp(firebaseConfig);
       db = firebase.database();
 
-
       db.ref('appConfig').once('value', (snapshot) => {
         const data = snapshot.val();
         if (data) {
-
           if(data.settings) {
             document.getElementById('conf-mainUrl').value = data.settings.mainUrl || '';
             document.getElementById('conf-wixUrl').value = data.settings.wixUrl || '';
@@ -200,6 +195,11 @@
             document.getElementById('conf-epgUrl').value = data.settings.epgUrl || '';
             document.getElementById('conf-playlistRecent').value = data.settings.playlistRecent || '';
             document.getElementById('conf-playlistBaldanza').value = data.settings.playlistBaldanza || '';
+            document.getElementById('conf-appVer').value = data.settings.appVersion || '1.0';
+            document.getElementById('conf-tabHomeText').value = data.settings.tabHomeText || 'Ao Vivo Agora';
+            document.getElementById('conf-tabHomeIcon').value = data.settings.tabHomeIcon || 'fa-solid fa-tv';
+            document.getElementById('conf-tabPlayText').value = data.settings.tabPlayText || 'RadarTV Play';
+            document.getElementById('conf-tabPlayIcon').value = data.settings.tabPlayIcon || 'fa-brands fa-youtube';
           }
           
           if(data.menu && data.menu.length > 0) {
@@ -214,7 +214,11 @@
             addSocialRow('fa-brands fa-instagram', 'https://instagram.com/radartvmg');
           }
         } else {
-          // Valores Padrões se o banco estiver vazio
+          document.getElementById('conf-tabHomeText').value = 'Ao Vivo Agora';
+          document.getElementById('conf-tabHomeIcon').value = 'fa-solid fa-tv';
+          document.getElementById('conf-tabPlayText').value = 'RadarTV Play';
+          document.getElementById('conf-tabPlayIcon').value = 'fa-brands fa-youtube';
+          document.getElementById('conf-appVer').value = '1.0';
           addMenuRow('Limeira News', 'fa-regular fa-newspaper', '#4d82ff', 'https://www.limeiranews.com/');
           addSocialRow('fa-brands fa-instagram', 'https://instagram.com/radartvmg');
         }
@@ -264,7 +268,12 @@
         m3uUrl: document.getElementById('conf-m3uUrl').value,
         epgUrl: document.getElementById('conf-epgUrl').value,
         playlistRecent: document.getElementById('conf-playlistRecent').value,
-        playlistBaldanza: document.getElementById('conf-playlistBaldanza').value
+        playlistBaldanza: document.getElementById('conf-playlistBaldanza').value,
+        appVersion: document.getElementById('conf-appVer').value,
+        tabHomeText: document.getElementById('conf-tabHomeText').value,
+        tabHomeIcon: document.getElementById('conf-tabHomeIcon').value,
+        tabPlayText: document.getElementById('conf-tabPlayText').value,
+        tabPlayIcon: document.getElementById('conf-tabPlayIcon').value
       };
 
       const menuData = [];
@@ -287,7 +296,7 @@
 
       db.ref('appConfig').set(fullConfig)
         .then(() => {
-          showMsg("✅ Sucesso! O aplicativo dos usuários foi atualizado agora mesmo.", "#2ecc71");
+          showMsg("✅ Sucesso! O aplicativo foi atualizado.", "#2ecc71");
           btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> SALVAR NO APLICATIVO';
         })
         .catch((error) => {
