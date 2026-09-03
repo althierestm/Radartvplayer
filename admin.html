@@ -7,22 +7,36 @@
   
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
   <style>
     :root { --primary: #0d47e6; --bg-color: #0f1115; --surface: #181b22; --border: #2a2e39; --text: #ffffff; }
     * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
     body { background-color: var(--bg-color); color: var(--text); margin: 0; display: flex; height: 100vh; overflow: hidden; }
 
-    /* Barra Lateral do Painel */
+    
+    .login-wrapper { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: radial-gradient(circle at top right, #082b8a, var(--bg-color)); display: flex; justify-content: center; align-items: center; z-index: 9999; }
+    .login-box { background: var(--surface); padding: 40px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 15px 40px rgba(0,0,0,0.6); width: 100%; max-width: 400px; text-align: center; }
+    .login-box img { max-width: 150px; margin-bottom: 20px; }
+    .login-box h2 { font-size: 1.2rem; margin-bottom: 25px; color: #a0a5b5; border: none; padding: 0; }
+    .login-input { width: 100%; padding: 15px; margin-bottom: 15px; background: #12141a; border: 1px solid var(--border); border-radius: 8px; color: #fff; font-size: 1rem; outline: none; transition: 0.2s; }
+    .login-input:focus { border-color: var(--primary); }
+    .btn-login { width: 100%; padding: 15px; background: var(--primary); color: #fff; font-weight: bold; font-size: 1.1rem; border: none; border-radius: 8px; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+    .btn-login:hover { background: #4d82ff; }
+    .login-error { color: #ff3333; margin-top: 15px; font-size: 0.9rem; font-weight: bold; height: 20px; }
+
+    
+    #adminPanel { display: none; width: 100%; height: 100%; }
+
+    
     .sidebar { width: 280px; background-color: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; }
     .sidebar-header { padding: 20px; background: var(--primary); font-size: 1.2rem; font-weight: bold; display: flex; align-items: center; gap: 10px; }
     .nav-btn { background: none; border: none; color: #a0a5b5; padding: 18px 20px; text-align: left; font-size: 1rem; cursor: pointer; border-left: 4px solid transparent; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
     .nav-btn:hover { background: rgba(255,255,255,0.05); color: #fff; }
     .nav-btn.active { background: rgba(13, 71, 230, 0.1); color: var(--primary); border-left-color: var(--primary); font-weight: bold; }
 
-    /* Área Principal */
-    .main-content { flex: 1; padding: 40px; overflow-y: auto; background: var(--bg-color); }
+    
+    .main-content { flex: 1; padding: 40px; overflow-y: auto; background: var(--bg-color); padding-bottom: 100px; }
     .tab-content { display: none; max-width: 800px; margin: 0 auto; background: var(--surface); padding: 30px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
     .tab-content.active { display: block; animation: fadeIn 0.3s; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -34,7 +48,7 @@
     input[type="text"], input[type="url"], input[type="color"] { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: #12141a; color: #fff; font-size: 0.95rem; outline: none; transition: 0.2s; }
     input:focus { border-color: var(--primary); }
     
-    /* Listas Dinâmicas (Menu e Redes) */
+    
     .dynamic-list { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
     .dynamic-row { display: flex; gap: 10px; align-items: center; background: #12141a; padding: 15px; border-radius: 8px; border: 1px solid var(--border); }
     .dynamic-row input { flex: 1; }
@@ -44,8 +58,8 @@
     .btn-add { background: transparent; border: 2px dashed var(--border); color: #a0a5b5; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
     .btn-add:hover { border-color: var(--primary); color: var(--primary); }
 
-    /* Botão Salvar Global */
-    .save-bar { position: fixed; bottom: 0; left: 280px; right: 0; background: var(--surface); padding: 15px 40px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; align-items: center; gap: 20px; z-index: 100; }
+    
+    .save-bar { position: fixed; bottom: 0; left: 280px; right: 0; background: var(--surface); padding: 15px 40px; border-top: 1px solid var(--border); display: none; justify-content: flex-end; align-items: center; gap: 20px; z-index: 100; }
     .btn-save { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 10px rgba(13, 71, 230, 0.4); transition: 0.2s; }
     .btn-save:hover { transform: translateY(-2px); }
     #statusMsg { font-weight: bold; font-size: 0.95rem; }
@@ -53,88 +67,160 @@
 </head>
 <body>
 
-  <!-- Barra Lateral -->
-  <div class="sidebar">
-    <div class="sidebar-header"><i class="fa-solid fa-satellite-dish"></i> Admin RadarTV</div>
-    <button class="nav-btn active" onclick="switchTab('tab-links')"><i class="fa-solid fa-link"></i> Config. de Sistema</button>
-    <button class="nav-btn" onclick="switchTab('tab-menu')"><i class="fa-solid fa-bars-staggered"></i> Menu Lateral do App</button>
-    <button class="nav-btn" onclick="switchTab('tab-social')"><i class="fa-solid fa-hashtag"></i> Redes Sociais</button>
+  
+  <div id="loginScreen" class="login-wrapper">
+    <div class="login-box">
+      <img src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1920.png" alt="Radar TV">
+      <h2>Acesso Administrativo</h2>
+      <input type="text" id="userInp" class="login-input" placeholder="Usuário" autocomplete="off">
+      <input type="password" id="passInp" class="login-input" placeholder="Senha">
+      <button class="btn-login" onclick="autenticar()"><i class="fa-solid fa-lock"></i> ENTRAR</button>
+      <div id="loginError" class="login-error"></div>
+    </div>
   </div>
 
-  <!-- Área Principal -->
-  <div class="main-content">
+  
+  <div id="adminPanel">
     
-    <!-- ABA 1: Links e Sistema -->
-    <div id="tab-links" class="tab-content active">
-      <h2><i class="fa-solid fa-link"></i> URLs do Sistema</h2>
-      <div class="form-group">
-        <label>URL do Site Limeira News (Ao Clicar em "Veja Mais")</label>
-        <input type="url" id="conf-mainUrl" placeholder="https://www.limeiranews.com/">
-      </div>
-      <div class="form-group">
-        <label>URL do Feed RSS do Wix (Notícias na Home)</label>
-        <input type="url" id="conf-wixUrl" placeholder="https://www.limeiranews.com/blog-feed.xml">
-      </div>
-      <div class="form-group">
-        <label>URL da Lista M3U (GitHub)</label>
-        <input type="url" id="conf-m3uUrl" placeholder="https://raw.githubusercontent.com/.../lista.m3u">
-      </div>
-      <div class="form-group">
-        <label>URL do EPG XML (Programação)</label>
-        <input type="url" id="conf-epgUrl" placeholder="https://raw.githubusercontent.com/.../epg.xml">
-      </div>
-      <div class="form-group">
-        <label>ID da Playlist YouTube: Top Vídeos / Recentes</label>
-        <input type="text" id="conf-playlistRecent" placeholder="Ex: PLzfuSmZBMwIoLYSVMxQhgjDR3yCpBpRbV">
-      </div>
-      <div class="form-group">
-        <label>ID da Playlist YouTube: Copa Baldanza</label>
-        <input type="text" id="conf-playlistBaldanza" placeholder="Ex: PLzfuSmZBMwIpRXDvRQPzJbIGcpGImYr4n">
-      </div>
+    
+    <div class="sidebar">
+      <div class="sidebar-header"><i class="fa-solid fa-satellite-dish"></i> Admin RadarTV</div>
+      <button class="nav-btn active" onclick="switchTab('tab-links')"><i class="fa-solid fa-link"></i> Config. de Sistema</button>
+      <button class="nav-btn" onclick="switchTab('tab-menu')"><i class="fa-solid fa-bars-staggered"></i> Menu Lateral do App</button>
+      <button class="nav-btn" onclick="switchTab('tab-social')"><i class="fa-solid fa-hashtag"></i> Redes Sociais</button>
     </div>
 
-    <!-- ABA 2: Menu Lateral (Adicionar itens dinâmicos) -->
-    <div id="tab-menu" class="tab-content">
-      <h2><i class="fa-solid fa-bars-staggered"></i> Itens do Menu Lateral</h2>
-      <p style="color:#a0a5b5; font-size:0.9rem; margin-bottom:20px;">Use classes do FontAwesome para ícones (ex: <i>fa-brands fa-whatsapp</i> ou <i>fa-regular fa-newspaper</i>).</p>
+   
+    <div class="main-content">
       
-      <div id="menuContainer" class="dynamic-list"></div>
-      <button class="btn-add" onclick="addMenuRow()"><i class="fa-solid fa-plus"></i> Adicionar Novo Botão ao Menu</button>
+      
+      <div id="tab-links" class="tab-content active">
+        <h2><i class="fa-solid fa-link"></i> URLs do Sistema</h2>
+        <div class="form-group">
+          <label>URL do Site Limeira News (Ao Clicar em "Veja Mais")</label>
+          <input type="url" id="conf-mainUrl" placeholder="https://www.limeiranews.com/">
+        </div>
+        <div class="form-group">
+          <label>URL do Feed RSS do Wix (Notícias na Home)</label>
+          <input type="url" id="conf-wixUrl" placeholder="https://www.limeiranews.com/blog-feed.xml">
+        </div>
+        <div class="form-group">
+          <label>URL da Lista M3U (GitHub)</label>
+          <input type="url" id="conf-m3uUrl" placeholder="https://raw.githubusercontent.com/.../lista.m3u">
+        </div>
+        <div class="form-group">
+          <label>URL do EPG XML (Programação)</label>
+          <input type="url" id="conf-epgUrl" placeholder="https://raw.githubusercontent.com/.../epg.xml">
+        </div>
+        <div class="form-group">
+          <label>ID da Playlist YouTube: Top Vídeos / Recentes</label>
+          <input type="text" id="conf-playlistRecent" placeholder="Ex: PLzfuSmZBMwIoLYSVMxQhgjDR3yCpBpRbV">
+        </div>
+        <div class="form-group">
+          <label>ID da Playlist YouTube: Copa Baldanza</label>
+          <input type="text" id="conf-playlistBaldanza" placeholder="Ex: PLzfuSmZBMwIpRXDvRQPzJbIGcpGImYr4n">
+        </div>
+      </div>
+
+     
+      <div id="tab-menu" class="tab-content">
+        <h2><i class="fa-solid fa-bars-staggered"></i> Itens do Menu Lateral</h2>
+        <p style="color:#a0a5b5; font-size:0.9rem; margin-bottom:20px;">Use classes do FontAwesome para ícones (ex: <i>fa-brands fa-whatsapp</i> ou <i>fa-regular fa-newspaper</i>).</p>
+        
+        <div id="menuContainer" class="dynamic-list"></div>
+        <button class="btn-add" onclick="addMenuRow()"><i class="fa-solid fa-plus"></i> Adicionar Novo Botão ao Menu</button>
+      </div>
+
+     
+      <div id="tab-social" class="tab-content">
+        <h2><i class="fa-solid fa-hashtag"></i> Redes Sociais do Rodapé</h2>
+        <div id="socialContainer" class="dynamic-list"></div>
+        <button class="btn-add" onclick="addSocialRow()"><i class="fa-solid fa-plus"></i> Adicionar Rede Social</button>
+      </div>
+
     </div>
 
-    <!-- ABA 3: Redes Sociais -->
-    <div id="tab-social" class="tab-content">
-      <h2><i class="fa-solid fa-hashtag"></i> Redes Sociais do Rodapé</h2>
-      <div id="socialContainer" class="dynamic-list"></div>
-      <button class="btn-add" onclick="addSocialRow()"><i class="fa-solid fa-plus"></i> Adicionar Rede Social</button>
+    
+    <div class="save-bar" id="saveBar">
+      <div id="statusMsg"></div>
+      <button class="btn-save" onclick="saveAllData()"><i class="fa-solid fa-cloud-arrow-up"></i> SALVAR NO APLICATIVO</button>
     </div>
 
-  </div>
-
-  <!-- Barra de Salvar Inferior -->
-  <div class="save-bar">
-    <div id="statusMsg"></div>
-    <button class="btn-save" onclick="saveAllData()"><i class="fa-solid fa-cloud-arrow-up"></i> SALVAR NO APLICATIVO</button>
   </div>
 
   <script>
-    // ==========================================
-    // CHAVES DO FIREBASE DO PROJETO 'ADMRADARTV'
-    // ==========================================
-    const firebaseConfig = {
-      apiKey: "AIzaSyCsDzEzcwZ_cuRbxlN_CAtl-7jJO7TH67Y",
-      authDomain: "admradartv.firebaseapp.com",
-      databaseURL: "https://admradartv-default-rtdb.firebaseio.com",
-      projectId: "admradartv",
-      storageBucket: "admradartv.firebasestorage.app",
-      messagingSenderId: "973686947592",
-      appId: "1:973686947592:web:4ac42cf2a9931cea46b6bd"
-    };
+    
+    function autenticar() {
+      const u = document.getElementById('userInp').value.trim();
+      const p = document.getElementById('passInp').value.trim();
+      const err = document.getElementById('loginError');
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+      
+      if (btoa(u) === "QWx0aGllcmVz" && btoa(p) === "QHJhZGFydHYyNg==") {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('adminPanel').style.display = 'flex';
+        document.getElementById('saveBar').style.display = 'flex';
+        carregarBanco(); 
+      } else {
+        err.innerText = "Usuário ou senha incorretos!";
+      }
+    }
 
-    // Controle das Abas (Tabs)
+   
+    document.getElementById('passInp').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') autenticar();
+    });
+
+
+    
+    let db;
+    function carregarBanco() {
+      const firebaseConfig = {
+        apiKey: "AIzaSyCsDzEzcwZ_cuRbxlN_CAtl-7jJO7TH67Y",
+        authDomain: "admradartv.firebaseapp.com",
+        databaseURL: "https://admradartv-default-rtdb.firebaseio.com",
+        projectId: "admradartv",
+        storageBucket: "admradartv.firebasestorage.app",
+        messagingSenderId: "973686947592",
+        appId: "1:973686947592:web:4ac42cf2a9931cea46b6bd"
+      };
+
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.database();
+
+
+      db.ref('appConfig').once('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+
+          if(data.settings) {
+            document.getElementById('conf-mainUrl').value = data.settings.mainUrl || '';
+            document.getElementById('conf-wixUrl').value = data.settings.wixUrl || '';
+            document.getElementById('conf-m3uUrl').value = data.settings.m3uUrl || '';
+            document.getElementById('conf-epgUrl').value = data.settings.epgUrl || '';
+            document.getElementById('conf-playlistRecent').value = data.settings.playlistRecent || '';
+            document.getElementById('conf-playlistBaldanza').value = data.settings.playlistBaldanza || '';
+          }
+          
+          if(data.menu && data.menu.length > 0) {
+            data.menu.forEach(item => addMenuRow(item.title, item.icon, item.color, item.url));
+          } else {
+            addMenuRow('Limeira News', 'fa-regular fa-newspaper', '#4d82ff', 'https://www.limeiranews.com/');
+          }
+
+          if(data.social && data.social.length > 0) {
+            data.social.forEach(item => addSocialRow(item.icon, item.url));
+          } else {
+            addSocialRow('fa-brands fa-instagram', 'https://instagram.com/radartvmg');
+          }
+        } else {
+          // Valores Padrões se o banco estiver vazio
+          addMenuRow('Limeira News', 'fa-regular fa-newspaper', '#4d82ff', 'https://www.limeiranews.com/');
+          addSocialRow('fa-brands fa-instagram', 'https://instagram.com/radartvmg');
+        }
+      });
+    }
+
     function switchTab(tabId) {
       document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -142,50 +228,15 @@
       event.currentTarget.classList.add('active');
     }
 
-    // Carrega todos os dados ao abrir a página
-    db.ref('appConfig').once('value', (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        // Popula Configurações Gerais
-        if(data.settings) {
-          document.getElementById('conf-mainUrl').value = data.settings.mainUrl || '';
-          document.getElementById('conf-wixUrl').value = data.settings.wixUrl || '';
-          document.getElementById('conf-m3uUrl').value = data.settings.m3uUrl || '';
-          document.getElementById('conf-epgUrl').value = data.settings.epgUrl || '';
-          document.getElementById('conf-playlistRecent').value = data.settings.playlistRecent || '';
-          document.getElementById('conf-playlistBaldanza').value = data.settings.playlistBaldanza || '';
-        }
-        
-        // Popula Menu Lateral
-        if(data.menu && data.menu.length > 0) {
-          data.menu.forEach(item => addMenuRow(item.title, item.icon, item.color, item.url));
-        } else {
-          addMenuRow('Limeira News', 'fa-regular fa-newspaper', '#4d82ff', 'https://www.limeiranews.com/');
-        }
-
-        // Popula Redes Sociais
-        if(data.social && data.social.length > 0) {
-          data.social.forEach(item => addSocialRow(item.icon, item.url));
-        } else {
-          addSocialRow('fa-brands fa-instagram', 'https://instagram.com/radartvmg');
-        }
-      } else {
-        // Valores Padrões se o banco estiver vazio
-        addMenuRow('Limeira News', 'fa-regular fa-newspaper', '#4d82ff', 'https://www.limeiranews.com/');
-        addSocialRow('fa-brands fa-instagram', 'https://instagram.com/radartvmg');
-      }
-    });
-
-    // Funções de Criação Visual das Linhas
     function addMenuRow(title = '', icon = 'fa-solid fa-link', color = '#ffffff', url = '') {
       const container = document.getElementById('menuContainer');
       const row = document.createElement('div');
       row.className = 'dynamic-row';
       row.innerHTML = `
         <input type="text" class="menu-title" placeholder="Nome do Botão" value="${title}" style="flex:1;">
-        <input type="text" class="menu-icon" placeholder="Ícone (ex: fa-brands fa-whatsapp)" value="${icon}" style="flex:1;">
+        <input type="text" class="menu-icon" placeholder="Ícone" value="${icon}" style="flex:1;">
         <input type="color" class="menu-color" value="${color}" style="width:50px; height:45px; padding:0; cursor:pointer;" title="Cor do Ícone">
-        <input type="url" class="menu-url" placeholder="Link de destino (https://...)" value="${url}" style="flex:2;">
+        <input type="url" class="menu-url" placeholder="Link de destino" value="${url}" style="flex:2;">
         <button class="btn-remove" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash"></i></button>
       `;
       container.appendChild(row);
@@ -203,12 +254,10 @@
       container.appendChild(row);
     }
 
-    // Função de Salvamento Mestre no Firebase
     function saveAllData() {
       const btn = document.querySelector('.btn-save');
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> SALVANDO...';
 
-      // Coleta Configurações
       const settingsData = {
         mainUrl: document.getElementById('conf-mainUrl').value,
         wixUrl: document.getElementById('conf-wixUrl').value,
@@ -218,7 +267,6 @@
         playlistBaldanza: document.getElementById('conf-playlistBaldanza').value
       };
 
-      // Coleta Menu Dinâmico
       const menuData = [];
       document.querySelectorAll('#menuContainer .dynamic-row').forEach(row => {
         const title = row.querySelector('.menu-title').value;
@@ -228,7 +276,6 @@
         if(title && url) menuData.push({ title, icon, color, url });
       });
 
-      // Coleta Redes Sociais
       const socialData = [];
       document.querySelectorAll('#socialContainer .dynamic-row').forEach(row => {
         const icon = row.querySelector('.social-icon').value;
@@ -236,7 +283,6 @@
         if(icon && url) socialData.push({ icon, url });
       });
 
-      // Envia tudo para o banco unificado
       const fullConfig = { settings: settingsData, menu: menuData, social: socialData };
 
       db.ref('appConfig').set(fullConfig)
