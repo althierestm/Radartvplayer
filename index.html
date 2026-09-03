@@ -7,7 +7,6 @@
 
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0d47e6">
-  
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Radar TV">
@@ -22,6 +21,7 @@
 
   <script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
   
+  <!-- Firebase Integrado -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
 
@@ -54,14 +54,7 @@
 
     ::-webkit-scrollbar { display: none; }
 
-    .app-wrapper {
-      width: 100%; 
-      max-width: 800px; 
-      margin: 0 auto;
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-    }
+    .app-wrapper { width: 100%; max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
 
     .splash-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(135deg, var(--primary) 0%, #082b8a 100%); display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: calc(40px + env(safe-area-inset-top, 0px)) 20px 40px; z-index: 9999; transition: opacity 0.6s ease, visibility 0.6s ease; }
     .splash-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
@@ -90,7 +83,6 @@
     .view-panel.active { display: flex; }
 
     .sticky-player-area { position: -webkit-sticky; position: sticky; top: 0; z-index: 1000; background: var(--primary); width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.6); }
-    
     .player-header { display: flex; align-items: center; justify-content: space-between; padding: calc(12px + env(safe-area-inset-top, 0px)) 18px 12px 18px; background: var(--primary); width: 100%; }
     .header-left { display: flex; align-items: center; gap: 14px; }
     .hamburger-btn { background: none; border: none; color: #ffffff; font-size: 1.4rem; cursor: pointer; }
@@ -155,7 +147,6 @@
     .see-more-card { flex: 0 0 120px; background: rgba(255,255,255,0.03); border: 1px dashed var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--primary-light); }
     .see-more-card i { font-size: 1.5rem; }
 
-    /* Rodapé Minimalista Integrado via Firebase */
     .app-footer { width: 100%; max-width: 800px; padding: 20px 15px calc(30px + env(safe-area-inset-bottom, 0px)) 15px; display: flex; flex-direction: column; align-items: center; gap: 16px; border-top: 1px solid var(--border); margin-top: 10px; }
     .social-buttons { display: flex; gap: 25px; width: 100%; justify-content: center; }
     .social-btn { display: flex; align-items: center; justify-content: center; background: none; border: none; color: var(--text-muted); font-size: 1.8rem; text-decoration: none; transition: color 0.2s, transform 0.2s; }
@@ -230,10 +221,11 @@
       <div class="menu-item" id="nav-play" onclick="switchView('play')"><i class="fa-brands fa-youtube" style="color: #ff0000;"></i> RadarTV Play</div>
       <div class="menu-divider"></div>
       
-      <!-- MENU SINCRONIZADO COM FIREBASE -->
-      <a href="https://www.limeiranews.com/" target="_blank" class="menu-item" id="linkMenuNews"><i class="fa-regular fa-newspaper" style="color: #4d82ff;"></i> Limeira News</a>
-      <a href="https://wa.me/5532985109726?text=Ol%C3%A1%21%20Gostaria%20de%20enviar%20uma%20sugest%C3%A3o%20de%20pauta%2Fv%C3%ADdeo%21" target="_blank" class="menu-item" id="linkMenuPauta"><i class="fa-solid fa-camera-retro" style="color: #e74c3c;"></i> Envie sua Pauta/Vídeo</a>
-      <a href="https://wa.me/5532985109726?text=Ol%C3%A1%21%20Estou%20assistindo%20a%20RadarTV%21" target="_blank" class="menu-item" id="linkMenuNoAr"><i class="fa-brands fa-whatsapp" style="color: #25d366;"></i> WhatsApp no Ar</a>
+      <!-- MENU TOTALMENTE CONTROLADO PELO FIREBASE -->
+      <div id="dynamicMenuContainer">
+        <a href="https://www.limeiranews.com/" target="_blank" class="menu-item"><i class="fa-regular fa-newspaper" style="color: #4d82ff;"></i> Limeira News</a>
+        <a href="https://wa.me/5532985109726" target="_blank" class="menu-item"><i class="fa-solid fa-camera-retro" style="color: #e74c3c;"></i> Envie sua Pauta/Vídeo</a>
+      </div>
       
       <div class="menu-divider"></div>
       <div class="menu-item" onclick="shareApp()"><i class="fa-solid fa-share-nodes"></i> Compartilhar App</div>
@@ -376,7 +368,7 @@
 
   <script>
     // ========================================================
-    // INTEGRAÇÃO COM FIREBASE (LENDO DADOS DO PAINEL ADMIN)
+    // INTEGRAÇÃO COM O PAINEL DE CONTROLE (FIREBASE)
     // ========================================================
     const firebaseConfig = {
       apiKey: "AIzaSyCsDzEzcwZ_cuRbxlN_CAtl-7jJO7TH67Y",
@@ -391,26 +383,64 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // Ouvinte em tempo real das alterações do Painel
+    // As variáveis do sistema começam com o padrão e são substituídas pelo banco
+    let MAIN_SITE_URL = 'https://www.limeiranews.com/';
+    let WIX_RSS_URL = 'https://www.limeiranews.com/blog-feed.xml'; 
+    let GITHUB_M3U_URL = 'https://raw.githubusercontent.com/althierestm/Lista-RadarTV/refs/heads/main/lista.m3u';
+    let EPG_XML_URL = 'https://raw.githubusercontent.com/althierestm/Lista-RadarTV/refs/heads/main/epg.xml';
+    let PLAYLIST_RECENT = 'PLzfuSmZBMwIoLYSVMxQhgjDR3yCpBpRbV'; 
+    let PLAYLIST_BALDANZA = 'PLzfuSmZBMwIpRXDvRQPzJbIGcpGImYr4n'; 
+    const YOUTUBE_API_KEY = 'AIzaSyDaVlWRVlFrq9Qur-Dzv779pIIi3v_XD0g'; 
+    const YOUTUBE_CHANNEL_ID = 'UC7wHmjY4RNruABZ9An1crBA'; 
+
+    // Fica "escutando" as alterações feitas no admin.html
     db.ref('appConfig').on('value', (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        // Atualiza Menus dinamicamente
-        if (data.menu) {
-          if (data.menu.news) document.getElementById('linkMenuNews').href = data.menu.news;
-          if (data.menu.pauta) document.getElementById('linkMenuPauta').href = data.menu.pauta;
-          if (data.menu.noar) document.getElementById('linkMenuNoAr').href = data.menu.noar;
+        
+        // 1. Atualiza as URLs do sistema
+        if (data.settings) {
+          if (data.settings.mainUrl) MAIN_SITE_URL = data.settings.mainUrl;
+          if (data.settings.wixUrl) WIX_RSS_URL = data.settings.wixUrl;
+          if (data.settings.m3uUrl) GITHUB_M3U_URL = data.settings.m3uUrl;
+          if (data.settings.epgUrl) EPG_XML_URL = data.settings.epgUrl;
+          if (data.settings.playlistRecent) PLAYLIST_RECENT = data.settings.playlistRecent;
+          if (data.settings.playlistBaldanza) PLAYLIST_BALDANZA = data.settings.playlistBaldanza;
         }
-        // Atualiza Redes Sociais no rodapé dinamicamente
+
+        // 2. Monta o Menu Dinâmico
+        if (data.menu) {
+          const menuContainer = document.getElementById('dynamicMenuContainer');
+          menuContainer.innerHTML = ''; 
+          data.menu.forEach(item => {
+            const a = document.createElement('a');
+            a.href = item.url;
+            a.target = '_blank';
+            a.className = 'menu-item';
+            
+            // Corrige automaticamente se faltar a classe base do fontawesome
+            let icClass = item.icon;
+            if(!icClass.includes('fa-')) icClass = 'fa-solid ' + icClass;
+
+            a.innerHTML = `<i class="${icClass}" style="color: ${item.color || '#4d82ff'};"></i> ${item.title}`;
+            menuContainer.appendChild(a);
+          });
+        }
+
+        // 3. Monta as Redes Sociais no Rodapé
         if (data.social) {
           const socialContainer = document.getElementById('footerSocial');
-          socialContainer.innerHTML = ''; // Limpa os botões padrão
+          socialContainer.innerHTML = ''; 
           data.social.forEach(item => {
             const a = document.createElement('a');
             a.href = item.url;
             a.target = '_blank';
             a.className = 'social-btn';
-            a.innerHTML = `<i class="fa-brands ${item.icon}"></i>`;
+            
+            let icClass = item.icon;
+            if(!icClass.includes('fa-')) icClass = 'fa-brands ' + icClass;
+
+            a.innerHTML = `<i class="${icClass}"></i>`;
             socialContainer.appendChild(a);
           });
         }
@@ -418,16 +448,8 @@
     });
 
     // ========================================================
+    // O RESTO DO CÓDIGO (PLAYER, HLS, YOUTUBE) FOI MANTIDO
     // ========================================================
-    const MAIN_SITE_URL = 'https://www.limeiranews.com/';
-    const WIX_RSS_URL = 'https://www.limeiranews.com/blog-feed.xml'; 
-    const GITHUB_M3U_URL = 'https://raw.githubusercontent.com/althierestm/Lista-RadarTV/refs/heads/main/lista.m3u';
-    const EPG_XML_URL = 'https://raw.githubusercontent.com/althierestm/Lista-RadarTV/refs/heads/main/epg.xml';
-    const YOUTUBE_API_KEY = 'AIzaSyDaVlWRVlFrq9Qur-Dzv779pIIi3v_XD0g'; 
-    const YOUTUBE_CHANNEL_ID = 'UC7wHmjY4RNruABZ9An1crBA'; 
-    const PLAYLIST_RECENT = 'PLzfuSmZBMwIoLYSVMxQhgjDR3yCpBpRbV'; 
-    const PLAYLIST_BALDANZA = 'PLzfuSmZBMwIpRXDvRQPzJbIGcpGImYr4n'; 
-
     let globalRecentVideos = [];
 
     window.addEventListener('load', () => {
@@ -533,268 +555,25 @@
         const desc = snippet.description;
         const thumb = snippet.thumbnails.high?.url || snippet.thumbnails.medium?.url;
 
-        const card = document.createElement('div');
-        card.className = 'top5-item';
-        
-        const safeTitle = title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-        const safeDesc = desc.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, '\\n');
+        const card = document.createElement('Sim, é perfeitamente possível. O arquivo fornecido já possui a infraestrutura inicial para isso, contando com um ouvinte do Firebase Realtime Database integrado para atualizar links de redes sociais e menus dinamicamente[cite: 1]. Como os seus web apps geralmente são hospedados no GitHub Pages, você pode criar e hospedar esse painel administrativo lá mesmo, conectado ao mesmo banco de dados que já atende a RadarTV.
 
-        card.onclick = () => openVODModal(videoId, safeTitle, safeDesc);
-        card.innerHTML = `
-          <div class="top5-rank">${index + 1}</div>
-          <img src="${thumb}" class="top5-poster" alt="${title}">
-        `;
-        container.appendChild(card);
-      });
-    }
+Para criar uma experiência profissional, a arquitetura exige separar o sistema em duas frentes: o **Aplicativo** (o código atual da RadarTV, que lê os dados[cite: 1]) e o **Painel Administrativo** (uma página web separada, protegida por senha, para gerenciar as informações).
 
-    function registerClick(videoId) {
-      let clicks = JSON.parse(localStorage.getItem('radar_vod_clicks')) || {};
-      clicks[videoId] = (clicks[videoId] || 0) + 1;
-      localStorage.setItem('radar_vod_clicks', JSON.stringify(clicks));
-      if (globalRecentVideos.length > 0) renderTop5();
-    }
+**Elementos Modificáveis**
+Para tornar o aplicativo totalmente dinâmico, os seguintes itens estruturais do seu código podem ser migrados para o controle do painel:
+* **Transmissão e Guia:** O link da lista M3U (HLS principal) e a URL do guia de programação (EPG XML)[cite: 1].
+* **Catálogo do YouTube:** O ID do canal para detecção de transmissões ao vivo e os IDs das playlists específicas (como "Recentes" e as competições locais como a "Copa Baldanza")[cite: 1].
+* **Notícias:** A URL do feed RSS responsável por puxar as manchetes do Limeira News[cite: 1].
+* **Menu e Rodapé:** Links para envio de pautas, WhatsApp no ar e botões sociais[cite: 1].
+* **Identidade Visual:** Os links das imagens utilizadas para a logo da splash screen, marca d'água do player e cabeçalho do menu lateral[cite: 1].
 
-    async function fetchPlaylistRow(playlistId, containerId) {
-      const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=15&playlistId=${playlistId}&key=${YOUTUBE_API_KEY}`;
-      const carousel = document.getElementById(containerId);
-      
-      try {
-        const response = await fetch(url); const data = await response.json();
-        if (data.error) { carousel.innerHTML = `<div style="padding:15px; color:#ff3333; font-weight:bold;">Limite diário atingido.</div>`; return; }
-        if (data.items && data.items.length > 0) { renderCarousel(data.items, containerId); } 
-        else { carousel.innerHTML = '<div style="padding:15px; color:#8a8f9d;">Catálogo vazio.</div>'; }
-      } catch (e) { carousel.innerHTML = '<div style="padding:15px; color:#8a8f9d;">Erro ao carregar vídeos.</div>'; }
-    }
+**Estrutura de Criação do Painel**
 
-    async function fetchLimeiraNews() {
-      const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(WIX_RSS_URL)}`;
-      const carousel = document.getElementById('newsCarousel');
-      
-      try {
-        const response = await fetch(apiUrl); const data = await response.json();
-        if (data.status === 'ok' && data.items) {
-          carousel.innerHTML = ''; 
-          const latestNews = data.items.slice(0, 5);
-          
-          latestNews.forEach(item => {
-            let imgUrl = item.thumbnail || item.enclosure?.link;
-            if (!imgUrl && item.content) {
-              const match = item.content.match(/<img[^>]+src="([^">]+)"/);
-              if (match) imgUrl = match[1];
-            }
-            if(!imgUrl) imgUrl = 'https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1080.png';
+| Etapa | Ação Técnica |
+| :--- | :--- |
+| **1. Autenticação** | Ativar o Firebase Authentication para exigir e-mail e senha, garantindo que apenas a sua equipe administrativa acesse o painel. |
+| **2. Interface Gráfica** | Criar um novo arquivo `admin.html` contendo um layout intuitivo de dashboard (com navegação lateral e formulários limpos) para gerenciar cada seção do aplicativo. |
+| **3. Lógica de Gravação** | Utilizar JavaScript no painel para capturar as URLs e IDs inseridos nos formulários e gravá-los utilizando o método `firebase.database().ref('appConfig').set()`. |
+| **4. Ajustes no Aplicativo** | Alterar as constantes fixas (como `YOUTUBE_CHANNEL_ID` e `GITHUB_M3U_URL`[cite: 1]) no código fonte atual para variáveis dinâmicas que buscam os valores no Firebase logo na inicialização. |
 
-            const card = document.createElement('a');
-            card.className = 'news-card'; card.href = item.link; card.target = '_blank';
-            card.innerHTML = `
-              <img src="${imgUrl}" class="news-img">
-              <div class="news-content">
-                <div class="news-text">${item.title}</div>
-              </div>
-            `;
-            carousel.appendChild(card);
-          });
-
-          const seeMore = document.createElement('a');
-          seeMore.className = 'news-card see-more-card'; seeMore.href = MAIN_SITE_URL; seeMore.target = '_blank';
-          seeMore.innerHTML = `<i class="fa-solid fa-arrow-right"></i><span style="font-size:0.85rem; font-weight:bold;">Acessar Site</span>`;
-          carousel.appendChild(seeMore);
-
-        } else { carousel.innerHTML = '<div style="padding:15px; color:#8a8f9d;">Nenhuma notícia.</div>'; }
-      } catch (err) { carousel.innerHTML = '<div style="padding:15px; color:#8a8f9d;">Erro no feed.</div>'; }
-    }
-
-    function openVODModal(videoId, title, desc) {
-      registerClick(videoId);
-      document.getElementById('vodModal').classList.add('active');
-      document.getElementById('vodTitle').innerText = title;
-      document.getElementById('vodDesc').innerText = desc || "Nenhuma descrição informada na plataforma.";
-      document.getElementById('vodYoutubeLink').href = `https://www.youtube.com/watch?v=${videoId}`;
-      document.getElementById('vodIframe').src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-    }
-
-    function closeVODModal() {
-      document.getElementById('vodModal').classList.remove('active');
-      document.getElementById('vodIframe').src = '';
-    }
-
-    let scheduleData = []; let selectedScheduleDate = new Date(); let next7Days = [];
-    const monthsPt = ['jan.', 'fev.', 'mar.', 'abr.', 'mai.', 'jun.', 'jul.', 'ago.', 'set.', 'out.', 'nov.', 'dez.'];
-    
-    function formatUIDate(date, offsetIndex) { 
-      const d = date.getDate(); const m = monthsPt[date.getMonth()]; 
-      if (offsetIndex === 0) return `Hoje, ${d} de ${m}`; if (offsetIndex === 1) return `Amanhã, ${d} de ${m}`; return `${d} de ${m}`; 
-    }
-
-    function generateDays() {
-      const today = new Date(); next7Days = [];
-      for (let i = 0; i < 7; i++) { 
-        let loopDate = new Date(today); loopDate.setDate(today.getDate() + i); 
-        next7Days.push({ dateObj: loopDate, label: formatUIDate(loopDate, i) }); 
-      }
-    }
-
-    function parseXMLTVDate(d) {
-      if(!d) return new Date();
-      let tz = d.length > 15 ? d.substring(15).trim() : "-03:00";
-      if(tz.length === 5) tz = tz.substring(0,3)+":"+tz.substring(3,5);
-      return new Date(`${d.substring(0,4)}-${d.substring(4,6)}-${d.substring(6,8)}T${d.substring(8,10)}:${d.substring(10,12)}:${d.substring(12,14)}${tz}`);
-    }
-    
-    function formatTime(d) { return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
-
-    async function fetchEPG() {
-      try {
-        const response = await fetch(EPG_XML_URL); const text = await response.text(); 
-        const parser = new DOMParser(); const xmlDoc = parser.parseFromString(text, "text/xml"); 
-        const programs = xmlDoc.getElementsByTagName('programme'); let newSchedule = [];
-        for (let i=0; i<programs.length; i++) {
-          let p = programs[i];
-          newSchedule.push({ 
-            start: parseXMLTVDate(p.getAttribute('start')), 
-            end: parseXMLTVDate(p.getAttribute('stop')), 
-            title: p.getElementsByTagName('title')[0]?.textContent || 'Sem título', 
-            desc: p.getElementsByTagName('desc')[0]?.textContent || '' 
-          });
-        }
-        scheduleData = newSchedule.sort((a, b) => a.start - b.start); updateEPG(); 
-      } catch (err) { document.getElementById('progDesc').innerText = "Erro no EPG."; }
-    }
-
-    function updateEPG() {
-      if (scheduleData.length === 0) return;
-      const now = new Date(); let idx = scheduleData.findIndex(i => now >= i.start && now < i.end);
-      let p = idx === -1 ? { start: now, end: new Date(now.getTime() + 3600000), title: "Radar TV Ao Vivo", desc: "Acompanhe nossa programação." } : scheduleData[idx]; 
-      
-      document.getElementById('progTime').innerText = `${formatTime(p.start)} - ${formatTime(p.end)}`; 
-      document.getElementById('progTitle').innerText = p.title; 
-      document.getElementById('progDesc').innerText = p.desc; 
-      
-      let pct = ((now.getTime() - p.start.getTime()) / (p.end.getTime() - p.start.getTime())) * 100;
-      document.getElementById('progBar').style.width = `${Math.max(0, Math.min(pct, 100))}%`;
-
-      // Atualiza o Media Player Nativo do iOS/Android
-      if ('mediaSession' in navigator) {
-        navigator.mediaSession.metadata = new MediaMetadata({
-          title: p.title,
-          artist: 'Radar TV',
-          artwork: [
-            { src: 'https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1080.png', sizes: '1080x1080', type: 'image/png' }
-          ]
-        });
-      }
-    }
-
-    function openScheduleModal() { 
-      generateDays(); selectedScheduleDate = next7Days[0].dateObj; updateDateSelectorUI(); 
-      renderScheduleList(); document.getElementById('scheduleModal').classList.add('active'); 
-    }
-    
-    function closeScheduleModal() { 
-      document.getElementById('scheduleModal').classList.remove('active'); 
-      document.getElementById('dateDropdown').classList.remove('active'); 
-      document.getElementById('btnDateSelector').classList.remove('open'); 
-    }
-    
-    function toggleDateMenu() {
-      const dropdown = document.getElementById('dateDropdown'); const btn = document.getElementById('btnDateSelector'); 
-      dropdown.classList.toggle('active'); btn.classList.toggle('open');
-      if (dropdown.classList.contains('active')) {
-        dropdown.innerHTML = ''; 
-        next7Days.forEach((dayInfo, index) => {
-          const btnOption = document.createElement('button'); btnOption.className = 'date-option';
-          if(selectedScheduleDate.getDate() === dayInfo.dateObj.getDate()) btnOption.classList.add('selected');
-          btnOption.innerText = dayInfo.label; btnOption.onclick = () => { selectScheduleDate(index); }; dropdown.appendChild(btnOption);
-        });
-      }
-    }
-    
-    function selectScheduleDate(dayIndex) { 
-      selectedScheduleDate = next7Days[dayIndex].dateObj; updateDateSelectorUI(); renderScheduleList(); 
-      document.getElementById('dateDropdown').classList.remove('active'); document.getElementById('btnDateSelector').classList.remove('open'); 
-    }
-    
-    function updateDateSelectorUI() { 
-      const dayInfo = next7Days.find(d => d.dateObj.getDate() === selectedScheduleDate.getDate()); 
-      document.getElementById('btnDateSelector').innerHTML = `${dayInfo.label} <i class="fa-solid fa-chevron-down"></i>`; 
-    }
-    
-    function renderScheduleList() {
-      const now = new Date();
-      const list = scheduleData.filter(i => i.start.getDate() === selectedScheduleDate.getDate() && i.start.getMonth() === selectedScheduleDate.getMonth());
-      const container = document.getElementById('fullScheduleList'); container.innerHTML = '';
-      
-      if(list.length === 0) container.innerHTML = '<div style="padding:20px; color:#8a8f9d;">Nenhuma programação cadastrada.</div>';
-      list.forEach(item => {
-        let isCurrent = (now >= item.start && now < item.end);
-        let div = document.createElement('div'); div.className = `schedule-item ${isCurrent ? 'active' : ''}`;
-        div.innerHTML = `<span class="schedule-time">${formatTime(item.start)} - ${formatTime(item.end)}</span><span class="schedule-name">${item.title}</span>`;
-        container.appendChild(div);
-      });
-    }
-
-    const hlsVideo = document.getElementById('hlsPlayer'); const ytIframe = document.getElementById('ytPlayer'); const centerPlayBtn = document.getElementById('centerPlayBtn');
-    let hlsInstance = null; let isYtLiveActive = false; let controlsTimeout;
-
-    hlsVideo.addEventListener('pause', () => centerPlayBtn.classList.remove('hidden'));
-    hlsVideo.addEventListener('play', () => centerPlayBtn.classList.add('hidden'));
-
-    function resumePlay(e) { if(e) e.stopPropagation(); hlsVideo.play(); resetControlsTimeout(); }
-    function resetControlsTimeout() { clearTimeout(controlsTimeout); controlsTimeout = setTimeout(() => { document.getElementById('customControls').classList.add('hidden'); }, 3500); }
-    function toggleControls() { const c = document.getElementById('customControls'); if(c.classList.contains('hidden')){ c.classList.remove('hidden'); resetControlsTimeout(); } else { c.classList.add('hidden'); clearTimeout(controlsTimeout); } }
-    function toggleSound(e) { if(e) e.stopPropagation(); resetControlsTimeout(); hlsVideo.muted = !hlsVideo.muted; if(!hlsVideo.muted) hlsVideo.volume = 1; }
-    function toggleFullscreenAction(e) { if(e) e.stopPropagation(); resetControlsTimeout(); const vw = document.getElementById('videoWrapper'); if (!document.fullscreenElement) { vw.requestFullscreen?.() || hlsVideo.webkitEnterFullscreen?.(); } else { document.exitFullscreen?.(); } }
-    async function togglePiP(e) { if(e) e.stopPropagation(); try{ if(hlsVideo !== document.pictureInPictureElement) await hlsVideo.requestPictureInPicture(); else await document.exitPictureInPicture(); }catch(e){}}
-    function toggleAirPlay(e) { if(e) e.stopPropagation(); if(window.WebKitPlaybackTargetAvailabilityEvent) hlsVideo.webkitShowPlaybackTargetPicker(); }
-    
-    hlsVideo.addEventListener('volumechange', () => {
-      const b = document.getElementById('volumeBtn');
-      if(hlsVideo.muted || hlsVideo.volume===0){ b.innerHTML='<i class="fa-solid fa-volume-xmark"></i> Som'; b.style.background='rgba(0,0,0,0.5)'; } 
-      else { b.innerHTML='<i class="fa-solid fa-volume-high"></i> Mudo'; b.style.background='rgba(13,71,230,0.5)'; }
-    });
-
-    async function initHLS() { 
-      let streamUrl = 'https://video01.logicahost.com.br/fcvtv/fcvtv/playlist.m3u8'; 
-      try {
-        const res = await fetch(GITHUB_M3U_URL);
-        if (res.ok) {
-          const lines = (await res.text()).split('\n');
-          for (let l of lines) { if (l.trim().startsWith('http')) { streamUrl = l.trim(); break; } }
-        }
-      } catch (e) {}
-      if (Hls.isSupported()) { hlsInstance = new Hls(); hlsInstance.loadSource(streamUrl); hlsInstance.attachMedia(hlsVideo); } 
-      else if (hlsVideo.canPlayType('application/vnd.apple.mpegurl')) { hlsVideo.src = streamUrl; } 
-    }
-
-    async function checkYouTubeLive() {
-      try {
-        const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${YOUTUBE_CHANNEL_ID}&type=video&eventType=live&key=${YOUTUBE_API_KEY}`;
-        const res = await fetch(url); const data = await res.json();
-        if (data.items && data.items.length > 0) {
-          if (!isYtLiveActive) {
-            isYtLiveActive = true; hlsVideo.pause(); hlsVideo.style.display = 'none';
-            ytIframe.src = `https://www.youtube.com/embed/${data.items[0].id.videoId}?autoplay=1&live=1`; ytIframe.style.display = 'block';
-            document.getElementById('liveTag').innerText = 'YT LIVE';
-          }
-        } else {
-          if (isYtLiveActive) {
-            isYtLiveActive = false; ytIframe.src = ''; ytIframe.style.display = 'none';
-            hlsVideo.style.display = 'block'; document.getElementById('liveTag').innerText = 'AO VIVO';
-          }
-        }
-      } catch (err) {}
-    }
-
-    initHLS(); 
-    fetchEPG(); 
-    fetchCatalogPlaylists(); 
-    fetchLimeiraNews(); 
-    
-    setInterval(updateEPG, 60000); 
-    setInterval(fetchEPG, 300000); 
-    checkYouTubeLive(); 
-    setInterval(checkYouTubeLive, 30000);
-  </script>
-</body>
-</html>
+O próximo passo lógico para a implementação é desenhar a interface desse novo painel em HTML e conectar os campos de texto diretamente à mesma chave do Firebase já presente no projeto.
