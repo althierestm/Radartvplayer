@@ -40,11 +40,35 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
     
-    /* Configuração de Scroll Livre e Sem Barras Laterais */
-    html, body { overflow-x: hidden; scrollbar-width: none; -ms-overflow-style: none; }
+    /* Configuração para remover barra de rolagem e consertar o fundo da barra de status do iOS */
     ::-webkit-scrollbar { display: none; }
+    
+    html {
+      background-color: var(--primary); /* Faz o buraco do "puxar pra baixo" e o relógio do iOS ficarem azuis! */
+    }
 
-    body { background-color: var(--bg-color); color: var(--text); display: flex; flex-direction: column; align-items: center; min-height: 100vh; -webkit-text-size-adjust: 100%; }
+    body { 
+      background-color: var(--primary); 
+      color: var(--text); 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      min-height: 100vh; 
+      -webkit-text-size-adjust: 100%;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* O fundo escuro do aplicativo fica aqui agora, para não bugar o iOS */
+    .app-wrapper { 
+      background-color: var(--bg-color);
+      width: 100%; 
+      max-width: 800px; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      min-height: 100vh;
+    }
 
     /* Splash Screen */
     .splash-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(135deg, var(--primary) 0%, #082b8a 100%); display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 40px 20px; z-index: 9999; transition: opacity 0.6s ease, visibility 0.6s ease; }
@@ -69,15 +93,13 @@
     .menu-item:hover, .menu-item.active { background: rgba(255,255,255,0.05); color: var(--primary-light); border-left-color: var(--primary-light); }
     .menu-item i { font-size: 1.1rem; width: 24px; text-align: center; }
     .menu-divider { height: 1px; background: var(--border); margin: 10px 0; }
-
-    .app-wrapper { width: 100%; max-width: 800px; display: flex; flex-direction: column; align-items: center; }
     
     /* Telas (Views) */
     .view-panel { width: 100%; display: none; flex-direction: column; gap: 15px; padding: 0; padding-bottom: 20px; }
     .view-panel.active { display: flex; }
 
     /* Player Fixo (Sticky) */
-    .sticky-player-area { position: -webkit-sticky; position: sticky; top: 0; z-index: 1000; background: #000; width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+    .sticky-player-area { position: -webkit-sticky; position: sticky; top: 0; z-index: 1000; background: var(--primary); width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
     .player-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; background: var(--primary); width: 100%; }
     .header-left { display: flex; align-items: center; gap: 14px; }
     .hamburger-btn { background: none; border: none; color: #ffffff; font-size: 1.4rem; cursor: pointer; }
@@ -113,54 +135,20 @@
     .btn-schedule-pill:active { background: rgba(255,255,255,0.1); }
 
     /* ========================================================
-       TOP 5 MAIS ASSISTIDOS (ESTILO NETFLIX)
+       BLOCOS CARROSSÉIS (TOP 5, VOD, LIMEIRA NEWS)
        ======================================================== */
-    .block-section { padding: 15px 0 5px 0; display: flex; flex-direction: column; background: var(--surface); border-radius: 16px; border: 1px solid var(--border); margin: 0 10px; }
+    .block-section { padding: 15px 0 5px 0; display: flex; flex-direction: column; background: var(--surface); border-radius: 16px; border: 1px solid var(--border); margin: 0 10px; width: calc(100% - 20px); }
     .block-header { padding: 0 15px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
     .block-title { font-size: 1.1rem; font-weight: bold; color: #fff; display: flex; align-items: center; gap: 8px; }
     .block-title i { color: var(--primary-light); }
     
-    .carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 14px; padding: 0 15px 15px 15px; scroll-behavior: smooth; }
+    .carousel { width: 100%; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 14px; padding: 0 15px 15px 15px; scroll-behavior: smooth; }
 
-    .top5-item {
-      display: flex;
-      align-items: center;
-      position: relative;
-      flex: 0 0 auto;
-      width: 220px; 
-      height: 100px;
-      cursor: pointer;
-      scroll-snap-align: start;
-    }
+    /* TOP 5 Netflix Style */
+    .top5-item { display: flex; align-items: center; position: relative; flex: 0 0 auto; width: 220px; height: 100px; cursor: pointer; scroll-snap-align: start; }
     .top5-item:active { transform: scale(0.96); }
-
-    .top5-rank {
-      font-size: 7.5rem;
-      font-weight: 900;
-      font-family: Impact, 'Arial Black', sans-serif;
-      color: var(--surface);
-      -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.75); 
-      position: absolute;
-      left: 0;
-      bottom: -15px;
-      z-index: 1; 
-      letter-spacing: -4px;
-      user-select: none;
-    }
-
-    .top5-poster {
-      width: 155px;
-      height: 87px; 
-      border-radius: 6px;
-      object-fit: cover;
-      position: absolute;
-      right: 0;
-      bottom: 6px;
-      z-index: 2; 
-      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-      border: 1px solid rgba(255,255,255,0.1);
-      transition: transform 0.2s;
-    }
+    .top5-rank { font-size: 7.5rem; font-weight: 900; font-family: Impact, 'Arial Black', sans-serif; color: var(--surface); -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.75); position: absolute; left: 0; bottom: -15px; z-index: 1; letter-spacing: -4px; user-select: none; }
+    .top5-poster { width: 155px; height: 87px; border-radius: 6px; object-fit: cover; position: absolute; right: 0; bottom: 6px; z-index: 2; box-shadow: 0 4px 15px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); transition: transform 0.2s; }
 
     /* Cards VOD RadarTV Play */
     .play-header-title { width: 100%; padding: 20px 15px 5px 15px; display: flex; align-items: center; gap: 10px; font-size: 1.6rem; font-weight: 900; color: #fff; }
@@ -202,7 +190,7 @@
     .close-btn { background: rgba(255,255,255,0.08); border: none; color: #fff; font-size: 1.1rem; cursor: pointer; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
     .modal-body { padding: 0; overflow-y: auto; flex: 1; }
 
-    /* Modal EPG (Calendário) */
+    /* Modal EPG */
     .modal-header-date { padding: 12px 16px; background: rgba(0,0,0,0.2); position: relative; border-bottom: 1px solid var(--border); }
     .date-selector-btn { background: none; border: none; color: #fff; font-size: 1rem; font-weight: bold; display: flex; align-items: center; gap: 8px; cursor: pointer; }
     .date-selector-btn i { font-size: 0.9rem; transition: transform 0.3s; }
@@ -233,7 +221,7 @@
     @media (max-width: 600px) {
       .brand img { height: 28px; }
       .epg-bar { border-radius: 0; margin: 0; border-left: none; border-right: none; border-bottom: 1px solid var(--border); }
-      .block-section { border-radius: 0; margin: 0; width: 100%; border-left: none; border-right: none; }
+      .block-section { border-radius: 0; margin: 0; border-left: none; border-right: none; }
       .play-header-title { padding-top: 15px; font-size: 1.4rem; }
     }
   </style>
@@ -272,6 +260,7 @@
     </nav>
   </aside>
 
+  <!-- Container de Fundo Escuro -->
   <div class="app-wrapper">
 
     <!-- ==========================================
@@ -308,7 +297,7 @@
         </div>
       </div>
 
-      <!-- Conteúdo que Rola por Baixo do Player -->
+      <!-- Conteúdo Rolável -->
       <div class="epg-bar">
         <div class="prog-time" id="progTime">--:-- - --:--</div>
         <div class="prog-title" id="progTitle">Carregando programação...</div>
@@ -317,7 +306,7 @@
         <button class="btn-schedule-pill" onclick="openScheduleModal()">Programação</button>
       </div>
 
-      <!-- TOP 5 MAIS ASSISTIDOS -->
+      <!-- TOP 5 INTELIGENTE (BASEADO NOS CLIQUES) -->
       <section class="block-section">
         <div class="block-header">
           <div class="block-title"><i class="fa-solid fa-fire" style="color: #ff3838;"></i> Top 5 Mais Assistidos</div>
@@ -434,6 +423,9 @@
     const PLAYLIST_BALDANZA = 'PLzfuSmZBMwIpRXDvRQPzJbIGcpGImYr4n'; 
     // =================================================
 
+    // Variável global para armazenar os vídeos recentes e gerar o Top 5
+    let globalRecentVideos = [];
+
     window.addEventListener('load', () => {
       const splash = document.getElementById('splashScreen');
       const introSound = document.getElementById('splashSound');
@@ -463,44 +455,104 @@
       window.scrollTo(0, 0);
     }
 
-    /* ---- Lógica TOP 5 (Correção da API: Usando Playlist Oficial em vez de Search) ---- */
-    async function fetchTop5Videos() {
-      // Usando a playlist oficial para contornar o bloqueio de "Search" da cota do YouTube
-      const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=5&playlistId=${PLAYLIST_RECENT}&key=${YOUTUBE_API_KEY}`;
-      const container = document.getElementById('top5Carousel');
+    /* ---- Lógica RADARTV PLAY E TOP 5 INTELIGENTE ---- */
+    async function fetchCatalogPlaylists() {
+      // 1. Carrega playlist Baldanza
+      fetchPlaylistRow(PLAYLIST_BALDANZA, 'carousel-baldanza');
 
+      // 2. Carrega playlist Recent (Top Vídeos da Semana) e usa para o Top 5
+      const urlRecent = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=15&playlistId=${PLAYLIST_RECENT}&key=${YOUTUBE_API_KEY}`;
       try {
-        const response = await fetch(url);
+        const response = await fetch(urlRecent); 
         const data = await response.json();
-
+        
         if (data.items && data.items.length > 0) {
-          container.innerHTML = '';
-          data.items.forEach((item, index) => {
-            const videoId = item.snippet.resourceId.videoId;
-            const snippet = item.snippet;
-            const title = snippet.title;
-            const desc = snippet.description;
-            const thumb = snippet.thumbnails.high?.url || snippet.thumbnails.medium?.url;
-
-            const card = document.createElement('div');
-            card.className = 'top5-item';
-            
-            const safeTitle = title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-            const safeDesc = desc.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, '\\n');
-
-            card.onclick = () => openVODModal(videoId, safeTitle, safeDesc);
-            card.innerHTML = `
-              <div class="top5-rank">${index + 1}</div>
-              <img src="${thumb}" class="top5-poster" alt="${title}">
-            `;
-            container.appendChild(card);
-          });
-        } else {
-          container.innerHTML = '<div style="padding:15px; color:#8a8f9d;">Top 5 indisponível no momento.</div>';
+          globalRecentVideos = data.items;
+          // Renderiza catálogo normal na aba Play
+          renderCarousel(globalRecentVideos, 'carousel-recent');
+          // Renderiza Top 5 na aba Home
+          renderTop5();
+        } else { 
+          document.getElementById('carousel-recent').innerHTML = '<div style="padding:15px; color:#8a8f9d;">Catálogo vazio.</div>'; 
+          document.getElementById('top5Carousel').innerHTML = '<div style="padding:15px; color:#8a8f9d;">Top 5 indisponível.</div>';
         }
-      } catch (err) {
-        container.innerHTML = '<div style="padding:15px; color:#8a8f9d;">Erro ao buscar Top 5.</div>';
+      } catch (e) { 
+        document.getElementById('carousel-recent').innerHTML = '<div style="padding:15px; color:#8a8f9d;">Erro ao carregar.</div>'; 
       }
+    }
+
+    function renderCarousel(items, containerId) {
+      const carousel = document.getElementById(containerId);
+      carousel.innerHTML = '';
+      items.forEach(item => {
+        const snippet = item.snippet;
+        const videoId = snippet.resourceId.videoId;
+        const title = snippet.title;
+        const desc = snippet.description;
+        const thumb = snippet.thumbnails.maxres?.url || snippet.thumbnails.high?.url || snippet.thumbnails.medium?.url;
+
+        const card = document.createElement('div');
+        card.className = 'vod-card';
+        const safeTitle = title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        const safeDesc = desc.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, '\\n');
+
+        card.onclick = () => openVODModal(videoId, safeTitle, safeDesc);
+        card.innerHTML = `
+          <img src="${thumb}" class="vod-img">
+          <div class="vod-overlay"><div class="vod-title">${title}</div></div>
+          <i class="fa-solid fa-circle-play play-icon-overlay"></i>
+        `;
+        carousel.appendChild(card);
+      });
+    }
+
+    function renderTop5() {
+      const container = document.getElementById('top5Carousel');
+      if (!globalRecentVideos || globalRecentVideos.length === 0) return;
+
+      // Puxa os cliques guardados no celular
+      let clicks = JSON.parse(localStorage.getItem('radar_vod_clicks')) || {};
+      
+      // Ordena do mais clicado para o menos clicado
+      let sortedVideos = [...globalRecentVideos].sort((a, b) => {
+        let clicksA = clicks[a.snippet.resourceId.videoId] || 0;
+        let clicksB = clicks[b.snippet.resourceId.videoId] || 0;
+        return clicksB - clicksA;
+      });
+
+      let top5 = sortedVideos.slice(0, 5); // Pega apenas os 5 primeiros
+      container.innerHTML = '';
+
+      top5.forEach((item, index) => {
+        const videoId = item.snippet.resourceId.videoId;
+        const snippet = item.snippet;
+        const title = snippet.title;
+        const desc = snippet.description;
+        const thumb = snippet.thumbnails.high?.url || snippet.thumbnails.medium?.url;
+
+        const card = document.createElement('div');
+        card.className = 'top5-item';
+        
+        const safeTitle = title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        const safeDesc = desc.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, '\\n');
+
+        card.onclick = () => openVODModal(videoId, safeTitle, safeDesc);
+        card.innerHTML = `
+          <div class="top5-rank">${index + 1}</div>
+          <img src="${thumb}" class="top5-poster" alt="${title}">
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Registra clique toda vez que abre o vídeo e re-ordena o Top 5 pro futuro
+    function registerClick(videoId) {
+      let clicks = JSON.parse(localStorage.getItem('radar_vod_clicks')) || {};
+      clicks[videoId] = (clicks[videoId] || 0) + 1;
+      localStorage.setItem('radar_vod_clicks', JSON.stringify(clicks));
+      
+      // Re-renderiza silenciosamente o Top 5 no fundo
+      if (globalRecentVideos.length > 0) renderTop5();
     }
 
     /* ---- Lógica LIMEIRA NEWS ---- */
@@ -542,46 +594,10 @@
       } catch (err) { carousel.innerHTML = '<div style="padding:15px; color:#8a8f9d;">Erro no feed.</div>'; }
     }
 
-    /* ---- Lógica RADARTV PLAY (Catálogo) ---- */
-    async function fetchCatalogPlaylists() {
-      fetchPlaylistRow(PLAYLIST_RECENT, 'carousel-recent');
-      fetchPlaylistRow(PLAYLIST_BALDANZA, 'carousel-baldanza');
-    }
-
-    async function fetchPlaylistRow(playlistId, containerId) {
-      const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=15&playlistId=${playlistId}&key=${YOUTUBE_API_KEY}`;
-      const carousel = document.getElementById(containerId);
-      
-      try {
-        const response = await fetch(url); const data = await response.json();
-        if (data.items && data.items.length > 0) {
-          carousel.innerHTML = '';
-          data.items.forEach(item => {
-            const snippet = item.snippet;
-            const videoId = snippet.resourceId.videoId;
-            const title = snippet.title;
-            const desc = snippet.description;
-            const thumb = snippet.thumbnails.maxres?.url || snippet.thumbnails.high?.url || snippet.thumbnails.medium?.url;
-
-            const card = document.createElement('div');
-            card.className = 'vod-card';
-            const safeTitle = title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-            const safeDesc = desc.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, '\\n');
-
-            card.onclick = () => openVODModal(videoId, safeTitle, safeDesc);
-            card.innerHTML = `
-              <img src="${thumb}" class="vod-img">
-              <div class="vod-overlay"><div class="vod-title">${title}</div></div>
-              <i class="fa-solid fa-circle-play play-icon-overlay"></i>
-            `;
-            carousel.appendChild(card);
-          });
-        } else { carousel.innerHTML = '<div style="padding:15px; color:#8a8f9d;">Catálogo vazio.</div>'; }
-      } catch (e) { carousel.innerHTML = '<div style="padding:15px; color:#8a8f9d;">Erro ao carregar vídeos.</div>'; }
-    }
-
     /* ---- Modal Cinema VOD ---- */
     function openVODModal(videoId, title, desc) {
+      registerClick(videoId); // Salva o clique pra ranquear o Top 5!
+      
       document.getElementById('vodModal').classList.add('active');
       document.getElementById('vodTitle').innerText = title;
       document.getElementById('vodDesc').innerText = desc || "Nenhuma descrição informada na plataforma.";
@@ -754,9 +770,8 @@
 
     initHLS(); 
     fetchEPG(); 
-    fetchTop5Videos();
+    fetchCatalogPlaylists(); // Carrega os vídeos e gera o Top 5
     fetchLimeiraNews(); 
-    fetchCatalogPlaylists();
     
     setInterval(updateEPG, 60000); 
     setInterval(fetchEPG, 300000); 
