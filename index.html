@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Radar TV</title>
 
   <link rel="manifest" href="manifest.json">
@@ -40,35 +40,33 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
     
-    /* Configuração para remover barra de rolagem e consertar o fundo da barra de status do iOS */
-    ::-webkit-scrollbar { display: none; }
-    
-    html {
-      background-color: var(--primary); /* Faz o buraco do "puxar pra baixo" e o relógio do iOS ficarem azuis! */
-    }
-
-    body { 
-      background-color: var(--primary); 
+    /* Configuração App Nativo (Bloqueia Efeito Elástico/Bounce) */
+    html, body { 
+      position: fixed; /* Trava o navegador base */
+      width: 100vw; 
+      height: 100vh; 
+      overflow: hidden; 
+      overscroll-behavior: none; 
+      background-color: var(--primary); /* Barra do iOS sólida */
       color: var(--text); 
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-      min-height: 100vh; 
       -webkit-text-size-adjust: 100%;
-      -ms-overflow-style: none;
-      scrollbar-width: none;
     }
 
-    /* O fundo escuro do aplicativo fica aqui agora, para não bugar o iOS */
-    .app-wrapper { 
+    /* O Scroll ocorre apenas aqui dentro agora (Simula App Nativio perfeitamente) */
+    .app-wrapper {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
       background-color: var(--bg-color);
-      width: 100%; 
-      max-width: 800px; 
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
       display: flex; 
       flex-direction: column; 
       align-items: center; 
-      min-height: 100vh;
+      scrollbar-width: none; /* Firefox */
+      -ms-overflow-style: none;  /* IE and Edge */
     }
+    .app-wrapper::-webkit-scrollbar { display: none; }
 
     /* Splash Screen */
     .splash-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(135deg, var(--primary) 0%, #082b8a 100%); display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 40px 20px; z-index: 9999; transition: opacity 0.6s ease, visibility 0.6s ease; }
@@ -93,12 +91,12 @@
     .menu-item:hover, .menu-item.active { background: rgba(255,255,255,0.05); color: var(--primary-light); border-left-color: var(--primary-light); }
     .menu-item i { font-size: 1.1rem; width: 24px; text-align: center; }
     .menu-divider { height: 1px; background: var(--border); margin: 10px 0; }
-    
+
     /* Telas (Views) */
-    .view-panel { width: 100%; display: none; flex-direction: column; gap: 15px; padding: 0; padding-bottom: 20px; }
+    .view-panel { width: 100%; max-width: 800px; display: none; flex-direction: column; gap: 15px; padding: 0; padding-bottom: 20px; }
     .view-panel.active { display: flex; }
 
-    /* Player Fixo (Sticky) */
+    /* Player Fixo (Sticky) Agora funciona perfeitamente */
     .sticky-player-area { position: -webkit-sticky; position: sticky; top: 0; z-index: 1000; background: var(--primary); width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
     .player-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; background: var(--primary); width: 100%; }
     .header-left { display: flex; align-items: center; gap: 14px; }
@@ -134,17 +132,15 @@
     .btn-schedule-pill { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #fff; padding: 10px 24px; border-radius: 30px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: background 0.2s; width: 100%; }
     .btn-schedule-pill:active { background: rgba(255,255,255,0.1); }
 
-    /* ========================================================
-       BLOCOS CARROSSÉIS (TOP 5, VOD, LIMEIRA NEWS)
-       ======================================================== */
-    .block-section { padding: 15px 0 5px 0; display: flex; flex-direction: column; background: var(--surface); border-radius: 16px; border: 1px solid var(--border); margin: 0 10px; width: calc(100% - 20px); }
+    /* Blocos Carrosséis (Top 5, VOD, News) */
+    .block-section { padding: 15px 0 5px 0; display: flex; flex-direction: column; background: var(--surface); border-radius: 16px; border: 1px solid var(--border); margin: 0 10px; }
     .block-header { padding: 0 15px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
     .block-title { font-size: 1.1rem; font-weight: bold; color: #fff; display: flex; align-items: center; gap: 8px; }
     .block-title i { color: var(--primary-light); }
     
-    .carousel { width: 100%; display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 14px; padding: 0 15px 15px 15px; scroll-behavior: smooth; }
+    .carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 14px; padding: 0 15px 15px 15px; scroll-behavior: smooth; }
 
-    /* TOP 5 Netflix Style */
+    /* Top 5 Estilo Netflix */
     .top5-item { display: flex; align-items: center; position: relative; flex: 0 0 auto; width: 220px; height: 100px; cursor: pointer; scroll-snap-align: start; }
     .top5-item:active { transform: scale(0.96); }
     .top5-rank { font-size: 7.5rem; font-weight: 900; font-family: Impact, 'Arial Black', sans-serif; color: var(--surface); -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.75); position: absolute; left: 0; bottom: -15px; z-index: 1; letter-spacing: -4px; user-select: none; }
@@ -260,8 +256,8 @@
     </nav>
   </aside>
 
-  <!-- Container de Fundo Escuro -->
-  <div class="app-wrapper">
+  <!-- Container de Fundo que Permite o Scroll Liso do App -->
+  <div class="app-wrapper" id="appWrapper">
 
     <!-- ==========================================
          VIEW 1: AO VIVO AGORA
@@ -312,7 +308,7 @@
           <div class="block-title"><i class="fa-solid fa-fire" style="color: #ff3838;"></i> Top 5 Mais Assistidos</div>
         </div>
         <div class="carousel" id="top5Carousel">
-          <div style="padding: 20px; color: #8a8f9d;">Carregando Top 5...</div>
+          <div style="padding: 20px; color: #8a8f9d;">Buscando vídeos...</div>
         </div>
       </section>
 
@@ -345,7 +341,7 @@
         </header>
       </div>
 
-      <section class="block-section" style="margin-top: 10px;">
+      <section class="block-section" style="margin-top: 15px;">
         <div class="block-header">
           <div class="block-title">Top Vídeos da Semana</div>
         </div>
@@ -423,7 +419,7 @@
     const PLAYLIST_BALDANZA = 'PLzfuSmZBMwIpRXDvRQPzJbIGcpGImYr4n'; 
     // =================================================
 
-    // Variável global para armazenar os vídeos recentes e gerar o Top 5
+    // Guarda os vídeos recentes para o ranking do Top 5
     let globalRecentVideos = [];
 
     window.addEventListener('load', () => {
@@ -452,32 +448,35 @@
       }
       
       closeMenu();
-      window.scrollTo(0, 0);
+      document.getElementById('appWrapper').scrollTo(0, 0); // Rola para o topo corretamente no novo wrapper
     }
 
-    /* ---- Lógica RADARTV PLAY E TOP 5 INTELIGENTE ---- */
+    /* ---- Lógica RADARTV PLAY E TOP 5 INTELIGENTE (Com aviso de Cota) ---- */
     async function fetchCatalogPlaylists() {
-      // 1. Carrega playlist Baldanza
       fetchPlaylistRow(PLAYLIST_BALDANZA, 'carousel-baldanza');
 
-      // 2. Carrega playlist Recent (Top Vídeos da Semana) e usa para o Top 5
       const urlRecent = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=15&playlistId=${PLAYLIST_RECENT}&key=${YOUTUBE_API_KEY}`;
       try {
         const response = await fetch(urlRecent); 
         const data = await response.json();
         
+        // Tratamento de Cota Excedida do YouTube
+        if (data.error) {
+           document.getElementById('carousel-recent').innerHTML = `<div style="padding:15px; color:#ff3333; font-weight:bold;">Limite diário do YouTube atingido. Tente amanhã.</div>`;
+           document.getElementById('top5Carousel').innerHTML = `<div style="padding:15px; color:#ff3333; font-weight:bold;">Limite diário do YouTube atingido.</div>`;
+           return;
+        }
+
         if (data.items && data.items.length > 0) {
           globalRecentVideos = data.items;
-          // Renderiza catálogo normal na aba Play
           renderCarousel(globalRecentVideos, 'carousel-recent');
-          // Renderiza Top 5 na aba Home
           renderTop5();
         } else { 
           document.getElementById('carousel-recent').innerHTML = '<div style="padding:15px; color:#8a8f9d;">Catálogo vazio.</div>'; 
           document.getElementById('top5Carousel').innerHTML = '<div style="padding:15px; color:#8a8f9d;">Top 5 indisponível.</div>';
         }
       } catch (e) { 
-        document.getElementById('carousel-recent').innerHTML = '<div style="padding:15px; color:#8a8f9d;">Erro ao carregar.</div>'; 
+        document.getElementById('carousel-recent').innerHTML = '<div style="padding:15px; color:#8a8f9d;">Erro ao carregar vídeos.</div>'; 
       }
     }
 
@@ -506,21 +505,20 @@
       });
     }
 
+    // Top 5 Inteligente: Ordena pelos cliques do usuário
     function renderTop5() {
       const container = document.getElementById('top5Carousel');
       if (!globalRecentVideos || globalRecentVideos.length === 0) return;
 
-      // Puxa os cliques guardados no celular
       let clicks = JSON.parse(localStorage.getItem('radar_vod_clicks')) || {};
       
-      // Ordena do mais clicado para o menos clicado
       let sortedVideos = [...globalRecentVideos].sort((a, b) => {
         let clicksA = clicks[a.snippet.resourceId.videoId] || 0;
         let clicksB = clicks[b.snippet.resourceId.videoId] || 0;
         return clicksB - clicksA;
       });
 
-      let top5 = sortedVideos.slice(0, 5); // Pega apenas os 5 primeiros
+      let top5 = sortedVideos.slice(0, 5); 
       container.innerHTML = '';
 
       top5.forEach((item, index) => {
@@ -545,14 +543,23 @@
       });
     }
 
-    // Registra clique toda vez que abre o vídeo e re-ordena o Top 5 pro futuro
     function registerClick(videoId) {
       let clicks = JSON.parse(localStorage.getItem('radar_vod_clicks')) || {};
       clicks[videoId] = (clicks[videoId] || 0) + 1;
       localStorage.setItem('radar_vod_clicks', JSON.stringify(clicks));
-      
-      // Re-renderiza silenciosamente o Top 5 no fundo
       if (globalRecentVideos.length > 0) renderTop5();
+    }
+
+    async function fetchPlaylistRow(playlistId, containerId) {
+      const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=15&playlistId=${playlistId}&key=${YOUTUBE_API_KEY}`;
+      const carousel = document.getElementById(containerId);
+      
+      try {
+        const response = await fetch(url); const data = await response.json();
+        if (data.error) { carousel.innerHTML = `<div style="padding:15px; color:#ff3333; font-weight:bold;">Limite diário atingido.</div>`; return; }
+        if (data.items && data.items.length > 0) { renderCarousel(data.items, containerId); } 
+        else { carousel.innerHTML = '<div style="padding:15px; color:#8a8f9d;">Catálogo vazio.</div>'; }
+      } catch (e) { carousel.innerHTML = '<div style="padding:15px; color:#8a8f9d;">Erro ao carregar vídeos.</div>'; }
     }
 
     /* ---- Lógica LIMEIRA NEWS ---- */
@@ -596,8 +603,7 @@
 
     /* ---- Modal Cinema VOD ---- */
     function openVODModal(videoId, title, desc) {
-      registerClick(videoId); // Salva o clique pra ranquear o Top 5!
-      
+      registerClick(videoId);
       document.getElementById('vodModal').classList.add('active');
       document.getElementById('vodTitle').innerText = title;
       document.getElementById('vodDesc').innerText = desc || "Nenhuma descrição informada na plataforma.";
@@ -770,7 +776,7 @@
 
     initHLS(); 
     fetchEPG(); 
-    fetchCatalogPlaylists(); // Carrega os vídeos e gera o Top 5
+    fetchCatalogPlaylists(); 
     fetchLimeiraNews(); 
     
     setInterval(updateEPG, 60000); 
