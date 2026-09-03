@@ -7,8 +7,10 @@
 
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0d47e6">
+  
+  <!-- Configuração Oficial iOS PWA -->
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Radar TV">
 
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
@@ -40,33 +42,26 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
     
-    /* Configuração App Nativo (Bloqueia Efeito Elástico/Bounce) */
+    /* Configuração Nativa Limpa (Remove o Elástico sem quebrar as cores) */
     html, body { 
-      position: fixed; 
-      width: 100vw; 
-      height: 100vh; 
-      overflow: hidden; 
-      overscroll-behavior: none; 
-      background-color: var(--primary); 
+      background-color: var(--bg-color); /* Fundo sempre escuro, sem vazar azul no rodapé */
       color: var(--text); 
+      min-height: 100vh; 
+      overscroll-behavior-y: none; /* Corta o efeito elástico nativamente */
       -webkit-text-size-adjust: 100%;
     }
 
-    /* O Scroll ocorre apenas aqui dentro agora */
+    ::-webkit-scrollbar { display: none; }
+
+    /* Chassi Centralizado do App */
     .app-wrapper {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: var(--bg-color);
-      overflow-y: auto;
-      overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
+      width: 100%; 
+      max-width: 800px; 
+      margin: 0 auto;
       display: flex; 
       flex-direction: column; 
       align-items: center; 
-      scrollbar-width: none; 
-      -ms-overflow-style: none;
     }
-    .app-wrapper::-webkit-scrollbar { display: none; }
 
     /* Splash Screen */
     .splash-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(135deg, var(--primary) 0%, #082b8a 100%); display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: calc(40px + env(safe-area-inset-top, 0px)) 20px 40px; z-index: 9999; transition: opacity 0.6s ease, visibility 0.6s ease; }
@@ -84,7 +79,6 @@
     .side-menu { position: fixed; top: 0; left: -300px; width: 280px; height: 100vh; background: rgba(18, 20, 26, 0.92); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-right: 1px solid var(--border); z-index: 2001; display: flex; flex-direction: column; transition: left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s ease; }
     .side-menu.active { left: 0; box-shadow: 5px 0 30px rgba(0,0,0,0.5); }
     
-    /* Cabeçalho do Menu com Safe Area do iOS */
     .menu-header { padding: calc(20px + env(safe-area-inset-top, 0px)) 20px 20px 20px; background: var(--primary); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
     .menu-header img { height: 36px; width: auto; object-fit: contain; }
     .close-menu-btn { background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
@@ -95,13 +89,13 @@
     .menu-divider { height: 1px; background: var(--border); margin: 10px 0; }
 
     /* Telas (Views) */
-    .view-panel { width: 100%; max-width: 800px; display: none; flex-direction: column; gap: 15px; padding: 0; padding-bottom: 20px; }
+    .view-panel { width: 100%; display: none; flex-direction: column; gap: 15px; padding: 0; padding-bottom: 20px; }
     .view-panel.active { display: flex; }
 
-    /* Player Fixo (Sticky) */
-    .sticky-player-area { position: -webkit-sticky; position: sticky; top: 0; z-index: 1000; background: var(--primary); width: 100%; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+    /* Player Fixo (Sticky) Restaurado e Perfeito */
+    .sticky-player-area { position: -webkit-sticky; position: sticky; top: 0; z-index: 1000; background: var(--primary); width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.6); }
     
-    /* Cabeçalho do App com Safe Area do iOS (Recuo do Relógio) */
+    /* Cabeçalho do App com Safe Area do iOS - Cobre perfeitamente o Relógio */
     .player-header { display: flex; align-items: center; justify-content: space-between; padding: calc(12px + env(safe-area-inset-top, 0px)) 18px 12px 18px; background: var(--primary); width: 100%; }
     .header-left { display: flex; align-items: center; gap: 14px; }
     .hamburger-btn { background: none; border: none; color: #ffffff; font-size: 1.4rem; cursor: pointer; }
@@ -151,6 +145,9 @@
     .top5-poster { width: 155px; height: 87px; border-radius: 6px; object-fit: cover; position: absolute; right: 0; bottom: 6px; z-index: 2; box-shadow: 0 4px 15px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); transition: transform 0.2s; }
 
     /* Cards VOD RadarTV Play */
+    .play-header-title { width: 100%; padding: 20px 15px 5px 15px; display: flex; align-items: center; gap: 10px; font-size: 1.6rem; font-weight: 900; color: #fff; }
+    .play-header-title i { color: #ff0000; font-size: 1.8rem; }
+    
     .vod-card { flex: 0 0 240px; scroll-snap-align: start; border-radius: 12px; overflow: hidden; position: relative; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.5); transition: transform 0.2s ease; border: 1px solid var(--border); }
     .vod-card:active { transform: scale(0.96); }
     .vod-card::after { content: ''; display: block; padding-top: 56.25%; }
@@ -219,6 +216,7 @@
       .brand img { height: 28px; }
       .epg-bar { border-radius: 0; margin: 0; border-left: none; border-right: none; border-bottom: 1px solid var(--border); width: 100%; }
       .block-section { border-radius: 0; margin: 0; border-left: none; border-right: none; width: 100%; }
+      .play-header-title { padding-top: calc(15px + env(safe-area-inset-top, 0px)); font-size: 1.4rem; }
     }
   </style>
 </head>
@@ -256,7 +254,7 @@
     </nav>
   </aside>
 
-  <!-- Container de Fundo que Permite o Scroll Liso do App -->
+  <!-- Container Base do App -->
   <div class="app-wrapper" id="appWrapper">
 
     <!-- ==========================================
@@ -308,7 +306,7 @@
           <div class="block-title"><i class="fa-solid fa-fire" style="color: #ff3838;"></i> Top 5 Mais Assistidos</div>
         </div>
         <div class="carousel" id="top5Carousel">
-          <div style="padding: 20px; color: #8a8f9d;">Carregando Top 5...</div>
+          <div style="padding: 20px; color: #8a8f9d;">Buscando vídeos...</div>
         </div>
       </section>
 
@@ -448,7 +446,7 @@
       }
       
       closeMenu();
-      document.getElementById('appWrapper').scrollTo(0, 0);
+      window.scrollTo(0, 0); // O scroll nativo agora funciona em Window!
     }
 
     /* ---- Lógica RADARTV PLAY E TOP 5 INTELIGENTE ---- */
