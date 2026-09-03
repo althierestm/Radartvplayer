@@ -7,8 +7,9 @@
 
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0d47e6">
+  <!-- Tag alterada para remover o sombreado e forçar o azul sólido na barra do iOS -->
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="Radar TV">
 
   <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
@@ -71,13 +72,13 @@
     .app-wrapper { width: 100%; max-width: 800px; display: flex; flex-direction: column; align-items: center; }
     
     /* Telas (Views) */
-    .view-panel { width: 100%; display: none; flex-direction: column; gap: 15px; padding: 10px; }
+    .view-panel { width: 100%; display: none; flex-direction: column; gap: 15px; padding: 0; }
     .view-panel.active { display: flex; }
 
-    /* Player TV */
-    .player-container { width: 100%; background: var(--surface); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.4); border: 1px solid var(--border); overflow: hidden; }
+    /* Player TV e Barra Superior */
+    .player-container { width: 100%; background: var(--surface); box-shadow: 0 10px 30px rgba(0,0,0,0.4); overflow: hidden; }
     
-    /* Barra Superior 100% Azul Sólido */
+    /* Cabeçalho Fixo 100% Azul (Sem sombra pra cima) */
     .sticky-player-area { position: sticky; top: 0; z-index: 1000; background: var(--primary); box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
     .player-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; background: var(--primary); }
     .header-left { display: flex; align-items: center; gap: 14px; }
@@ -114,7 +115,7 @@
     .btn-schedule-pill:active { background: rgba(255,255,255,0.1); }
 
     /* ========================================================
-       TOP 5 MAIS ASSISTIDOS (ESTILO NETFLIX COM NÚMEROS VAZADOS)
+       TOP 5 MAIS ASSISTIDOS (ESTILO NETFLIX)
        ======================================================== */
     .block-section { width: 100%; padding: 15px 0 5px 0; display: flex; flex-direction: column; overflow: hidden; }
     .block-header { padding: 0 15px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
@@ -125,44 +126,43 @@
 
     .top5-item {
       display: flex;
-      align-items: flex-end;
+      align-items: center;
       position: relative;
       flex: 0 0 auto;
-      width: 195px;
-      height: 180px;
+      width: 220px; /* Largura total do item */
+      height: 100px;
       cursor: pointer;
       scroll-snap-align: start;
     }
     .top5-item:active { transform: scale(0.96); }
 
-    /* Número Grande Vazado da Netflix */
+    /* Número Vazado (Fino) Premium */
     .top5-rank {
-      font-size: 8.5rem;
+      font-size: 7.5rem;
       font-weight: 900;
       font-family: Impact, 'Arial Black', sans-serif;
-      color: var(--bg-color);
-      -webkit-text-stroke: 3.5px rgba(255, 255, 255, 0.45);
+      color: var(--surface); /* Fica transparente e mescla com o fundo */
+      -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.75); /* Borda fina Premium */
       position: absolute;
       left: 0;
       bottom: -15px;
-      line-height: 0.8;
-      z-index: 1;
+      z-index: 1; /* Fica atrás da imagem */
+      letter-spacing: -4px;
       user-select: none;
-      letter-spacing: -6px;
     }
 
-    /* Pôster Vertical Sobreposto */
+    /* Capa Horizontal (16:9) sobreposta */
     .top5-poster {
-      width: 120px;
-      height: 165px;
-      border-radius: 8px;
+      width: 155px;
+      height: 87px; /* Proporção retangular horizontal */
+      border-radius: 6px;
       object-fit: cover;
       position: absolute;
       right: 0;
-      top: 5px;
-      z-index: 2;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.8);
-      border: 1px solid rgba(255,255,255,0.12);
+      bottom: 6px;
+      z-index: 2; /* Sobrepõe o número */
+      box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,255,255,0.1);
       transition: transform 0.2s;
     }
 
@@ -188,12 +188,11 @@
     .see-more-card { flex: 0 0 120px; background: rgba(255,255,255,0.03); border: 1px dashed var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--primary-light); }
     .see-more-card i { font-size: 1.5rem; }
 
-    /* Footer */
+    /* Rodapé - Redes Sociais Minimalistas */
     .app-footer { width: 100%; max-width: 800px; padding: 20px 15px 30px 15px; display: flex; flex-direction: column; align-items: center; gap: 16px; border-top: 1px solid var(--border); margin-top: 10px; }
-    .social-buttons { display: flex; gap: 12px; width: 100%; justify-content: center; }
-    .social-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px; border-radius: 10px; text-decoration: none; font-weight: bold; font-size: 0.9rem; color: #ffffff; }
-    .social-btn.instagram { background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); }
-    .social-btn.youtube { background: #ff0000; }
+    .social-buttons { display: flex; gap: 25px; width: 100%; justify-content: center; }
+    .social-btn { display: flex; align-items: center; justify-content: center; background: none; border: none; color: var(--text-muted); font-size: 1.8rem; text-decoration: none; transition: color 0.2s, transform 0.2s; }
+    .social-btn:active { color: var(--primary-light); transform: scale(0.9); }
     .footer-credits { font-size: 0.8rem; color: var(--text-muted); text-align: center; }
     .footer-credits a { color: var(--primary-light); text-decoration: none; font-weight: bold; }
 
@@ -234,6 +233,7 @@
     .vod-desc { font-size: 0.9rem; color: #a0a5b5; line-height: 1.5; white-space: pre-wrap; }
     .vod-close-float { position: absolute; top: 15px; right: 15px; z-index: 50; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); color: #fff; border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; cursor: pointer; }
 
+    /* Remove gaps no mobile para encostar na barra superior perfeitamente */
     @media (max-width: 600px) {
       .app-wrapper { padding: 0; gap: 0; }
       .player-container { border-radius: 0; border: none; border-bottom: 1px solid var(--border); }
@@ -322,7 +322,7 @@
       </div>
 
       <!-- SESSÃO TOP 5 (NETFLIX STYLE) -->
-      <section class="block-section" style="background: var(--surface); border-radius: 16px; border: 1px solid var(--border);">
+      <section class="block-section" style="background: var(--surface); border-radius: 16px; border: 1px solid var(--border); margin: 0 10px;">
         <div class="block-header" style="padding-top: 15px;">
           <div class="block-title"><i class="fa-solid fa-fire" style="color: #ff3838;"></i> Top 5 Mais Assistidos</div>
         </div>
@@ -332,7 +332,7 @@
       </section>
 
       <!-- SESSÃO LIMEIRA NEWS -->
-      <section class="block-section" style="background: var(--surface); border-radius: 16px; border: 1px solid var(--border);">
+      <section class="block-section" style="background: var(--surface); border-radius: 16px; border: 1px solid var(--border); margin: 0 10px;">
         <div class="block-header" style="padding-top: 15px;">
           <div class="block-title"><i class="fa-regular fa-newspaper" style="color: var(--primary-light);"></i> Últimas Notícias</div>
         </div>
@@ -373,10 +373,11 @@
 
     </div>
 
+    <!-- RODAPÉ SOCIAL (ÍCONES VAZADOS) -->
     <footer class="app-footer">
       <div class="social-buttons">
-        <a href="https://instagram.com/radartvmg" target="_blank" class="social-btn instagram"><i class="fa-brands fa-instagram"></i> Instagram</a>
-        <a href="https://youtube.com/@radartvmg" target="_blank" class="social-btn youtube"><i class="fa-brands fa-youtube"></i> YouTube</a>
+        <a href="https://instagram.com/radartvmg" target="_blank" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
+        <a href="https://youtube.com/@radartvmg" target="_blank" class="social-btn"><i class="fa-brands fa-youtube"></i></a>
       </div>
       <div class="footer-credits">Desenvolvido por <a href="https://instagram.com/althierestm" target="_blank">Althieres Dias</a></div>
     </footer>
@@ -475,6 +476,7 @@
             const snippet = item.snippet;
             const title = snippet.title;
             const desc = snippet.description;
+            // Pega a capa de melhor resolução e corta para 16:9 via CSS
             const thumb = snippet.thumbnails.high?.url || snippet.thumbnails.medium?.url;
 
             const card = document.createElement('div');
