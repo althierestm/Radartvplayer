@@ -421,10 +421,8 @@
           if (data.settings.playlistRecent) PLAYLIST_RECENT = data.settings.playlistRecent;
           if (data.settings.playlistBaldanza) PLAYLIST_BALDANZA = data.settings.playlistBaldanza;
           
-          // Preenche a Versão
           document.getElementById('appVersionDisplay').innerText = `Versão ${data.settings.appVersion || '1.0'}`;
           
-          // Preenche o nome e ícone das Abas
           if(data.settings.tabHomeText) {
             let ic = data.settings.tabHomeIcon || 'fa-solid fa-tv';
             if(!ic.includes('fa-')) ic = 'fa-solid ' + ic;
@@ -472,9 +470,6 @@
 
     let globalRecentVideos = [];
 
-    // ==========================================
-    // API NATIVA PARA MANTER TELA ACESA (WakeLock)
-    // ==========================================
     let wakeLock = null;
     async function requestWakeLock() {
       try {
@@ -490,10 +485,6 @@
       if (wakeLock !== null && document.visibilityState === 'visible') { requestWakeLock(); }
     });
 
-
-    // ==========================================
-    // LÓGICA DO TIMER DE SUSPENSÃO
-    // ==========================================
     let sleepTimerTimeout = null;
     
     function openTimerModal() { document.getElementById('timerModal').classList.add('active'); closeMenu(); }
@@ -511,7 +502,9 @@
         const hls = document.getElementById('hlsPlayer');
         const yt = document.getElementById('ytPlayer');
         if(hls && !hls.paused) hls.pause();
-        if(yt && isYtLiveActive) yt.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+        if(yt && isYtLiveActive) {
+          try{ yt.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*'); } catch(e){}
+        }
         display.innerText = '';
       }, mins * 60000);
     }
@@ -693,11 +686,20 @@
 
     function openVODModal(videoId, title, desc) {
       registerClick(videoId);
+
+      // PAUSA O PLAYER AO VIVO (HLS e YT LIVE) PARA NÃO MISTURAR O ÁUDIO
+      const hlsVideo = document.getElementById('hlsPlayer');
+      const ytLive = document.getElementById('ytPlayer');
+      if (hlsVideo && !hlsVideo.paused) hlsVideo.pause();
+      if (ytLive && isYtLiveActive) {
+        try { ytLive.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*'); } catch(e){}
+      }
+
       document.getElementById('vodModal').classList.add('active');
       document.getElementById('vodTitle').innerText = title;
       document.getElementById('vodDesc').innerText = desc || "Nenhuma descrição informada na plataforma.";
       document.getElementById('vodYoutubeLink').href = `https://www.youtube.com/watch?v=${videoId}`;
-      document.getElementById('vodIframe').src = `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`; // Added enablejsapi for Timer support
+      document.getElementById('vodIframe').src = `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`;
     }
 
     function closeVODModal() {
@@ -822,7 +824,6 @@
     const hlsVideo = document.getElementById('hlsPlayer'); const ytIframe = document.getElementById('ytPlayer'); const centerPlayBtn = document.getElementById('centerPlayBtn');
     let hlsInstance = null; let isYtLiveActive = false; let controlsTimeout;
 
-    // WakeLock para quando houver player ativo
     hlsVideo.addEventListener('play', () => { centerPlayBtn.classList.add('hidden'); requestWakeLock(); });
     hlsVideo.addEventListener('pause', () => { centerPlayBtn.classList.remove('hidden'); releaseWakeLock(); });
 
@@ -860,7 +861,6 @@
         if (data.items && data.items.length > 0) {
           if (!isYtLiveActive) {
             isYtLiveActive = true; hlsVideo.pause(); hlsVideo.style.display = 'none';
-            // Added enablejsapi for Sleeptimer support on Youtube Live
             ytIframe.src = `https://www.youtube.com/embed/${data.items[0].id.videoId}?autoplay=1&live=1&enablejsapi=1`; ytIframe.style.display = 'block';
             document.getElementById('liveTag').innerText = 'YT LIVE';
           }
