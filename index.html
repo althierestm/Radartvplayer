@@ -92,6 +92,10 @@
 
     .video-wrapper { position: relative; width: 100%; padding-top: 56.25%; background: #000; overflow: hidden; cursor: pointer; }
     .video-wrapper video, .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; object-fit: contain; pointer-events: none; }
+    
+    /* Iframe liberado para toque quando ativo */
+    #ytPlayer { pointer-events: auto; }
+
     .player-overlay-logo { position: absolute; bottom: 12px; right: 12px; height: 35px; width: auto; z-index: 10; pointer-events: none; opacity: 0.8; filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.8)); }
 
     .custom-controls { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 20; transition: opacity 0.3s ease; pointer-events: none; }
@@ -178,7 +182,7 @@
 
     .vod-modal-content { background: #000; height: 100vh; max-height: 100vh; border-radius: 0; border: none; padding-bottom: 0; }
     .vod-player-wrapper { width: 100%; position: relative; padding-top: calc(56.25% + env(safe-area-inset-top, 0px)); background: #000; }
-    .vod-player-wrapper iframe { position: absolute; bottom: 0; left: 0; width: 100%; height: calc(100% - env(safe-area-inset-top, 0px)); border: 0; }
+    .vod-player-wrapper iframe { position: absolute; bottom: 0; left: 0; width: 100%; height: calc(100% - env(safe-area-inset-top, 0px)); border: 0; pointer-events: auto; }
     .vod-details { padding: 25px 20px calc(25px + env(safe-area-inset-bottom, 0px)) 20px; display: flex; flex-direction: column; gap: 15px; background: linear-gradient(180deg, #000 0%, var(--bg-color) 100%); flex: 1; overflow-y: auto; }
     .vod-details h2 { font-size: 1.4rem; font-weight: 800; line-height: 1.2; }
     .btn-youtube-watch { background: #fff; color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 1rem; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; text-decoration: none; transition: background 0.2s; }
@@ -217,22 +221,18 @@
     </div>
     <nav class="menu-items">
       
-      <!-- ABAS FIXAS LIGADAS AO FIREBASE -->
       <div class="menu-item active" id="nav-home" onclick="switchView('home')"><i class="fa-solid fa-tv"></i> Ao Vivo Agora</div>
       <div class="menu-item" id="nav-play" onclick="switchView('play')"><i class="fa-brands fa-youtube" style="color: #ff0000;"></i> RadarTV Play</div>
       <div class="menu-divider"></div>
       
-      <!-- MENU CUSTOMIZÁVEL LIGADO AO FIREBASE -->
       <div id="dynamicMenuContainer"></div>
       
       <div class="menu-divider"></div>
 
-      <!-- NOVO TIMER DE SUSPENSÃO -->
       <div class="menu-item" onclick="openTimerModal()"><i class="fa-solid fa-stopwatch"></i> Timer de Suspensão <span id="timerDisplay" style="color:var(--primary-light); font-size:0.8rem; margin-left:auto;"></span></div>
       
       <div class="menu-item" onclick="shareApp()"><i class="fa-solid fa-share-nodes"></i> Compartilhar App</div>
       
-      <!-- VERSÃO DO APP FIREBASE -->
       <div class="menu-item" style="color: var(--text-muted); font-size: 0.8rem; justify-content: center; cursor: default; background: transparent;" id="appVersionDisplay">Versão 1.0</div>
     </nav>
   </aside>
@@ -316,7 +316,6 @@
           <div class="block-title">Filmes em destaque</div>
         </div>
         <div style="padding: 0 15px 15px 15px;">
-          <!-- Container do Player Responsivo 16:9 -->
           <div style="position: relative; width: 100%; padding-top: 56.25%; background: #000; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
             <iframe 
               style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
@@ -329,10 +328,8 @@
             </iframe>
           </div>
           
-          <!-- Informações do Filme -->
           <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 6px;">
             <h3 style="font-size: 1.4rem; font-weight: bold; color: #fff; margin: 0;">Par Perfeito</h3>
-            
             <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">
               <span style="background: #eab308; color: #000; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">14</span>
               <span>2010</span>
@@ -341,7 +338,6 @@
               <span>&bull;</span>
               <span>1h 40m</span>
             </div>
-            
             <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; margin: 0;">
               A vida tranquila de Jen e Spencer começa a mudar quando ela descobre que o marido é um assassino profissional.
             </p>
@@ -377,7 +373,6 @@
 
   </div>
 
-  <!-- MODAL: Programação -->
   <div class="modal" id="scheduleModal">
     <div class="modal-content">
       <div class="modal-header-top">
@@ -392,7 +387,6 @@
     </div>
   </div>
 
-  <!-- MODAL: Sleeptimer -->
   <div class="modal" id="timerModal">
     <div class="modal-content">
       <div class="modal-header-top">
@@ -410,7 +404,6 @@
     </div>
   </div>
 
-  <!-- MODAL: Cinema VOD -->
   <div class="modal" id="vodModal">
     <div class="modal-content vod-modal-content">
       <button class="vod-close-float" onclick="closeVODModal()"><i class="fa-solid fa-xmark"></i></button>
@@ -727,7 +720,7 @@
     function openVODModal(videoId, title, desc) {
       registerClick(videoId);
 
-      // PAUSA O PLAYER AO VIVO (HLS e YT LIVE) PARA NÃO MISTURAR O ÁUDIO
+      // Trava de Segurança: Pausa HLS e YT Live ativos
       const hlsVideo = document.getElementById('hlsPlayer');
       const ytLive = document.getElementById('ytPlayer');
       if (hlsVideo && !hlsVideo.paused) hlsVideo.pause();
@@ -894,20 +887,40 @@
       else if (hlsVideo.canPlayType('application/vnd.apple.mpegurl')) { hlsVideo.src = streamUrl; } 
     }
 
+    // ========================================================
+    // CORREÇÃO: LIBERA O PLAYER OFICIAL DO YOUTUBE LIVE
+    // ========================================================
     async function checkYouTubeLive() {
       try {
         const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${YOUTUBE_CHANNEL_ID}&type=video&eventType=live&key=${YOUTUBE_API_KEY}`;
         const res = await fetch(url); const data = await res.json();
+        
         if (data.items && data.items.length > 0) {
           if (!isYtLiveActive) {
-            isYtLiveActive = true; hlsVideo.pause(); hlsVideo.style.display = 'none';
-            ytIframe.src = `https://www.youtube.com/embed/${data.items[0].id.videoId}?autoplay=1&live=1&enablejsapi=1`; ytIframe.style.display = 'block';
+            isYtLiveActive = true; 
+            hlsVideo.pause(); 
+            hlsVideo.style.display = 'none';
+            
+            // Esconde nossos controles e libera o clique direto no YouTube
+            document.getElementById('customControls').style.display = 'none';
+            document.getElementById('videoWrapper').onclick = null;
+
+            ytIframe.src = `https://www.youtube.com/embed/${data.items[0].id.videoId}?autoplay=1&playsinline=1&enablejsapi=1`; 
+            ytIframe.style.display = 'block';
             document.getElementById('liveTag').innerText = 'YT LIVE';
           }
         } else {
           if (isYtLiveActive) {
-            isYtLiveActive = false; ytIframe.src = ''; ytIframe.style.display = 'none';
-            hlsVideo.style.display = 'block'; document.getElementById('liveTag').innerText = 'AO VIVO';
+            isYtLiveActive = false; 
+            ytIframe.src = ''; 
+            ytIframe.style.display = 'none';
+            hlsVideo.style.display = 'block'; 
+            
+            // Restaura os nossos controles para a TV 24 horas
+            document.getElementById('customControls').style.display = '';
+            document.getElementById('videoWrapper').onclick = toggleControls;
+
+            document.getElementById('liveTag').innerText = 'AO VIVO';
           }
         }
       } catch (err) {}
