@@ -42,13 +42,13 @@
     
     .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
     label { font-size: 0.9rem; font-weight: 600; color: #a0a5b5; }
-    input[type="text"], input[type="url"], input[type="color"] { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: #12141a; color: #fff; font-size: 0.95rem; outline: none; transition: 0.2s; }
-    input:focus { border-color: var(--primary); }
+    input[type="text"], input[type="url"], input[type="color"], textarea { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: #12141a; color: #fff; font-size: 0.95rem; outline: none; transition: 0.2s; }
+    input:focus, textarea:focus { border-color: var(--primary); }
     
     .dynamic-list { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
     .dynamic-row { display: flex; gap: 10px; align-items: center; background: #12141a; padding: 15px; border-radius: 8px; border: 1px solid var(--border); }
     .dynamic-row input { flex: 1; }
-    .btn-remove { background: #ff3333; color: white; border: none; padding: 12px 15px; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+    .btn-remove { background: #ff3333; color: white; border: none; padding: 12px 15px; border-radius: 8px; cursor: pointer; transition: 0.2s; height: fit-content; }
     .btn-remove:hover { background: #cc0000; }
     
     .btn-add { background: transparent; border: 2px dashed var(--border); color: #a0a5b5; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
@@ -58,6 +58,10 @@
     .btn-save { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 10px rgba(13, 71, 230, 0.4); transition: 0.2s; }
     .btn-save:hover { transform: translateY(-2px); }
     #statusMsg { font-weight: bold; font-size: 0.95rem; }
+
+    /* Estilo Específico para o Card de Filmes */
+    .movie-card { background: #12141a; border: 1px solid var(--border); padding: 20px; border-radius: 12px; display: flex; flex-direction: column; gap: 15px; position: relative; }
+    .movie-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
   </style>
 </head>
 <body>
@@ -78,28 +82,26 @@
     <div class="sidebar">
       <div class="sidebar-header"><i class="fa-solid fa-satellite-dish"></i> Admin RadarTV</div>
       <button class="nav-btn active" onclick="switchTab('tab-links')"><i class="fa-solid fa-link"></i> Config. de Sistema</button>
+      <button class="nav-btn" onclick="switchTab('tab-movies')"><i class="fa-solid fa-film"></i> Catálogo de Filmes</button>
       <button class="nav-btn" onclick="switchTab('tab-menu')"><i class="fa-solid fa-bars-staggered"></i> Menu e Abas do App</button>
       <button class="nav-btn" onclick="switchTab('tab-social')"><i class="fa-solid fa-hashtag"></i> Redes Sociais</button>
     </div>
 
     <div class="main-content">
       
+      <!-- ABA 1: SISTEMA -->
       <div id="tab-links" class="tab-content active">
         <h2><i class="fa-solid fa-link"></i> Configurações do Sistema</h2>
         <div class="form-group">
-          <label>Versão do Aplicativo (Mostrada no Menu)</label>
+          <label>Versão do Aplicativo</label>
           <input type="text" id="conf-appVer" placeholder="Ex: 1.0">
         </div>
         <div class="form-group">
-          <label>URL do Site Limeira News (Ao Clicar em "Veja Mais")</label>
-          <input type="url" id="conf-mainUrl" placeholder="https://www.limeiranews.com/">
-        </div>
-        <div class="form-group">
-          <label>URL do Feed RSS do Wix (Notícias na Home)</label>
+          <label>URL do Feed RSS do Wix (Notícias)</label>
           <input type="url" id="conf-wixUrl" placeholder="https://www.limeiranews.com/blog-feed.xml">
         </div>
         <div class="form-group">
-          <label>URL da Lista M3U (GitHub)</label>
+          <label>URL da Lista M3U (GitHub - Ao Vivo)</label>
           <input type="url" id="conf-m3uUrl" placeholder="https://raw.githubusercontent.com/.../lista.m3u">
         </div>
         <div class="form-group">
@@ -107,15 +109,21 @@
           <input type="url" id="conf-epgUrl" placeholder="https://raw.githubusercontent.com/.../epg.xml">
         </div>
         <div class="form-group">
-          <label>ID da Playlist YouTube: Top Vídeos / Recentes</label>
-          <input type="text" id="conf-playlistRecent" placeholder="Ex: PLzfuSmZBMwIoLYSVMxQhgjDR3yCpBpRbV">
-        </div>
-        <div class="form-group">
-          <label>ID da Playlist YouTube: Copa Baldanza</label>
+          <label>ID da Playlist YouTube: Copa Baldanza / Local</label>
           <input type="text" id="conf-playlistBaldanza" placeholder="Ex: PLzfuSmZBMwIpRXDvRQPzJbIGcpGImYr4n">
         </div>
       </div>
 
+      <!-- ABA 2: FILMES -->
+      <div id="tab-movies" class="tab-content">
+        <h2><i class="fa-solid fa-film"></i> Catálogo de Filmes (RadarTV Play)</h2>
+        <p style="color:#a0a5b5; font-size:0.9rem; margin-bottom:20px;">O primeiro filme desta lista será o <b>Destaque Gigante (Hero)</b>. Os 5 primeiros formarão o <b>Top 5</b>.</p>
+        
+        <div id="moviesContainer" class="dynamic-list"></div>
+        <button class="btn-add" onclick="addMovieRow()"><i class="fa-solid fa-plus"></i> Adicionar Novo Filme</button>
+      </div>
+
+      <!-- ABA 3: MENU -->
       <div id="tab-menu" class="tab-content">
         <h2><i class="fa-solid fa-bars-staggered"></i> Abas e Menus do App</h2>
         
@@ -129,12 +137,12 @@
           <input type="text" id="conf-tabPlayIcon" placeholder="Ícone (ex: fa-solid fa-play)">
         </div>
 
-        <div class="section-title">Menu Customizável (Links Adicionais)</div>
-        <p style="color:#a0a5b5; font-size:0.9rem; margin-bottom:20px;">Use classes do FontAwesome para os ícones.</p>
+        <div class="section-title">Menu Customizável</div>
         <div id="menuContainer" class="dynamic-list"></div>
-        <button class="btn-add" onclick="addMenuRow()"><i class="fa-solid fa-plus"></i> Adicionar Novo Botão ao Menu</button>
+        <button class="btn-add" onclick="addMenuRow()"><i class="fa-solid fa-plus"></i> Adicionar Novo Botão</button>
       </div>
 
+      <!-- ABA 4: SOCIAL -->
       <div id="tab-social" class="tab-content">
         <h2><i class="fa-solid fa-hashtag"></i> Redes Sociais do Rodapé</h2>
         <div id="socialContainer" class="dynamic-list"></div>
@@ -189,11 +197,9 @@
         const data = snapshot.val();
         if (data) {
           if(data.settings) {
-            document.getElementById('conf-mainUrl').value = data.settings.mainUrl || '';
             document.getElementById('conf-wixUrl').value = data.settings.wixUrl || '';
             document.getElementById('conf-m3uUrl').value = data.settings.m3uUrl || '';
             document.getElementById('conf-epgUrl').value = data.settings.epgUrl || '';
-            document.getElementById('conf-playlistRecent').value = data.settings.playlistRecent || '';
             document.getElementById('conf-playlistBaldanza').value = data.settings.playlistBaldanza || '';
             document.getElementById('conf-appVer').value = data.settings.appVersion || '1.0';
             document.getElementById('conf-tabHomeText').value = data.settings.tabHomeText || 'Ao Vivo Agora';
@@ -213,6 +219,12 @@
           } else {
             addSocialRow('fa-brands fa-instagram', 'https://instagram.com/radartvmg');
           }
+
+          if(data.movies && data.movies.length > 0) {
+            data.movies.forEach(item => addMovieRow(item.title, item.url, item.poster, item.desc, item.rating, item.duration, item.genre));
+          } else {
+            addMovieRow();
+          }
         } else {
           document.getElementById('conf-tabHomeText').value = 'Ao Vivo Agora';
           document.getElementById('conf-tabHomeIcon').value = 'fa-solid fa-tv';
@@ -221,6 +233,7 @@
           document.getElementById('conf-appVer').value = '1.0';
           addMenuRow('Limeira News', 'fa-regular fa-newspaper', '#4d82ff', 'https://www.limeiranews.com/');
           addSocialRow('fa-brands fa-instagram', 'https://instagram.com/radartvmg');
+          addMovieRow();
         }
       });
     }
@@ -258,16 +271,56 @@
       container.appendChild(row);
     }
 
+    function addMovieRow(title = '', url = '', poster = '', desc = '', rating = '', duration = '', genre = '') {
+      const container = document.getElementById('moviesContainer');
+      const row = document.createElement('div');
+      row.className = 'movie-card';
+      row.innerHTML = `
+        <button class="btn-remove" style="position:absolute; top:15px; right:15px;" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash"></i></button>
+        <div class="form-group" style="margin:0; width: 85%;">
+          <label>Título do Filme</label>
+          <input type="text" class="mv-title" placeholder="Ex: Par Perfeito" value="${title}">
+        </div>
+        <div class="movie-grid">
+          <div class="form-group" style="margin:0;">
+            <label>Link do Vídeo (.mp4)</label>
+            <input type="url" class="mv-url" placeholder="http://..." value="${url}">
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label>Link da Capa (.jpg/.png)</label>
+            <input type="url" class="mv-poster" placeholder="https://i.imgur.com/..." value="${poster}">
+          </div>
+        </div>
+        <div class="movie-grid">
+          <div class="form-group" style="margin:0;">
+            <label>Classificação</label>
+            <input type="text" class="mv-rating" placeholder="Ex: 14" value="${rating}">
+          </div>
+          <div class="form-group" style="margin:0;">
+            <label>Duração</label>
+            <input type="text" class="mv-duration" placeholder="Ex: 1h 40m" value="${duration}">
+          </div>
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label>Gênero</label>
+          <input type="text" class="mv-genre" placeholder="Ex: Ação/Comédia" value="${genre}">
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label>Sinopse</label>
+          <textarea class="mv-desc" rows="2" placeholder="Resumo do filme...">${desc}</textarea>
+        </div>
+      `;
+      container.appendChild(row);
+    }
+
     function saveAllData() {
       const btn = document.querySelector('.btn-save');
       btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> SALVANDO...';
 
       const settingsData = {
-        mainUrl: document.getElementById('conf-mainUrl').value,
         wixUrl: document.getElementById('conf-wixUrl').value,
         m3uUrl: document.getElementById('conf-m3uUrl').value,
         epgUrl: document.getElementById('conf-epgUrl').value,
-        playlistRecent: document.getElementById('conf-playlistRecent').value,
         playlistBaldanza: document.getElementById('conf-playlistBaldanza').value,
         appVersion: document.getElementById('conf-appVer').value,
         tabHomeText: document.getElementById('conf-tabHomeText').value,
@@ -292,7 +345,20 @@
         if(icon && url) socialData.push({ icon, url });
       });
 
-      const fullConfig = { settings: settingsData, menu: menuData, social: socialData };
+      const moviesData = [];
+      document.querySelectorAll('#moviesContainer .movie-card').forEach(card => {
+        const title = card.querySelector('.mv-title').value;
+        const url = card.querySelector('.mv-url').value;
+        const poster = card.querySelector('.mv-poster').value;
+        const desc = card.querySelector('.mv-desc').value;
+        const rating = card.querySelector('.mv-rating').value;
+        const duration = card.querySelector('.mv-duration').value;
+        const genre = card.querySelector('.mv-genre').value;
+        
+        if(title && url) moviesData.push({ title, url, poster, desc, rating, duration, genre });
+      });
+
+      const fullConfig = { settings: settingsData, menu: menuData, social: socialData, movies: moviesData };
 
       db.ref('appConfig').set(fullConfig)
         .then(() => {
