@@ -93,7 +93,6 @@
     .video-wrapper { position: relative; width: 100%; padding-top: 56.25%; background: #000; overflow: hidden; cursor: pointer; }
     .video-wrapper video, .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; object-fit: contain; pointer-events: none; }
     
-    /* Iframe liberado para toque quando ativo */
     #ytPlayer { pointer-events: auto; }
 
     .player-overlay-logo { position: absolute; bottom: 12px; right: 12px; height: 35px; width: auto; z-index: 10; pointer-events: none; opacity: 0.8; filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.8)); }
@@ -180,9 +179,13 @@
     .schedule-time { color: var(--primary-light); font-size: 0.8rem; font-weight: bold; }
     .schedule-name { font-weight: bold; color: #fff; font-size: 1rem; }
 
+    /* Modificações do Player Nativo de Vídeos MP4 */
     .vod-modal-content { background: #000; height: 100vh; max-height: 100vh; border-radius: 0; border: none; padding-bottom: 0; }
     .vod-player-wrapper { width: 100%; position: relative; padding-top: calc(56.25% + env(safe-area-inset-top, 0px)); background: #000; }
-    .vod-player-wrapper iframe { position: absolute; bottom: 0; left: 0; width: 100%; height: calc(100% - env(safe-area-inset-top, 0px)); border: 0; pointer-events: auto; }
+    
+    #vodIframe { position: absolute; bottom: 0; left: 0; width: 100%; height: calc(100% - env(safe-area-inset-top, 0px)); border: 0; pointer-events: auto; }
+    #vodVideo { position: absolute; bottom: 0; left: 0; width: 100%; height: calc(100% - env(safe-area-inset-top, 0px)); border: 0; object-fit: contain; background: #000; }
+    
     .vod-details { padding: 25px 20px calc(25px + env(safe-area-inset-bottom, 0px)) 20px; display: flex; flex-direction: column; gap: 15px; background: linear-gradient(180deg, #000 0%, var(--bg-color) 100%); flex: 1; overflow-y: auto; }
     .vod-details h2 { font-size: 1.4rem; font-weight: 800; line-height: 1.2; }
     .btn-youtube-watch { background: #fff; color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: bold; font-size: 1rem; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer; text-decoration: none; transition: background 0.2s; }
@@ -220,7 +223,6 @@
       <button class="close-menu-btn" onclick="closeMenu()">&times;</button>
     </div>
     <nav class="menu-items">
-      
       <div class="menu-item active" id="nav-home" onclick="switchView('home')"><i class="fa-solid fa-tv"></i> Ao Vivo Agora</div>
       <div class="menu-item" id="nav-play" onclick="switchView('play')"><i class="fa-brands fa-youtube" style="color: #ff0000;"></i> RadarTV Play</div>
       <div class="menu-divider"></div>
@@ -228,17 +230,17 @@
       <div id="dynamicMenuContainer"></div>
       
       <div class="menu-divider"></div>
-
       <div class="menu-item" onclick="openTimerModal()"><i class="fa-solid fa-stopwatch"></i> Timer de Suspensão <span id="timerDisplay" style="color:var(--primary-light); font-size:0.8rem; margin-left:auto;"></span></div>
-      
       <div class="menu-item" onclick="shareApp()"><i class="fa-solid fa-share-nodes"></i> Compartilhar App</div>
-      
       <div class="menu-item" style="color: var(--text-muted); font-size: 0.8rem; justify-content: center; cursor: default; background: transparent;" id="appVersionDisplay">Versão 1.0</div>
     </nav>
   </aside>
 
   <div class="app-wrapper" id="appWrapper">
 
+    <!-- ==========================================
+         VIEW 1: AO VIVO AGORA
+         ========================================== -->
     <div id="view-home" class="view-panel active">
       
       <div class="sticky-player-area">
@@ -277,12 +279,13 @@
         <button class="btn-schedule-pill" onclick="openScheduleModal()">Programação</button>
       </div>
 
+      <!-- TOP 5 DOS FILMES MP4 (Desligado do YouTube) -->
       <section class="block-section">
         <div class="block-header">
           <div class="block-title"><i class="fa-solid fa-fire" style="color: #ff3838;"></i> Top 5 Mais Assistidos</div>
         </div>
         <div class="carousel" id="top5Carousel">
-          <div style="padding: 20px; color: #8a8f9d;">Buscando vídeos...</div>
+          <div style="padding: 20px; color: #8a8f9d;">Carregando Top 5...</div>
         </div>
       </section>
 
@@ -297,6 +300,9 @@
 
     </div>
 
+    <!-- ==========================================
+         VIEW 2: RADARTV PLAY
+         ========================================== -->
     <div id="view-play" class="view-panel">
       
       <div class="sticky-player-area">
@@ -310,54 +316,37 @@
         </header>
       </div>
 
-      <!-- INÍCIO - FILMES EM DESTAQUE (NOVA SEÇÃO) -->
-      <section class="block-section" style="margin-top: 15px;">
-        <div class="block-header">
-          <div class="block-title">Filmes em destaque</div>
-        </div>
-        <div style="padding: 0 15px 15px 15px;">
-          <div style="position: relative; width: 100%; padding-top: 56.25%; background: #000; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
-            <iframe 
-              style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
-              src="https://www.youtube.com/embed/r38pLGy06m0?controls=0&modestbranding=1&rel=0&iv_load_policy=3&showinfo=0&fs=0&disablekb=1&playsinline=1" 
-              title="Par Perfeito" 
-              frameborder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-              referrerpolicy="strict-origin-when-cross-origin" 
-              allowfullscreen>
-            </iframe>
+      <!-- INÍCIO - FILME EM DESTAQUE NATIVO (Estilo Netflix) -->
+      <section id="heroDestaque" style="position: relative; width: 100%; padding-top: 115%; background-size: cover; background-position: center top; background-image: url('https://image.tmdb.org/t/p/w1280/yDHYTfA3R0jFYba16ZBRWUP1lNl.jpg'); cursor: pointer;">
+        <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to top, var(--bg-color) 2%, rgba(15,17,21,0.4) 50%, transparent); display: flex; flex-direction: column; justify-content: flex-end; padding: 25px;">
+          <h2 style="font-size: 2.2rem; font-weight: 900; color: #fff; margin: 0 0 10px 0; text-shadow: 0 2px 10px rgba(0,0,0,0.8); line-height: 1.1;">Deadpool & Wolverine</h2>
+          <div style="display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: #ccc; font-weight: bold; margin-bottom: 15px; text-shadow: 0 1px 4px rgba(0,0,0,0.8);">
+            <span style="background: #e50914; color: #fff; padding: 2px 6px; border-radius: 4px;">18</span>
+            <span>2024</span>
+            <span>Ação/Comédia</span>
+            <span>2h 08m</span>
           </div>
-          
-          <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 6px;">
-            <h3 style="font-size: 1.4rem; font-weight: bold; color: #fff; margin: 0;">Par Perfeito</h3>
-            <div style="display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">
-              <span style="background: #eab308; color: #000; padding: 2px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">14</span>
-              <span>2010</span>
-              <span>&bull;</span>
-              <span>Comédia/Ação</span>
-              <span>&bull;</span>
-              <span>1h 40m</span>
-            </div>
-            <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; margin: 0;">
-              A vida tranquila de Jen e Spencer começa a mudar quando ela descobre que o marido é um assassino profissional.
-            </p>
-          </div>
+          <button onclick="openVODModal('http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt6263850.mp4', 'Deadpool & Wolverine', 'Wade Wilson deixa o Deadpool para trás para uma vida pacífica, mas quando uma ameaça existencial paira sobre seu universo, ele precisa vestir o traje novamente e convencer um relutante Wolverine a ajudá-lo.', 'mp4')" style="background: #fff; color: #000; border: none; padding: 12px 25px; border-radius: 6px; font-weight: 900; font-size: 1.1rem; width: fit-content; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+            <i class="fa-solid fa-play"></i> Assistir
+          </button>
         </div>
       </section>
-      <!-- FIM - FILMES EM DESTAQUE -->
+      <!-- FIM - FILME EM DESTAQUE NATIVO -->
 
+      <!-- Filmes Nativos em MP4 -->
       <section class="block-section" style="margin-top: 15px;">
         <div class="block-header">
-          <div class="block-title">Top Vídeos da Semana</div>
+          <div class="block-title">Em Alta na RadarTV</div>
         </div>
         <div class="carousel" id="carousel-recent">
           <div style="padding: 20px; color: #8a8f9d;">Carregando catálogo...</div>
         </div>
       </section>
 
+      <!-- Produções Locais do YouTube (Ruralzão, Copa Baldanza) -->
       <section class="block-section">
         <div class="block-header">
-          <div class="block-title">Copa Baldanza 2025</div>
+          <div class="block-title">Produções Originais RadarTV</div>
         </div>
         <div class="carousel" id="carousel-baldanza">
           <div style="padding: 20px; color: #8a8f9d;">Carregando catálogo...</div>
@@ -408,11 +397,12 @@
     <div class="modal-content vod-modal-content">
       <button class="vod-close-float" onclick="closeVODModal()"><i class="fa-solid fa-xmark"></i></button>
       <div class="vod-player-wrapper">
-        <iframe id="vodIframe" allow="autoplay; fullscreen" allowfullscreen></iframe>
+        <iframe id="vodIframe" allow="autoplay; fullscreen" allowfullscreen style="display:none;"></iframe>
+        <video id="vodVideo" controls playsinline style="display:none;"></video>
       </div>
       <div class="vod-details">
         <h2 id="vodTitle">Título do Vídeo</h2>
-        <a href="#" target="_blank" id="vodYoutubeLink" class="btn-youtube-watch">
+        <a href="#" target="_blank" id="vodYoutubeLink" class="btn-youtube-watch" style="display:none;">
           <i class="fa-brands fa-youtube"></i> Assistir no YouTube
         </a>
         <div class="vod-desc" id="vodDesc">Descrição...</div>
@@ -438,7 +428,6 @@
     let WIX_RSS_URL = 'https://www.limeiranews.com/blog-feed.xml'; 
     let GITHUB_M3U_URL = 'https://raw.githubusercontent.com/althierestm/Lista-RadarTV/refs/heads/main/lista.m3u';
     let EPG_XML_URL = 'https://raw.githubusercontent.com/althierestm/Lista-RadarTV/refs/heads/main/epg.xml';
-    let PLAYLIST_RECENT = 'PLzfuSmZBMwIoLYSVMxQhgjDR3yCpBpRbV'; 
     let PLAYLIST_BALDANZA = 'PLzfuSmZBMwIpRXDvRQPzJbIGcpGImYr4n'; 
     const YOUTUBE_API_KEY = 'AIzaSyDaVlWRVlFrq9Qur-Dzv779pIIi3v_XD0g'; 
     const YOUTUBE_CHANNEL_ID = 'UC7wHmjY4RNruABZ9An1crBA'; 
@@ -451,7 +440,6 @@
           if (data.settings.wixUrl) WIX_RSS_URL = data.settings.wixUrl;
           if (data.settings.m3uUrl) GITHUB_M3U_URL = data.settings.m3uUrl;
           if (data.settings.epgUrl) EPG_XML_URL = data.settings.epgUrl;
-          if (data.settings.playlistRecent) PLAYLIST_RECENT = data.settings.playlistRecent;
           if (data.settings.playlistBaldanza) PLAYLIST_BALDANZA = data.settings.playlistBaldanza;
           
           document.getElementById('appVersionDisplay').innerText = `Versão ${data.settings.appVersion || '1.0'}`;
@@ -501,7 +489,69 @@
       }
     });
 
-    let globalRecentVideos = [];
+    // BANCO DE DADOS DE FILMES (Extraídos da Lista Fornecida)
+    const filmesDB = [
+      {
+        title: 'Deadpool & Wolverine',
+        url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt6263850.mp4',
+        poster: 'https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg',
+        desc: 'Wade Wilson deixa o Deadpool para trás para uma vida pacífica, mas quando uma ameaça existencial paira sobre seu universo, ele precisa vestir o traje novamente e convencer um relutante Wolverine a ajudá-lo.'
+      },
+      {
+        title: 'Divertida Mente 2',
+        url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt22022452.mp4',
+        poster: 'https://image.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzRxO8lCGY.jpg',
+        desc: 'O centro de controle na mente da Riley passa por uma demolição para dar espaço a algo totalmente inesperado: novas Emoções! Alegria, Tristeza, Raiva, Medo e Nojinho precisam lidar com a Ansiedade.'
+      },
+      {
+        title: 'Moana 2',
+        url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt13622970.mp4',
+        poster: 'https://image.tmdb.org/t/p/w500/yh64qw9mgSm1D0B7a1409z7w2yU.jpg',
+        desc: 'Após receber um chamado inesperado de seus ancestrais, Moana embarca em uma aventura por mares distantes e perigosos da Oceania, enfrentando um antigo deus do mal.'
+      },
+      {
+        title: 'Venom: A Última Rodada',
+        url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt16366836.mp4',
+        poster: 'https://image.tmdb.org/t/p/w500/uXzQ0Hn2qGgXnZzR3B1A2b1wXQo.jpg',
+        desc: 'Eddie e Venom estão em fuga. Perseguidos pelos dois mundos, a dupla é forçada a tomar uma decisão devastadora que fechará as cortinas para a última dança de Venom e Eddie.'
+      },
+      {
+        title: 'Robô Selvagem',
+        url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt29623480.mp4',
+        poster: 'https://image.tmdb.org/t/p/w500/7I9A3Wf4G09WlH63O8037bE87nU.jpg',
+        desc: 'A épica jornada de uma robô inteligente que naufraga em uma ilha desabitada e precisa aprender a se adaptar ao ambiente hostil e construir relações com os animais locais.'
+      },
+      {
+        title: 'Bad Boys: Até o Fim',
+        url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt4919268.mp4',
+        poster: 'https://image.tmdb.org/t/p/w500/hYtU16n03hG7GkZz6b9Zt2nLp1e.jpg',
+        desc: 'Os Bad Boys preferidos do mundo estão de volta com a icônica mistura de ação eletrizante e comédia, mas desta vez com uma reviravolta: os melhores de Miami são agora os mais procurados.'
+      },
+      {
+        title: 'Capitão América: Admirável Mundo Novo',
+        url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt14513804.mp4',
+        poster: 'https://image.tmdb.org/t/p/w500/pA54A7zOQ102F4X2g08Xw81h6E.jpg',
+        desc: 'Após se encontrar com o novo presidente dos EUA, Sam Wilson se vê no meio de um incidente internacional e precisa descobrir o motivo de uma conspiração global.'
+      },
+      {
+        title: 'Terrifier 3',
+        url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt27911000.mp4',
+        poster: 'https://image.tmdb.org/t/p/w500/3A3D2D3R74Wd9B4rZqB4N4wTfF.jpg',
+        desc: 'O palhaço assassino Art está pronto para espalhar o caos e o terror entre os moradores desprevenidos do Condado de Miles enquanto eles adormecem pacificamente na véspera de Natal.'
+      },
+      {
+        title: 'O Auto da Compadecida 2',
+        url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt28696532.mp4',
+        poster: 'https://image.tmdb.org/t/p/w500/r5z7L3fDqA2W2ZqRz3A5G6W8Y1.jpg',
+        desc: 'João Grilo e Chicó se reencontram vinte e cinco anos depois na lendária cidade de Taperoá, no sertão da Paraíba. Eles embarcam em uma nova e inesquecível aventura.'
+      },
+      {
+        title: 'Rebel Ridge',
+        url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt11301886.mp4',
+        poster: 'https://image.tmdb.org/t/p/w500/A313x5zEYwF77x2M98o7qYnU8GZ.jpg',
+        desc: 'Um ex-fuzileiro naval tenta pagar a fiança de seu primo, mas entra em um violento conflito com o chefe de polícia local e decide fazer a justiça com as próprias mãos.'
+      }
+    ];
 
     let wakeLock = null;
     async function requestWakeLock() {
@@ -572,32 +622,46 @@
     }
 
     async function fetchCatalogPlaylists() {
+      // Produções Originais do YouTube
       fetchPlaylistRow(PLAYLIST_BALDANZA, 'carousel-baldanza');
 
-      const urlRecent = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=15&playlistId=${PLAYLIST_RECENT}&key=${YOUTUBE_API_KEY}`;
-      try {
-        const response = await fetch(urlRecent); 
-        const data = await response.json();
-        
-        if (data.error) {
-           document.getElementById('carousel-recent').innerHTML = `<div style="padding:15px; color:#ff3333; font-weight:bold;">Limite diário do YouTube atingido. Tente amanhã.</div>`;
-           document.getElementById('top5Carousel').innerHTML = `<div style="padding:15px; color:#ff3333; font-weight:bold;">Limite diário atingido.</div>`;
-           return;
-        }
-
-        if (data.items && data.items.length > 0) {
-          globalRecentVideos = data.items;
-          renderCarousel(globalRecentVideos, 'carousel-recent');
-          renderTop5();
-        } else { 
-          document.getElementById('carousel-recent').innerHTML = '<div style="padding:15px; color:#8a8f9d;">Catálogo vazio.</div>'; 
-          document.getElementById('top5Carousel').innerHTML = '<div style="padding:15px; color:#8a8f9d;">Top 5 indisponível.</div>';
-        }
-      } catch (e) { 
-        document.getElementById('carousel-recent').innerHTML = '<div style="padding:15px; color:#8a8f9d;">Erro ao carregar vídeos.</div>'; 
-      }
+      // Top 5 e Em Alta Nativos com filmes .mp4
+      renderNativeTop5(filmesDB.slice(0, 5));
+      renderNativeCarousel(filmesDB.slice(1, 10), 'carousel-recent');
     }
 
+    function renderNativeCarousel(items, containerId) {
+      const carousel = document.getElementById(containerId);
+      carousel.innerHTML = '';
+      items.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'vod-card';
+        card.onclick = () => openVODModal(item.url, item.title, item.desc, 'mp4');
+        card.innerHTML = `
+          <img src="${item.poster}" class="vod-img">
+          <div class="vod-overlay"><div class="vod-title">${item.title}</div></div>
+          <i class="fa-solid fa-circle-play play-icon-overlay"></i>
+        `;
+        carousel.appendChild(card);
+      });
+    }
+
+    function renderNativeTop5(items) {
+      const container = document.getElementById('top5Carousel');
+      container.innerHTML = '';
+      items.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'top5-item';
+        card.onclick = () => openVODModal(item.url, item.title, item.desc, 'mp4');
+        card.innerHTML = `
+          <div class="top5-rank">${index + 1}</div>
+          <img src="${item.poster}" class="top5-poster" alt="${item.title}">
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Função de Play e Rendering de Produções do YouTube
     function renderCarousel(items, containerId) {
       const carousel = document.getElementById(containerId);
       carousel.innerHTML = '';
@@ -613,7 +677,7 @@
         const safeTitle = title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
         const safeDesc = desc.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, '\\n');
 
-        card.onclick = () => openVODModal(videoId, safeTitle, safeDesc);
+        card.onclick = () => openVODModal(videoId, safeTitle, safeDesc, 'youtube');
         card.innerHTML = `
           <img src="${thumb}" class="vod-img">
           <div class="vod-overlay"><div class="vod-title">${title}</div></div>
@@ -621,50 +685,6 @@
         `;
         carousel.appendChild(card);
       });
-    }
-
-    function renderTop5() {
-      const container = document.getElementById('top5Carousel');
-      if (!globalRecentVideos || globalRecentVideos.length === 0) return;
-
-      let clicks = JSON.parse(localStorage.getItem('radar_vod_clicks')) || {};
-      
-      let sortedVideos = [...globalRecentVideos].sort((a, b) => {
-        let clicksA = clicks[a.snippet.resourceId.videoId] || 0;
-        let clicksB = clicks[b.snippet.resourceId.videoId] || 0;
-        return clicksB - clicksA;
-      });
-
-      let top5 = sortedVideos.slice(0, 5); 
-      container.innerHTML = '';
-
-      top5.forEach((item, index) => {
-        const videoId = item.snippet.resourceId.videoId;
-        const snippet = item.snippet;
-        const title = snippet.title;
-        const desc = snippet.description;
-        const thumb = snippet.thumbnails.high?.url || snippet.thumbnails.medium?.url;
-
-        const card = document.createElement('div');
-        card.className = 'top5-item';
-        
-        const safeTitle = title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-        const safeDesc = desc.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, '\\n');
-
-        card.onclick = () => openVODModal(videoId, safeTitle, safeDesc);
-        card.innerHTML = `
-          <div class="top5-rank">${index + 1}</div>
-          <img src="${thumb}" class="top5-poster" alt="${title}">
-        `;
-        container.appendChild(card);
-      });
-    }
-
-    function registerClick(videoId) {
-      let clicks = JSON.parse(localStorage.getItem('radar_vod_clicks')) || {};
-      clicks[videoId] = (clicks[videoId] || 0) + 1;
-      localStorage.setItem('radar_vod_clicks', JSON.stringify(clicks));
-      if (globalRecentVideos.length > 0) renderTop5();
     }
 
     async function fetchPlaylistRow(playlistId, containerId) {
@@ -717,10 +737,9 @@
       } catch (err) { carousel.innerHTML = '<div style="padding:15px; color:#8a8f9d;">Erro no feed.</div>'; }
     }
 
-    function openVODModal(videoId, title, desc) {
-      registerClick(videoId);
-
-      // Trava de Segurança: Pausa HLS e YT Live ativos
+    // MODAL VOD NATIVO HÍBRIDO (Toca MP4 ou YouTube)
+    function openVODModal(sourceUrl, title, desc, type) {
+      // 1. Pausa TV Ao Vivo IMEDIATAMENTE (Trava de segurança)
       const hlsVideo = document.getElementById('hlsPlayer');
       const ytLive = document.getElementById('ytPlayer');
       if (hlsVideo && !hlsVideo.paused) hlsVideo.pause();
@@ -728,16 +747,42 @@
         try { ytLive.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*'); } catch(e){}
       }
 
+      // 2. Abre a tela do Cinema
       document.getElementById('vodModal').classList.add('active');
       document.getElementById('vodTitle').innerText = title;
-      document.getElementById('vodDesc').innerText = desc || "Nenhuma descrição informada na plataforma.";
-      document.getElementById('vodYoutubeLink').href = `https://www.youtube.com/watch?v=${videoId}`;
-      document.getElementById('vodIframe').src = `https://www.youtube.com/embed/${videoId}?autoplay=1&enablejsapi=1`;
+      document.getElementById('vodDesc').innerText = desc || "Nenhuma descrição informada.";
+
+      const iframe = document.getElementById('vodIframe');
+      const video = document.getElementById('vodVideo');
+      const ytLinkBtn = document.getElementById('vodYoutubeLink');
+
+      if (type === 'mp4') {
+        iframe.style.display = 'none';
+        iframe.src = '';
+        ytLinkBtn.style.display = 'none';
+
+        video.style.display = 'block';
+        video.src = sourceUrl;
+        video.play().catch(e => console.log("Aguardando toque para iniciar o vídeo."));
+      } else {
+        video.style.display = 'none';
+        video.src = '';
+        video.pause();
+        
+        ytLinkBtn.style.display = 'flex';
+        ytLinkBtn.href = `https://www.youtube.com/watch?v=${sourceUrl}`;
+
+        iframe.style.display = 'block';
+        iframe.src = `https://www.youtube.com/embed/${sourceUrl}?autoplay=1&enablejsapi=1`;
+      }
     }
 
     function closeVODModal() {
       document.getElementById('vodModal').classList.remove('active');
       document.getElementById('vodIframe').src = '';
+      const video = document.getElementById('vodVideo');
+      video.pause();
+      video.src = '';
     }
 
     let scheduleData = []; let selectedScheduleDate = new Date(); let next7Days = [];
@@ -887,9 +932,6 @@
       else if (hlsVideo.canPlayType('application/vnd.apple.mpegurl')) { hlsVideo.src = streamUrl; } 
     }
 
-    // ========================================================
-    // CORREÇÃO: LIBERA O PLAYER OFICIAL DO YOUTUBE LIVE
-    // ========================================================
     async function checkYouTubeLive() {
       try {
         const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${YOUTUBE_CHANNEL_ID}&type=video&eventType=live&key=${YOUTUBE_API_KEY}`;
@@ -897,29 +939,19 @@
         
         if (data.items && data.items.length > 0) {
           if (!isYtLiveActive) {
-            isYtLiveActive = true; 
-            hlsVideo.pause(); 
-            hlsVideo.style.display = 'none';
-            
-            // Esconde nossos controles e libera o clique direto no YouTube
+            isYtLiveActive = true; hlsVideo.pause(); hlsVideo.style.display = 'none';
             document.getElementById('customControls').style.display = 'none';
             document.getElementById('videoWrapper').onclick = null;
-
             ytIframe.src = `https://www.youtube.com/embed/${data.items[0].id.videoId}?autoplay=1&playsinline=1&enablejsapi=1`; 
             ytIframe.style.display = 'block';
             document.getElementById('liveTag').innerText = 'YT LIVE';
           }
         } else {
           if (isYtLiveActive) {
-            isYtLiveActive = false; 
-            ytIframe.src = ''; 
-            ytIframe.style.display = 'none';
+            isYtLiveActive = false; ytIframe.src = ''; ytIframe.style.display = 'none';
             hlsVideo.style.display = 'block'; 
-            
-            // Restaura os nossos controles para a TV 24 horas
             document.getElementById('customControls').style.display = '';
             document.getElementById('videoWrapper').onclick = toggleControls;
-
             document.getElementById('liveTag').innerText = 'AO VIVO';
           }
         }
