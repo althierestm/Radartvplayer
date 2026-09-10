@@ -8,6 +8,7 @@
 
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0d47e6">
+  
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Radar TV">
@@ -28,7 +29,6 @@
   <link rel="apple-touch-icon" href="Logo%20RadarTV%201080x1080.png">
 
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-  <script src="filmes.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
   <style>
@@ -43,8 +43,17 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
-    html, body { background-color: var(--bg-color); color: var(--text); min-height: 100vh; overscroll-behavior-y: none; -webkit-text-size-adjust: 100%; }
+    
+    html, body { 
+      background-color: var(--bg-color); 
+      color: var(--text); 
+      min-height: 100vh; 
+      overscroll-behavior-y: none; 
+      -webkit-text-size-adjust: 100%;
+    }
+
     ::-webkit-scrollbar { display: none; }
+
     .app-wrapper { width: 100%; max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
 
     .splash-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(135deg, var(--primary) 0%, #082b8a 100%); display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: calc(40px + env(safe-area-inset-top, 0px)) 20px 40px; z-index: 9999; transition: opacity 0.6s ease, visibility 0.6s ease; }
@@ -60,6 +69,7 @@
     .menu-overlay.active { opacity: 1; visibility: visible; }
     .side-menu { position: fixed; top: 0; left: -300px; width: 280px; height: 100vh; background: rgba(18, 20, 26, 0.92); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-right: 1px solid var(--border); z-index: 2001; display: flex; flex-direction: column; transition: left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s ease; }
     .side-menu.active { left: 0; box-shadow: 5px 0 30px rgba(0,0,0,0.5); }
+    
     .menu-header { padding: calc(20px + env(safe-area-inset-top, 0px)) 20px 20px 20px; background: var(--primary); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
     .menu-header img { height: 36px; width: auto; object-fit: contain; }
     .close-menu-btn { background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
@@ -83,7 +93,9 @@
 
     .video-wrapper { position: relative; width: 100%; padding-top: 56.25%; background: #000; overflow: hidden; cursor: pointer; }
     .video-wrapper video, .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; object-fit: contain; pointer-events: none; }
+    
     #ytPlayer { pointer-events: auto; }
+
     .player-overlay-logo { position: absolute; bottom: 12px; right: 12px; height: 35px; width: auto; z-index: 10; pointer-events: none; opacity: 0.8; filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.8)); }
 
     .custom-controls { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 20; transition: opacity 0.3s ease; pointer-events: none; }
@@ -110,13 +122,20 @@
     .block-header { padding: 0 15px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
     .block-title { font-size: 1.1rem; font-weight: bold; color: #fff; display: flex; align-items: center; gap: 8px; }
     .block-title i { color: var(--primary-light); }
+    
     .carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 14px; padding: 0 15px 15px 15px; scroll-behavior: smooth; }
 
-    .top5-item { display: flex; align-items: center; position: relative; flex: 0 0 auto; width: 220px; height: 100px; cursor: pointer; scroll-snap-align: start; }
+    /* ========================================================
+       TOP 5 VERTICAL (ESTILO NETFLIX)
+       ======================================================== */
+    .top5-item { display: flex; align-items: center; position: relative; flex: 0 0 auto; width: 180px; height: 210px; cursor: pointer; scroll-snap-align: start; }
     .top5-item:active { transform: scale(0.96); }
-    .top5-rank { font-size: 7.5rem; font-weight: 900; font-family: Impact, 'Arial Black', sans-serif; color: var(--surface); -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.75); position: absolute; left: 0; bottom: -15px; z-index: 1; letter-spacing: -4px; user-select: none; }
-    .top5-poster { width: 155px; height: 87px; border-radius: 6px; object-fit: cover; position: absolute; right: 0; bottom: 6px; z-index: 2; box-shadow: 0 4px 15px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); transition: transform 0.2s; }
+    .top5-rank { font-size: 10rem; font-weight: 900; font-family: Impact, 'Arial Black', sans-serif; color: var(--surface); -webkit-text-stroke: 2px rgba(255, 255, 255, 0.75); position: absolute; left: -12px; bottom: -30px; z-index: 1; letter-spacing: -6px; user-select: none; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+    .top5-poster { width: 135px; height: 200px; border-radius: 8px; object-fit: cover; position: absolute; right: 0; bottom: 5px; z-index: 2; box-shadow: -4px 4px 15px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); transition: transform 0.2s; }
 
+    /* ========================================================
+       VOD CARDS E NOTÍCIAS
+       ======================================================== */
     .vod-card { flex: 0 0 240px; scroll-snap-align: start; border-radius: 12px; overflow: hidden; position: relative; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.5); transition: transform 0.2s ease; border: 1px solid var(--border); }
     .vod-card:active { transform: scale(0.96); }
     .vod-card::after { content: ''; display: block; padding-top: 56.25%; }
@@ -161,6 +180,12 @@
     #vodPlayerScreen { display: none; width: 100%; height: 100%; background: #000; flex-direction: column; justify-content: center; }
     #vodIframe { width: 100%; height: 100%; border: 0; pointer-events: auto; }
     #vodVideo { width: 100%; max-height: 100%; border: 0; object-fit: contain; background: #000; }
+
+    @media (max-width: 600px) {
+      .brand img { height: 28px; }
+      .epg-bar { border-radius: 0; margin: 0; border-left: none; border-right: none; border-bottom: 1px solid var(--border); width: 100%; }
+      .block-section { border-radius: 0; margin: 0; border-left: none; border-right: none; width: 100%; }
+    }
   </style>
 </head>
 <body>
@@ -184,6 +209,7 @@
       <button class="close-menu-btn" onclick="closeMenu()">&times;</button>
     </div>
     <nav class="menu-items">
+      
       <div class="menu-item active" id="nav-home" onclick="switchView('home')"><i class="fa-solid fa-tv"></i> Ao Vivo Agora</div>
       <div class="menu-item" id="nav-play" onclick="switchView('play')"><i class="fa-brands fa-youtube" style="color: #ff0000;"></i> RadarTV Play</div>
       <div class="menu-divider"></div>
@@ -191,8 +217,11 @@
       <div id="dynamicMenuContainer"></div>
       
       <div class="menu-divider"></div>
+
       <div class="menu-item" onclick="openTimerModal()"><i class="fa-solid fa-stopwatch"></i> Timer de Suspensão <span id="timerDisplay" style="color:var(--primary-light); font-size:0.8rem; margin-left:auto;"></span></div>
+      
       <div class="menu-item" onclick="shareApp()"><i class="fa-solid fa-share-nodes"></i> Compartilhar App</div>
+      
       <div class="menu-item" style="color: var(--text-muted); font-size: 0.8rem; justify-content: center; cursor: default; background: transparent;" id="appVersionDisplay">Versão 1.0</div>
     </nav>
   </aside>
@@ -242,7 +271,7 @@
           <div class="block-title"><i class="fa-solid fa-fire" style="color: #ff3838;"></i> Top 5 Mais Assistidos</div>
         </div>
         <div class="carousel" id="top5Carousel">
-          <div style="padding: 20px; color: #8a8f9d;">Buscando vídeos...</div>
+          <div style="padding: 20px; color: #8a8f9d;">Carregando Top 5...</div>
         </div>
       </section>
 
@@ -257,6 +286,7 @@
 
     </div>
 
+    <!-- ABA 2: RADARTV PLAY -->
     <div id="view-play" class="view-panel">
       
       <div class="sticky-player-area">
@@ -342,7 +372,6 @@
     </div>
   </div>
 
-  <!-- MODAL VOD (Estilo Netflix) -->
   <div class="modal" id="vodModal">
     <div class="modal-content vod-modal-content" style="background: var(--bg-color);">
       <button class="vod-close-float" onclick="closeVODModal()"><i class="fa-solid fa-xmark"></i></button>
@@ -369,7 +398,7 @@
       </div>
 
       <div id="vodPlayerScreen" style="display: none; width: 100%; height: 100%; background: #000; flex-direction: column; justify-content: center;">
-        <video id="vodVideo" controls playsinline style="width: 100%; max-height: 100%;"></video>
+        <video id="vodVideo" controls playsinline preload="auto" style="width: 100%; max-height: 100%;"></video>
         <iframe id="vodIframe" allow="autoplay; fullscreen" allowfullscreen style="width: 100%; height: 100%; border: 0; display: none;"></iframe>
       </div>
     </div>
@@ -460,7 +489,6 @@
       }
     });
 
-    // BANCO EMBUTIDO NO CÓDIGO (100% GARANTIDO DE CARREGAR)
     const filmesFixos = [
       { title: 'Deadpool & Wolverine', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt6263850.mp4', poster: 'https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg', desc: 'Wade Wilson deixa o Deadpool para trás para uma vida pacífica, mas quando uma ameaça existencial paira sobre seu universo, ele precisa vestir o traje novamente e convencer um relutante Wolverine a ajudá-lo.', rating: '18', duration: '2h 08m', genre: 'Ação/Comédia' },
       { title: 'Divertida Mente 2', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt22022452.mp4', poster: 'https://image.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzRxO8lCGY.jpg', desc: 'O centro de controle na mente da Riley passa por uma demolição para dar espaço a algo totalmente inesperado: novas Emoções! Alegria, Tristeza, Raiva, Medo e Nojinho precisam lidar com a Ansiedade.', rating: 'L', duration: '1h 36m', genre: 'Animação' },
@@ -475,7 +503,7 @@
     ];
 
     function atualizarCatalogoDeFilmes() {
-      let listaOficial = filmesDoBanco.length > 0 ? filmesDoBanco : filmesFixos;
+      let listaOficial = filmesDoBanco.length > 0 ? filmesDoBanco : (typeof filmesFallback !== 'undefined' ? filmesFallback : []);
       
       if (listaOficial.length > 0) {
         const hero = listaOficial[0];
@@ -607,7 +635,6 @@
       document.getElementById('appWrapper').scrollTo(0, 0); 
     }
 
-    // Abertura Estilo Netflix (Suporta Drive, MP4 ou YouTube)
     function openVODModal(sourceUrl, title, desc, type, poster, rating, duration, genre) {
       registerClick(sourceUrl);
 
@@ -622,7 +649,7 @@
 
       document.getElementById('vodTitleDetails').innerText = title;
       document.getElementById('vodDescDetails').innerText = desc || "Nenhuma descrição informada na plataforma.";
-      document.getElementById('vodBackdrop').src = poster || 'https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1920.png';
+      document.getElementById('vodBackdrop').src = poster || 'https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1080.png';
       document.getElementById('vodRating').innerText = rating || "L";
       document.getElementById('vodDuration').innerText = duration || "--";
       document.getElementById('vodGenre').innerText = genre || "Gênero não informado";
@@ -637,7 +664,6 @@
         const iframe = document.getElementById('vodIframe');
         const video = document.getElementById('vodVideo');
 
-        // VERIFICAÇÃO INTELIGENTE DE GOOGLE DRIVE
         let isDrive = sourceUrl.includes('drive.google.com');
 
         if (type === 'mp4' && !isDrive) {
@@ -647,9 +673,11 @@
           
           video.src = sourceUrl;
           video.load(); 
-          video.play().catch(e => { console.log(e) });
+          video.play().catch(e => {
+              console.error("Bloqueado pelo celular:", e);
+              alert("Aviso do Sistema: Seu aparelho bloqueou a reprodução deste servidor.");
+          });
         } else if (isDrive) {
-          // Extrai o ID e abre no player nativo do Google
           let driveId = sourceUrl.match(/[-\w]{25,}/);
           let embedUrl = driveId ? `https://drive.google.com/file/d/${driveId[0]}/preview` : sourceUrl;
           
@@ -659,7 +687,6 @@
           iframe.style.display = 'block';
           iframe.src = embedUrl;
         } else {
-          // YOUTUBE
           video.style.display = 'none';
           video.src = '';
           video.pause();
