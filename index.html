@@ -3,13 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <!-- Permite carregar conteúdo HTTP dentro do HTTPS (Tenta contornar o bloqueio nativo) -->
   <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
   <title>Radar TV</title>
 
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0d47e6">
-  
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Radar TV">
@@ -30,6 +28,7 @@
   <link rel="apple-touch-icon" href="Logo%20RadarTV%201080x1080.png">
 
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script src="filmes.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
   <style>
@@ -44,17 +43,8 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif; }
-    
-    html, body { 
-      background-color: var(--bg-color); 
-      color: var(--text); 
-      min-height: 100vh; 
-      overscroll-behavior-y: none; 
-      -webkit-text-size-adjust: 100%;
-    }
-
+    html, body { background-color: var(--bg-color); color: var(--text); min-height: 100vh; overscroll-behavior-y: none; -webkit-text-size-adjust: 100%; }
     ::-webkit-scrollbar { display: none; }
-
     .app-wrapper { width: 100%; max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
 
     .splash-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(135deg, var(--primary) 0%, #082b8a 100%); display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: calc(40px + env(safe-area-inset-top, 0px)) 20px 40px; z-index: 9999; transition: opacity 0.6s ease, visibility 0.6s ease; }
@@ -70,7 +60,6 @@
     .menu-overlay.active { opacity: 1; visibility: visible; }
     .side-menu { position: fixed; top: 0; left: -300px; width: 280px; height: 100vh; background: rgba(18, 20, 26, 0.92); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border-right: 1px solid var(--border); z-index: 2001; display: flex; flex-direction: column; transition: left 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.4s ease; }
     .side-menu.active { left: 0; box-shadow: 5px 0 30px rgba(0,0,0,0.5); }
-    
     .menu-header { padding: calc(20px + env(safe-area-inset-top, 0px)) 20px 20px 20px; background: var(--primary); display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
     .menu-header img { height: 36px; width: auto; object-fit: contain; }
     .close-menu-btn { background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer; }
@@ -94,9 +83,7 @@
 
     .video-wrapper { position: relative; width: 100%; padding-top: 56.25%; background: #000; overflow: hidden; cursor: pointer; }
     .video-wrapper video, .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; object-fit: contain; pointer-events: none; }
-    
     #ytPlayer { pointer-events: auto; }
-
     .player-overlay-logo { position: absolute; bottom: 12px; right: 12px; height: 35px; width: auto; z-index: 10; pointer-events: none; opacity: 0.8; filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.8)); }
 
     .custom-controls { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 20; transition: opacity 0.3s ease; pointer-events: none; }
@@ -123,7 +110,6 @@
     .block-header { padding: 0 15px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
     .block-title { font-size: 1.1rem; font-weight: bold; color: #fff; display: flex; align-items: center; gap: 8px; }
     .block-title i { color: var(--primary-light); }
-    
     .carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 14px; padding: 0 15px 15px 15px; scroll-behavior: smooth; }
 
     .top5-item { display: flex; align-items: center; position: relative; flex: 0 0 auto; width: 220px; height: 100px; cursor: pointer; scroll-snap-align: start; }
@@ -131,9 +117,6 @@
     .top5-rank { font-size: 7.5rem; font-weight: 900; font-family: Impact, 'Arial Black', sans-serif; color: var(--surface); -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.75); position: absolute; left: 0; bottom: -15px; z-index: 1; letter-spacing: -4px; user-select: none; }
     .top5-poster { width: 155px; height: 87px; border-radius: 6px; object-fit: cover; position: absolute; right: 0; bottom: 6px; z-index: 2; box-shadow: 0 4px 15px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); transition: transform 0.2s; }
 
-    .play-header-title { width: 100%; padding: 20px 15px 5px 15px; display: flex; align-items: center; gap: 10px; font-size: 1.6rem; font-weight: 900; color: #fff; }
-    .play-header-title i { color: #ff0000; font-size: 1.8rem; }
-    
     .vod-card { flex: 0 0 240px; scroll-snap-align: start; border-radius: 12px; overflow: hidden; position: relative; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.5); transition: transform 0.2s ease; border: 1px solid var(--border); }
     .vod-card:active { transform: scale(0.96); }
     .vod-card::after { content: ''; display: block; padding-top: 56.25%; }
@@ -166,36 +149,18 @@
     .modal-title { font-size: 1.1rem; font-weight: bold; color: #fff; margin: 0; }
     .close-btn { background: rgba(255,255,255,0.08); border: none; color: #fff; font-size: 1.1rem; cursor: pointer; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
     .modal-body { padding: 0; overflow-y: auto; flex: 1; }
-
-    .modal-header-date { padding: 12px 16px; background: rgba(0,0,0,0.2); position: relative; border-bottom: 1px solid var(--border); }
-    .date-selector-btn { background: none; border: none; color: #fff; font-size: 1rem; font-weight: bold; display: flex; align-items: center; gap: 8px; cursor: pointer; }
-    .date-selector-btn i { font-size: 0.9rem; transition: transform 0.3s; }
-    .date-selector-btn.open i { transform: rotate(180deg); }
-    .date-dropdown { position: absolute; top: 100%; left: 0; width: 100%; background: #12141a; z-index: 10; display: none; flex-direction: column; border-bottom: 1px solid var(--border); max-height: 40vh; overflow-y: auto; }
-    .date-dropdown.active { display: flex; }
     .date-option { padding: 16px 20px; color: var(--text-muted); font-size: 0.95rem; font-weight: 600; text-align: left; border: none; background: none; border-bottom: 1px solid rgba(255,255,255,0.03); cursor: pointer; width: 100%; }
-    .date-option:hover { background: var(--surface); color: #fff; }
-    .date-option.selected { color: var(--primary-light); }
     .schedule-item { padding: 16px; border-bottom: 1px solid rgba(255,255,255,0.03); display: flex; flex-direction: column; gap: 4px; }
     .schedule-item.active { background: rgba(13, 71, 230, 0.1); border-left: 4px solid var(--primary-light); }
     .schedule-time { color: var(--primary-light); font-size: 0.8rem; font-weight: bold; }
     .schedule-name { font-weight: bold; color: #fff; font-size: 1rem; }
 
-    /* Modificações do Modal de Filmes (Interface Estilo Netflix) */
     .vod-modal-content { background: var(--bg-color); height: 100vh; max-height: 100vh; border-radius: 0; border: none; padding-bottom: 0; }
     .vod-close-float { position: absolute; top: calc(15px + env(safe-area-inset-top, 0px)); right: 15px; z-index: 50; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); color: #fff; border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; cursor: pointer; }
-    
     #vodDetailsScreen { display: flex; flex-direction: column; height: 100%; overflow-y: auto; }
     #vodPlayerScreen { display: none; width: 100%; height: 100%; background: #000; flex-direction: column; justify-content: center; }
     #vodIframe { width: 100%; height: 100%; border: 0; pointer-events: auto; }
     #vodVideo { width: 100%; max-height: 100%; border: 0; object-fit: contain; background: #000; }
-
-    @media (max-width: 600px) {
-      .brand img { height: 28px; }
-      .epg-bar { border-radius: 0; margin: 0; border-left: none; border-right: none; border-bottom: 1px solid var(--border); width: 100%; }
-      .block-section { border-radius: 0; margin: 0; border-left: none; border-right: none; width: 100%; }
-      .play-header-title { padding-top: calc(15px + env(safe-area-inset-top, 0px)); font-size: 1.4rem; }
-    }
   </style>
 </head>
 <body>
@@ -219,23 +184,15 @@
       <button class="close-menu-btn" onclick="closeMenu()">&times;</button>
     </div>
     <nav class="menu-items">
-      
-      <!-- ABAS FIXAS LIGADAS AO FIREBASE -->
       <div class="menu-item active" id="nav-home" onclick="switchView('home')"><i class="fa-solid fa-tv"></i> Ao Vivo Agora</div>
       <div class="menu-item" id="nav-play" onclick="switchView('play')"><i class="fa-brands fa-youtube" style="color: #ff0000;"></i> RadarTV Play</div>
       <div class="menu-divider"></div>
       
-      <!-- MENU CUSTOMIZÁVEL LIGADO AO FIREBASE -->
       <div id="dynamicMenuContainer"></div>
       
       <div class="menu-divider"></div>
-
-      <!-- NOVO TIMER DE SUSPENSÃO -->
       <div class="menu-item" onclick="openTimerModal()"><i class="fa-solid fa-stopwatch"></i> Timer de Suspensão <span id="timerDisplay" style="color:var(--primary-light); font-size:0.8rem; margin-left:auto;"></span></div>
-      
       <div class="menu-item" onclick="shareApp()"><i class="fa-solid fa-share-nodes"></i> Compartilhar App</div>
-      
-      <!-- VERSÃO DO APP FIREBASE -->
       <div class="menu-item" style="color: var(--text-muted); font-size: 0.8rem; justify-content: center; cursor: default; background: transparent;" id="appVersionDisplay">Versão 1.0</div>
     </nav>
   </aside>
@@ -280,13 +237,12 @@
         <button class="btn-schedule-pill" onclick="openScheduleModal()">Programação</button>
       </div>
 
-      <!-- TOP 5 (Filmes Puxados do Banco) -->
       <section class="block-section">
         <div class="block-header">
           <div class="block-title"><i class="fa-solid fa-fire" style="color: #ff3838;"></i> Top 5 Mais Assistidos</div>
         </div>
         <div class="carousel" id="top5Carousel">
-          <div style="padding: 20px; color: #8a8f9d;">Carregando Top 5...</div>
+          <div style="padding: 20px; color: #8a8f9d;">Buscando vídeos...</div>
         </div>
       </section>
 
@@ -301,7 +257,6 @@
 
     </div>
 
-    <!-- ABA 2: RADARTV PLAY -->
     <div id="view-play" class="view-panel">
       
       <div class="sticky-player-area">
@@ -315,7 +270,6 @@
         </header>
       </div>
 
-      <!-- HERO BANNER (Destaque Principal do Banco) -->
       <section id="heroDestaque" style="position: relative; width: 100%; padding-top: 115%; background-size: cover; background-position: center top; background-color: #000; cursor: pointer;">
         <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to top, var(--bg-color) 2%, rgba(15,17,21,0.4) 50%, transparent); display: flex; flex-direction: column; justify-content: flex-end; padding: 25px;">
           <h2 id="heroTitle" style="font-size: 2.2rem; font-weight: 900; color: #fff; margin: 0 0 10px 0; text-shadow: 0 2px 10px rgba(0,0,0,0.8); line-height: 1.1;">Carregando...</h2>
@@ -330,7 +284,6 @@
         </div>
       </section>
 
-      <!-- CATÁLOGO (Filmes Puxados do Banco) -->
       <section class="block-section" style="margin-top: 15px;">
         <div class="block-header">
           <div class="block-title">Em Alta na RadarTV</div>
@@ -340,7 +293,6 @@
         </div>
       </section>
 
-      <!-- PRODUÇÕES ORIGINAIS (YouTube Local) -->
       <section class="block-section">
         <div class="block-header">
           <div class="block-title">Produções Originais RadarTV</div>
@@ -390,12 +342,11 @@
     </div>
   </div>
 
-  <!-- NOVO MODAL VOD (Estilo Netflix: Tela de Detalhes -> Player) -->
+  <!-- MODAL VOD (Estilo Netflix) -->
   <div class="modal" id="vodModal">
     <div class="modal-content vod-modal-content" style="background: var(--bg-color);">
       <button class="vod-close-float" onclick="closeVODModal()"><i class="fa-solid fa-xmark"></i></button>
 
-      <!-- TELA DE DETALHES -->
       <div id="vodDetailsScreen" style="display: flex; flex-direction: column; height: 100%; overflow-y: auto;">
         <div style="position: relative; width: 100%; padding-top: 56.25%;">
           <img id="vodBackdrop" src="" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.5;">
@@ -417,36 +368,14 @@
         </div>
       </div>
 
-      <!-- TELA DO PLAYER -->
       <div id="vodPlayerScreen" style="display: none; width: 100%; height: 100%; background: #000; flex-direction: column; justify-content: center;">
-        <!-- Usamos a URL RAW (sem replace HTTPS) e preload auto -->
-        <video id="vodVideo" controls playsinline preload="auto" style="width: 100%; max-height: 100%;"></video>
+        <video id="vodVideo" controls playsinline style="width: 100%; max-height: 100%;"></video>
         <iframe id="vodIframe" allow="autoplay; fullscreen" allowfullscreen style="width: 100%; height: 100%; border: 0; display: none;"></iframe>
       </div>
     </div>
   </div>
 
   <script>
-    // ==========================================
-    // MEGA BANCO DE FILMES EMBUTIDO (FALLBACK E IMEDIATO)
-    // ==========================================
-    const filmesFallback = [
-      { title: 'Deadpool & Wolverine', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt6263850.mp4', poster: 'https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg', desc: 'Wade Wilson deixa o Deadpool para trás para uma vida pacífica, mas quando uma ameaça existencial paira sobre seu universo, ele precisa vestir o traje novamente e convencer um relutante Wolverine a ajudá-lo.', rating: '18', duration: '2h 08m', genre: 'Ação/Comédia' },
-      { title: 'Divertida Mente 2', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt22022452.mp4', poster: 'https://image.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzRxO8lCGY.jpg', desc: 'O centro de controle na mente da Riley passa por uma demolição para dar espaço a algo totalmente inesperado: novas Emoções! Alegria, Tristeza, Raiva, Medo e Nojinho precisam lidar com a Ansiedade.', rating: 'L', duration: '1h 36m', genre: 'Animação' },
-      { title: 'Moana 2', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt13622970.mp4', poster: 'https://image.tmdb.org/t/p/w500/yh64qw9mgSm1D0B7a1409z7w2yU.jpg', desc: 'Após receber um chamado inesperado de seus ancestrais, Moana embarca em uma aventura por mares distantes e perigosos da Oceania, enfrentando um antigo deus do mal.', rating: 'L', duration: '1h 40m', genre: 'Animação/Aventura' },
-      { title: 'Venom: A Última Rodada', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt16366836.mp4', poster: 'https://image.tmdb.org/t/p/w500/uXzQ0Hn2qGgXnZzR3B1A2b1wXQo.jpg', desc: 'Eddie e Venom estão em fuga. Perseguidos pelos dois mundos, a dupla é forçada a tomar uma decisão devastadora que fechará as cortinas para a última dança de Venom e Eddie.', rating: '14', duration: '1h 50m', genre: 'Ação/Ficção' },
-      { title: 'Robô Selvagem', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt29623480.mp4', poster: 'https://image.tmdb.org/t/p/w500/7I9A3Wf4G09WlH63O8037bE87nU.jpg', desc: 'A épica jornada de uma robô inteligente que naufraga em uma ilha desabitada e precisa aprender a se adaptar ao ambiente hostil e construir relações com os animais locais.', rating: 'L', duration: '1h 42m', genre: 'Animação' },
-      { title: 'Terrifier 3', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt27911000.mp4', poster: 'https://image.tmdb.org/t/p/w500/3A3D2D3R74Wd9B4rZqB4N4wTfF.jpg', desc: 'O palhaço assassino Art está pronto para espalhar o caos e o terror entre os moradores desprevenidos do Condado de Miles enquanto eles adormecem pacificamente na véspera de Natal.', rating: '18', duration: '2h 05m', genre: 'Terror' },
-      { title: 'O Auto da Compadecida 2', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt28696532.mp4', poster: 'https://image.tmdb.org/t/p/w500/r5z7L3fDqA2W2ZqRz3A5G6W8Y1.jpg', desc: 'João Grilo e Chicó se reencontram vinte e cinco anos depois na lendária cidade de Taperoá, no sertão da Paraíba. Eles embarcam em uma nova e inesquecível aventura.', rating: '12', duration: '1h 55m', genre: 'Comédia Nacional' },
-      { title: 'Rebel Ridge', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt11301886.mp4', poster: 'https://image.tmdb.org/t/p/w500/A313x5zEYwF77x2M98o7qYnU8GZ.jpg', desc: 'Um ex-fuzileiro naval tenta pagar a fiança de seu primo, mas entra em um violento conflito com o chefe de polícia local e decide fazer a justiça com as próprias mãos.', rating: '16', duration: '2h 11m', genre: 'Ação/Suspense' },
-      { title: 'A Substância', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt17526714.mp4', poster: 'https://image.tmdb.org/t/p/w500/z0GZ7i9oR9A1lE7E91JvTzY9m5K.jpg', desc: 'Você já sonhou com uma versão melhor de si mesmo? Mais jovem, mais bela, mais perfeita. Com A Substância, você pode. Mas há regras a seguir.', rating: '18', duration: '2h 21m', genre: 'Terror/Drama' },
-      { title: 'Bad Boys: Até o Fim', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt4919268.mp4', poster: 'https://image.tmdb.org/t/p/w500/hYtU16n03hG7GkZz6b9Zt2nLp1e.jpg', desc: 'Os Bad Boys preferidos do mundo estão de volta com a icônica mistura de ação eletrizante e comédia, mas desta vez com uma reviravolta: os melhores de Miami são agora os mais procurados.', rating: '16', duration: '1h 55m', genre: 'Ação/Comédia' },
-      { title: 'Velozes & Furiosos 10', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt5433140.mp4', poster: 'https://image.tmdb.org/t/p/w500/wzZqbExIGhlkK5rXpA91n2T6P1D.jpg', desc: 'Dom Toretto e sua família devem lidar com o adversário mais letal que já enfrentaram. Alimentado pela vingança, Dante ressurge das sombras do passado para destruir o mundo de Dom.', rating: '14', duration: '2h 21m', genre: 'Ação' },
-      { title: 'Sonic 3', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt18259086.mp4', poster: 'https://image.tmdb.org/t/p/w500/mXp1bS1gR4aH37o0yv4lWvF8H7e.jpg', desc: 'Sonic, Tails e Knuckles se unem para enfrentar um novo e poderoso adversário. Uma aventura eletrizante para salvar o planeta.', rating: 'L', duration: '1h 50m', genre: 'Ação/Aventura' },
-      { title: 'O Urso do Pó Branco', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt14209916.mp4', poster: 'https://image.tmdb.org/t/p/w500/pDjeS55Z3t2yO9LhD1wZqXyG2Wv.jpg', desc: 'Baseado em uma história bizarra, um urso negro americano ingere acidentalmente uma bolsa cheia de entorpecentes e inicia um ataque furioso na floresta.', rating: '18', duration: '1h 35m', genre: 'Comédia/Terror' },
-      { title: 'O Exorcismo', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt11240348LEG.mp4', poster: 'https://image.tmdb.org/t/p/w500/8hKjSZb2uF6p4K1o7Qv5v9v4Y0a.jpg', desc: 'Um ator problemático começa a desmoronar durante as filmagens de um filme de terror sobrenatural. Sua filha distante questiona se ele está voltando aos vícios.', rating: '16', duration: '1h 33m', genre: 'Terror/Suspense' }
-    ];
-
     const firebaseConfig = {
       apiKey: "AIzaSyCsDzEzcwZ_cuRbxlN_CAtl-7jJO7TH67Y",
       authDomain: "admradartv.firebaseapp.com",
@@ -531,9 +460,22 @@
       }
     });
 
+    // BANCO EMBUTIDO NO CÓDIGO (100% GARANTIDO DE CARREGAR)
+    const filmesFixos = [
+      { title: 'Deadpool & Wolverine', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt6263850.mp4', poster: 'https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg', desc: 'Wade Wilson deixa o Deadpool para trás para uma vida pacífica, mas quando uma ameaça existencial paira sobre seu universo, ele precisa vestir o traje novamente e convencer um relutante Wolverine a ajudá-lo.', rating: '18', duration: '2h 08m', genre: 'Ação/Comédia' },
+      { title: 'Divertida Mente 2', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt22022452.mp4', poster: 'https://image.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzRxO8lCGY.jpg', desc: 'O centro de controle na mente da Riley passa por uma demolição para dar espaço a algo totalmente inesperado: novas Emoções! Alegria, Tristeza, Raiva, Medo e Nojinho precisam lidar com a Ansiedade.', rating: 'L', duration: '1h 36m', genre: 'Animação' },
+      { title: 'Moana 2', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt13622970.mp4', poster: 'https://image.tmdb.org/t/p/w500/yh64qw9mgSm1D0B7a1409z7w2yU.jpg', desc: 'Após receber um chamado inesperado de seus ancestrais, Moana embarca em uma aventura por mares distantes e perigosos da Oceania, enfrentando um antigo deus do mal.', rating: 'L', duration: '1h 40m', genre: 'Animação/Aventura' },
+      { title: 'Venom: A Última Rodada', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt16366836.mp4', poster: 'https://image.tmdb.org/t/p/w500/uXzQ0Hn2qGgXnZzR3B1A2b1wXQo.jpg', desc: 'Eddie e Venom estão em fuga. Perseguidos pelos dois mundos, a dupla é forçada a tomar uma decisão devastadora que fechará as cortinas para a última dança de Venom e Eddie.', rating: '14', duration: '1h 50m', genre: 'Ação/Ficção' },
+      { title: 'Robô Selvagem', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt29623480.mp4', poster: 'https://image.tmdb.org/t/p/w500/7I9A3Wf4G09WlH63O8037bE87nU.jpg', desc: 'A épica jornada de uma robô inteligente que naufraga em uma ilha desabitada e precisa aprender a se adaptar ao ambiente hostil e construir relações com os animais locais.', rating: 'L', duration: '1h 42m', genre: 'Animação' },
+      { title: 'Terrifier 3', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt27911000.mp4', poster: 'https://image.tmdb.org/t/p/w500/3A3D2D3R74Wd9B4rZqB4N4wTfF.jpg', desc: 'O palhaço assassino Art está pronto para espalhar o caos e o terror entre os moradores desprevenidos do Condado de Miles enquanto eles adormecem pacificamente na véspera de Natal.', rating: '18', duration: '2h 05m', genre: 'Terror' },
+      { title: 'O Auto da Compadecida 2', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt28696532.mp4', poster: 'https://image.tmdb.org/t/p/w500/r5z7L3fDqA2W2ZqRz3A5G6W8Y1.jpg', desc: 'João Grilo e Chicó se reencontram vinte e cinco anos depois na lendária cidade de Taperoá, no sertão da Paraíba. Eles embarcam em uma nova e inesquecível aventura.', rating: '12', duration: '1h 55m', genre: 'Comédia Nacional' },
+      { title: 'Rebel Ridge', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt11301886.mp4', poster: 'https://image.tmdb.org/t/p/w500/A313x5zEYwF77x2M98o7qYnU8GZ.jpg', desc: 'Um ex-fuzileiro naval tenta pagar a fiança de seu primo, mas entra em um violento conflito com o chefe de polícia local e decide fazer a justiça com as próprias mãos.', rating: '16', duration: '2h 11m', genre: 'Ação/Suspense' },
+      { title: 'A Substância', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt17526714.mp4', poster: 'https://image.tmdb.org/t/p/w500/z0GZ7i9oR9A1lE7E91JvTzY9m5K.jpg', desc: 'Você já sonhou com uma versão melhor de si mesmo? Mais jovem, mais bela, mais perfeita. Com A Substância, você pode. Mas há regras a seguir.', rating: '18', duration: '2h 21m', genre: 'Terror/Drama' },
+      { title: 'Bad Boys: Até o Fim', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt4919268.mp4', poster: 'https://image.tmdb.org/t/p/w500/hYtU16n03hG7GkZz6b9Zt2nLp1e.jpg', desc: 'Os Bad Boys preferidos do mundo estão de volta com a icônica mistura de ação eletrizante e comédia.', rating: '16', duration: '1h 55m', genre: 'Ação/Comédia' }
+    ];
+
     function atualizarCatalogoDeFilmes() {
-      // Usa o banco do Firebase. Se o Firebase falhar, usa os Filmes inseridos no código (filmesFallback).
-      let listaOficial = filmesDoBanco.length > 0 ? filmesDoBanco : filmesFallback;
+      let listaOficial = filmesDoBanco.length > 0 ? filmesDoBanco : filmesFixos;
       
       if (listaOficial.length > 0) {
         const hero = listaOficial[0];
@@ -665,7 +607,7 @@
       document.getElementById('appWrapper').scrollTo(0, 0); 
     }
 
-    // Abertura Estilo Netflix (Mostra Info, depois Toca Vídeo)
+    // Abertura Estilo Netflix (Suporta Drive, MP4 ou YouTube)
     function openVODModal(sourceUrl, title, desc, type, poster, rating, duration, genre) {
       registerClick(sourceUrl);
 
@@ -695,19 +637,29 @@
         const iframe = document.getElementById('vodIframe');
         const video = document.getElementById('vodVideo');
 
-        if (type === 'mp4') {
+        // VERIFICAÇÃO INTELIGENTE DE GOOGLE DRIVE
+        let isDrive = sourceUrl.includes('drive.google.com');
+
+        if (type === 'mp4' && !isDrive) {
           iframe.style.display = 'none';
           iframe.src = '';
           video.style.display = 'block';
           
-          // FORÇA O CARREGAMENTO SEM RESTRINGIR PROTOCOLOS
           video.src = sourceUrl;
           video.load(); 
-          video.play().catch(e => {
-              console.error("Bloqueado pelo celular:", e);
-              alert("Aviso do Sistema: Seu aparelho bloqueou a reprodução porque o provedor do filme é uma conexão não segura (HTTP).");
-          });
+          video.play().catch(e => { console.log(e) });
+        } else if (isDrive) {
+          // Extrai o ID e abre no player nativo do Google
+          let driveId = sourceUrl.match(/[-\w]{25,}/);
+          let embedUrl = driveId ? `https://drive.google.com/file/d/${driveId[0]}/preview` : sourceUrl;
+          
+          video.style.display = 'none';
+          video.src = '';
+          video.pause();
+          iframe.style.display = 'block';
+          iframe.src = embedUrl;
         } else {
+          // YOUTUBE
           video.style.display = 'none';
           video.src = '';
           video.pause();
