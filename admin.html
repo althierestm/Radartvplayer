@@ -59,7 +59,6 @@
     .btn-save:hover { transform: translateY(-2px); }
     #statusMsg { font-weight: bold; font-size: 0.95rem; }
 
-    /* Estilo Específico para o Card de Filmes */
     .movie-card { background: #12141a; border: 1px solid var(--border); padding: 20px; border-radius: 12px; display: flex; flex-direction: column; gap: 15px; position: relative; }
     .movie-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
   </style>
@@ -89,7 +88,6 @@
 
     <div class="main-content">
       
-      <!-- ABA 1: SISTEMA -->
       <div id="tab-links" class="tab-content active">
         <h2><i class="fa-solid fa-link"></i> Configurações do Sistema</h2>
         <div class="form-group">
@@ -114,19 +112,16 @@
         </div>
       </div>
 
-      <!-- ABA 2: FILMES -->
       <div id="tab-movies" class="tab-content">
         <h2><i class="fa-solid fa-film"></i> Catálogo de Filmes (RadarTV Play)</h2>
-        <p style="color:#a0a5b5; font-size:0.9rem; margin-bottom:20px;">O primeiro filme desta lista será o <b>Destaque Gigante (Hero)</b>. Os 5 primeiros formarão o <b>Top 5</b>.</p>
+        <p style="color:#a0a5b5; font-size:0.9rem; margin-bottom:20px;">Cole o link de compartilhamento do Google Drive (ou YouTube) e o aplicativo fará o resto. O primeiro filme da lista será o Destaque Gigante.</p>
         
         <div id="moviesContainer" class="dynamic-list"></div>
         <button class="btn-add" onclick="addMovieRow()"><i class="fa-solid fa-plus"></i> Adicionar Novo Filme</button>
       </div>
 
-      <!-- ABA 3: MENU -->
       <div id="tab-menu" class="tab-content">
         <h2><i class="fa-solid fa-bars-staggered"></i> Abas e Menus do App</h2>
-        
         <div class="section-title">Telas Principais (Fixas)</div>
         <div class="dynamic-row" style="margin-bottom:10px;">
           <input type="text" id="conf-tabHomeText" placeholder="Texto (ex: Ao Vivo Agora)">
@@ -136,13 +131,11 @@
           <input type="text" id="conf-tabPlayText" placeholder="Texto (ex: RadarTV Play)">
           <input type="text" id="conf-tabPlayIcon" placeholder="Ícone (ex: fa-solid fa-play)">
         </div>
-
         <div class="section-title">Menu Customizável</div>
         <div id="menuContainer" class="dynamic-list"></div>
         <button class="btn-add" onclick="addMenuRow()"><i class="fa-solid fa-plus"></i> Adicionar Novo Botão</button>
       </div>
 
-      <!-- ABA 4: SOCIAL -->
       <div id="tab-social" class="tab-content">
         <h2><i class="fa-solid fa-hashtag"></i> Redes Sociais do Rodapé</h2>
         <div id="socialContainer" class="dynamic-list"></div>
@@ -283,8 +276,8 @@
         </div>
         <div class="movie-grid">
           <div class="form-group" style="margin:0;">
-            <label>Link do Vídeo (.mp4)</label>
-            <input type="url" class="mv-url" placeholder="http://..." value="${url}">
+            <label>Link do Vídeo (Google Drive, YouTube ou MP4)</label>
+            <input type="url" class="mv-url" placeholder="Ex: https://drive.google.com/file/d/..." value="${url}">
           </div>
           <div class="form-group" style="margin:0;">
             <label>Link da Capa (.jpg/.png)</label>
