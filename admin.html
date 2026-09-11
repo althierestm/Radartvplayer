@@ -2,65 +2,509 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Admin - Catálogo RadarTV</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Radar TV</title>
+  
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-  <style>
-    body { font-family: 'Segoe UI', sans-serif; background: #0f1115; color: #fff; padding: 20px; margin: 0; }
-    h2 { color: #fff; margin-bottom: 20px; }
-    
-    .admin-catalog-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 12px; max-width: 800px; }
-    .admin-catalog-item { display: flex; justify-content: space-between; align-items: center; background: #181b22; padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); }
-    .admin-item-info { display: flex; align-items: center; gap: 15px; }
-    .admin-item-poster { width: 50px; height: 75px; object-fit: cover; border-radius: 6px; }
-    .admin-item-title { font-weight: bold; font-size: 1.1rem; margin-bottom: 4px; }
-    .admin-item-tags { font-size: 0.8rem; color: #4d82ff; background: rgba(77, 130, 255, 0.1); padding: 4px 8px; border-radius: 4px; font-weight: 600; }
-    
-    .btn-edit { background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 10px 15px; border-radius: 6px; cursor: pointer; transition: 0.2s; }
-    .btn-edit:hover { background: #4d82ff; }
 
+  <style>
+    :root { --primary: #0d47e6; --bg-color: #0f1115; --surface: #181b22; --border: #2a2e39; --text: #ffffff; }
+    * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text); margin: 0; display: flex; height: 100vh; overflow: hidden; }
+
+    .login-wrapper { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: radial-gradient(circle at top right, #082b8a, var(--bg-color)); display: flex; justify-content: center; align-items: center; z-index: 9999; }
+    .login-box { background: var(--surface); padding: 40px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 15px 40px rgba(0,0,0,0.6); width: 100%; max-width: 400px; text-align: center; }
+    .login-box img { max-width: 150px; margin-bottom: 20px; }
+    .login-box h2 { font-size: 1.2rem; margin-bottom: 25px; color: #a0a5b5; border: none; padding: 0; }
+    .login-input { width: 100%; padding: 15px; margin-bottom: 15px; background: #12141a; border: 1px solid var(--border); border-radius: 8px; color: #fff; font-size: 1rem; outline: none; transition: 0.2s; }
+    .login-input:focus { border-color: var(--primary); }
+    .btn-login { width: 100%; padding: 15px; background: var(--primary); color: #fff; font-weight: bold; font-size: 1.1rem; border: none; border-radius: 8px; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+    .btn-login:hover { background: #4d82ff; }
+    .login-error { color: #ff3333; margin-top: 15px; font-size: 0.9rem; font-weight: bold; height: 20px; }
+
+    #adminPanel { display: none; width: 100%; height: 100%; }
+
+    .sidebar { width: 280px; background-color: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; z-index: 10; }
+    .sidebar-header { padding: 20px; background: var(--primary); font-size: 1.2rem; font-weight: bold; display: flex; align-items: center; gap: 10px; }
+    .nav-btn { background: none; border: none; color: #a0a5b5; padding: 18px 20px; text-align: left; font-size: 1rem; cursor: pointer; border-left: 4px solid transparent; transition: 0.2s; display: flex; align-items: center; gap: 10px; }
+    .nav-btn:hover { background: rgba(255,255,255,0.05); color: #fff; }
+    .nav-btn.active { background: rgba(13, 71, 230, 0.1); color: var(--primary); border-left-color: var(--primary); font-weight: bold; }
+
+    .main-content { flex: 1; padding: 40px; overflow-y: auto; background: var(--bg-color); padding-bottom: 100px; }
+    .tab-content { display: none; max-width: 800px; margin: 0 auto; background: var(--surface); padding: 30px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+    .tab-content.active { display: block; animation: fadeIn 0.3s; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    h2 { margin-top: 0; border-bottom: 1px solid var(--border); padding-bottom: 15px; color: #fff; }
+    .section-title { font-size: 1.1rem; font-weight: bold; margin: 25px 0 15px 0; color: #a0a5b5; }
     
-    .form-group { margin-bottom: 15px; display: flex; flex-direction: column; }
-    .form-group label { font-size: 0.85rem; color: #8a8f9d; margin-bottom: 5px; }
-    .form-group input, .form-group textarea { background: #0f1115; border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 10px; border-radius: 6px; outline: none; }
-    .form-group input:focus { border-color: #4d82ff; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+    label { font-size: 0.9rem; font-weight: 600; color: #a0a5b5; }
+    input[type="text"], input[type="url"], input[type="color"], textarea { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: #12141a; color: #fff; font-size: 0.95rem; outline: none; transition: 0.2s; }
+    input:focus, textarea:focus { border-color: var(--primary); }
+    
+    .dynamic-list { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
+    .dynamic-row { display: flex; gap: 10px; align-items: center; background: #12141a; padding: 15px; border-radius: 8px; border: 1px solid var(--border); }
+    .dynamic-row input { flex: 1; }
+    .btn-remove { background: #ff3333; color: white; border: none; padding: 12px 15px; border-radius: 8px; cursor: pointer; transition: 0.2s; height: fit-content; }
+    .btn-remove:hover { background: #cc0000; }
+    
+    .btn-add { background: transparent; border: 2px dashed var(--border); color: #a0a5b5; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+    .btn-add:hover { border-color: var(--primary); color: var(--primary); }
+
+    .save-bar { position: fixed; bottom: 0; left: 280px; right: 0; background: var(--surface); padding: 15px 40px; border-top: 1px solid var(--border); display: none; justify-content: flex-end; align-items: center; gap: 20px; z-index: 100; }
+    .btn-save { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 10px rgba(13, 71, 230, 0.4); transition: 0.2s; }
+    .btn-save:hover { transform: translateY(-2px); }
+    #statusMsg { font-weight: bold; font-size: 0.95rem; }
+
+    /* ESTILOS DA LISTA DE FILMES */
+    .admin-catalog-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+    .admin-catalog-item { display: flex; justify-content: space-between; align-items: center; background: #12141a; padding: 15px 20px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); transition: border-color 0.2s; }
+    .admin-catalog-item:hover { border-color: var(--primary); }
+    .admin-item-info { display: flex; align-items: center; gap: 15px; }
+    .admin-item-poster { width: 45px; height: 65px; object-fit: cover; border-radius: 6px; background: #222; }
+    .admin-item-title { font-weight: bold; font-size: 1.1rem; color: #fff; margin-bottom: 4px; }
+    .admin-item-tags { font-size: 0.8rem; color: #4d82ff; background: rgba(77, 130, 255, 0.1); padding: 4px 8px; border-radius: 6px; font-weight: 600; }
+    .btn-icon { background: none; border: none; color: #8a8f9d; cursor: pointer; font-size: 1.2rem; transition: color 0.2s; padding: 10px; }
+    .btn-icon:hover { color: #fff; }
+    .btn-icon.delete:hover { color: #ff3333; }
+
+    /* MODAL DE EDIÇÃO DE FILME */
+    .admin-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 9999; display: none; justify-content: center; align-items: center; }
+    .admin-modal.active { display: flex; }
+    .admin-modal-content { background: var(--surface); width: 100%; max-width: 700px; max-height: 90vh; overflow-y: auto; padding: 30px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 15px 50px rgba(0,0,0,0.6); position: relative; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 15px; }
+    .modal-header h3 { margin: 0; color: #fff; font-size: 1.4rem; }
+    .btn-close { background: rgba(255,255,255,0.1); border: none; color: #fff; font-size: 1.2rem; cursor: pointer; width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+    .btn-close:hover { background: rgba(255,255,255,0.2); }
+    .movie-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+    .btn-modal-save { background: var(--primary); color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: 0.2s; margin-top: 10px; }
+    .btn-modal-save:hover { background: #4d82ff; }
   </style>
 </head>
 <body>
 
-  <h2><i class="fa-solid fa-film"></i> Gerenciar Catálogo</h2>
-
-  
-  <ul class="admin-catalog-list" id="listaFilmesAdmin">
-    
-    <li class="admin-catalog-item">
-      <div class="admin-item-info">
-        <img src="https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg" class="admin-item-poster">
-        <div>
-          <div class="admin-item-title">Deadpool & Wolverine</div>
-          <span class="admin-item-tags">#Ação, #Comédia</span>
-        </div>
-      </div>
-      <button class="btn-edit" onclick="abrirEdicao('ID_DO_FILME')">
-        <i class="fa-solid fa-pen"></i> Editar
-      </button>
-    </li>
-  </ul>
-
-  <hr style="border-color: rgba(255,255,255,0.1); margin: 30px 0;">
-
-<div style="background: #181b22; padding: 20px; border-radius: 10px; max-width: 800px;">
-    <h3>Novos Campos Obrigatórios (Formulário)</h3>
-    <div class="form-group">
-      <label>Hashtags para Abas (separadas por vírgula)</label>
-      <input type="text" id="editHashtags" placeholder="Ex: #Ação, #Lançamento, #Suspense">
-      <small style="color: #8a8f9d; font-size: 0.75rem; margin-top: 5px;">*O app criará as fileiras automaticamente com base nessas hashtags.</small>
-    </div>
-    
-    <div class="form-group">
-      <label>Atores Relacionados</label>
-      <input type="text" id="editAtores" placeholder="Ex: Ryan Reynolds, Hugh Jackman">
+  <div id="loginScreen" class="login-wrapper">
+    <div class="login-box">
+      <img src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1920.png" alt="Radar TV">
+      <h2>Acesso Administrativo</h2>
+      <input type="text" id="userInp" class="login-input" placeholder="Usuário" autocomplete="off">
+      <input type="password" id="passInp" class="login-input" placeholder="Senha">
+      <button class="btn-login" onclick="autenticar()"><i class="fa-solid fa-lock"></i> ENTRAR</button>
+      <div id="loginError" class="login-error"></div>
     </div>
   </div>
 
+  <div id="adminPanel">
+    
+    <div class="sidebar">
+      <div class="sidebar-header"><i class="fa-solid fa-satellite-dish"></i> Admin RadarTV</div>
+      <button class="nav-btn active" onclick="switchTab('tab-links')"><i class="fa-solid fa-link"></i> Config. de Sistema</button>
+      <button class="nav-btn" onclick="switchTab('tab-movies')"><i class="fa-solid fa-film"></i> Catálogo de Filmes</button>
+      <button class="nav-btn" onclick="switchTab('tab-menu')"><i class="fa-solid fa-bars-staggered"></i> Menu e Abas do App</button>
+      <button class="nav-btn" onclick="switchTab('tab-social')"><i class="fa-solid fa-hashtag"></i> Redes Sociais</button>
+    </div>
+
+    <div class="main-content">
+      
+      <div id="tab-links" class="tab-content active">
+        <h2><i class="fa-solid fa-link"></i> Configurações do Sistema</h2>
+        <div class="form-group">
+          <label>Versão do Aplicativo</label>
+          <input type="text" id="conf-appVer" placeholder="Ex: 1.0">
+        </div>
+        <div class="form-group">
+          <label>URL do Feed RSS do Wix (Notícias)</label>
+          <input type="url" id="conf-wixUrl" placeholder="https://www.limeiranews.com/blog-feed.xml">
+        </div>
+        <div class="form-group">
+          <label>URL da Lista M3U (GitHub - Ao Vivo)</label>
+          <input type="url" id="conf-m3uUrl" placeholder="https://raw.githubusercontent.com/.../lista.m3u">
+        </div>
+        <div class="form-group">
+          <label>URL do EPG XML (Programação)</label>
+          <input type="url" id="conf-epgUrl" placeholder="https://raw.githubusercontent.com/.../epg.xml">
+        </div>
+        <div class="form-group">
+          <label>ID da Playlist YouTube: Copa Baldanza / Local</label>
+          <input type="text" id="conf-playlistBaldanza" placeholder="Ex: PLzfuSmZBMwIpRXDvRQPzJbIGcpGImYr4n">
+        </div>
+      </div>
+
+      <div id="tab-movies" class="tab-content">
+        <h2><i class="fa-solid fa-film"></i> Catálogo de Filmes (RadarTV Play)</h2>
+        <p style="color:#a0a5b5; font-size:0.9rem; margin-bottom:20px;">O primeiro filme da lista será exibido no Banner Principal Gigante do App.</p>
+        
+        <ul class="admin-catalog-list" id="moviesListContainer" style="margin-bottom: 25px;">
+          <!-- A lista será gerada aqui pelo JS -->
+        </ul>
+
+        <button class="btn-add" onclick="abrirModalEdicao(-1)"><i class="fa-solid fa-plus"></i> Adicionar Novo Filme</button>
+      </div>
+
+      <div id="tab-menu" class="tab-content">
+        <h2><i class="fa-solid fa-bars-staggered"></i> Abas e Menus do App</h2>
+        <div class="section-title">Telas Principais (Fixas)</div>
+        <div class="dynamic-row" style="margin-bottom:10px;">
+          <input type="text" id="conf-tabHomeText" placeholder="Texto (ex: Ao Vivo Agora)">
+          <input type="text" id="conf-tabHomeIcon" placeholder="Ícone (ex: fa-solid fa-tv)">
+        </div>
+        <div class="dynamic-row" style="margin-bottom:20px;">
+          <input type="text" id="conf-tabPlayText" placeholder="Texto (ex: RadarTV Play)">
+          <input type="text" id="conf-tabPlayIcon" placeholder="Ícone (ex: fa-brands fa-youtube)">
+        </div>
+        <div class="section-title">Menu Customizável</div>
+        <div id="menuContainer" class="dynamic-list"></div>
+        <button class="btn-add" onclick="addMenuRow()"><i class="fa-solid fa-plus"></i> Adicionar Novo Botão</button>
+      </div>
+
+      <div id="tab-social" class="tab-content">
+        <h2><i class="fa-solid fa-hashtag"></i> Redes Sociais do Rodapé</h2>
+        <div id="socialContainer" class="dynamic-list"></div>
+        <button class="btn-add" onclick="addSocialRow()"><i class="fa-solid fa-plus"></i> Adicionar Rede Social</button>
+      </div>
+
+    </div>
+
+    <div class="save-bar" id="saveBar">
+      <div id="statusMsg"></div>
+      <button class="btn-save" onclick="saveAllData()"><i class="fa-solid fa-cloud-arrow-up"></i> SALVAR NO APLICATIVO</button>
+    </div>
+
+  </div>
+
+  <!-- MODAL DE EDIÇÃO DO FILME -->
+  <div class="admin-modal" id="movieModal">
+    <div class="admin-modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitleText">Editar Título</h3>
+        <button class="btn-close" onclick="fecharModalEdicao()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      
+      <div class="form-group">
+        <label>Título do Filme / Série</label>
+        <input type="text" id="md-title" placeholder="Ex: Missão Impossível">
+      </div>
+      <div class="movie-grid">
+        <div class="form-group">
+          <label>Link do Vídeo (Drive, MP4, YouTube)</label>
+          <input type="url" id="md-url" placeholder="https://...">
+        </div>
+        <div class="form-group">
+          <label>Capa do Filme (URL Imagem)</label>
+          <input type="url" id="md-poster" placeholder="https://...">
+        </div>
+      </div>
+      <div class="movie-grid">
+        <div class="form-group">
+          <label>Hashtags (Categorias e Abas)</label>
+          <input type="text" id="md-hashtags" placeholder="Ex: #Ação, #Lançamento">
+        </div>
+        <div class="form-group">
+          <label>Atores (Separados por vírgula)</label>
+          <input type="text" id="md-atores" placeholder="Ex: Tom Cruise, Ving Rhames">
+        </div>
+      </div>
+      <div class="movie-grid">
+        <div class="form-group">
+          <label>Gênero (Legado)</label>
+          <input type="text" id="md-genre" placeholder="Ex: Ação e Aventura">
+        </div>
+        <div class="form-group">
+          <label>Classificação</label>
+          <input type="text" id="md-rating" placeholder="Ex: 12">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Duração</label>
+        <input type="text" id="md-duration" placeholder="Ex: 2H 44MIN">
+      </div>
+      <div class="form-group">
+        <label>Sinopse</label>
+        <textarea id="md-desc" rows="3" placeholder="Resumo do filme..."></textarea>
+      </div>
+
+      <button class="btn-modal-save" onclick="salvarFilmeNoArray()"><i class="fa-solid fa-check"></i> Concluir</button>
+    </div>
+  </div>
+
+  <script>
+    // ESTADO LOCAL DOS FILMES
+    let filmesAdmin = [];
+    let indiceEdicao = -1;
+
+    function autenticar() {
+      const u = document.getElementById('userInp').value.trim();
+      const p = document.getElementById('passInp').value.trim();
+      const err = document.getElementById('loginError');
+
+      if (btoa(u) === "QWx0aGllcmVz" && btoa(p) === "QHJhZGFydHYyNg==") {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('adminPanel').style.display = 'flex';
+        document.getElementById('saveBar').style.display = 'flex';
+        carregarBanco(); 
+      } else {
+        err.innerText = "Usuário ou senha incorretos!";
+      }
+    }
+
+    document.getElementById('passInp').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') autenticar();
+    });
+
+    let db;
+    function carregarBanco() {
+      const firebaseConfig = {
+        apiKey: "AIzaSyCsDzEzcwZ_cuRbxlN_CAtl-7jJO7TH67Y",
+        authDomain: "admradartv.firebaseapp.com",
+        databaseURL: "https://admradartv-default-rtdb.firebaseio.com",
+        projectId: "admradartv",
+        storageBucket: "admradartv.firebasestorage.app",
+        messagingSenderId: "973686947592",
+        appId: "1:973686947592:web:4ac42cf2a9931cea46b6bd"
+      };
+
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.database();
+
+      db.ref('appConfig').once('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          if(data.settings) {
+            document.getElementById('conf-wixUrl').value = data.settings.wixUrl || '';
+            document.getElementById('conf-m3uUrl').value = data.settings.m3uUrl || '';
+            document.getElementById('conf-epgUrl').value = data.settings.epgUrl || '';
+            document.getElementById('conf-playlistBaldanza').value = data.settings.playlistBaldanza || '';
+            document.getElementById('conf-appVer').value = data.settings.appVersion || '1.0';
+            document.getElementById('conf-tabHomeText').value = data.settings.tabHomeText || 'Ao Vivo Agora';
+            document.getElementById('conf-tabHomeIcon').value = data.settings.tabHomeIcon || 'fa-solid fa-tv';
+            document.getElementById('conf-tabPlayText').value = data.settings.tabPlayText || 'RadarTV Play';
+            document.getElementById('conf-tabPlayIcon').value = data.settings.tabPlayIcon || 'fa-brands fa-youtube';
+          }
+          
+          if(data.menu && data.menu.length > 0) {
+            data.menu.forEach(item => addMenuRow(item.title, item.icon, item.color, item.url));
+          } else {
+            addMenuRow('Limeira News', 'fa-regular fa-newspaper', '#4d82ff', 'https://www.limeiranews.com/');
+          }
+
+          if(data.social && data.social.length > 0) {
+            data.social.forEach(item => addSocialRow(item.icon, item.url));
+          } else {
+            addSocialRow('fa-brands fa-instagram', 'https://instagram.com/radartvmg');
+          }
+
+          if(data.movies && data.movies.length > 0) {
+            filmesAdmin = data.movies;
+          }
+        } else {
+          document.getElementById('conf-tabHomeText').value = 'Ao Vivo Agora';
+          document.getElementById('conf-tabHomeIcon').value = 'fa-solid fa-tv';
+          document.getElementById('conf-tabPlayText').value = 'RadarTV Play';
+          document.getElementById('conf-tabPlayIcon').value = 'fa-brands fa-youtube';
+          document.getElementById('conf-appVer').value = '1.0';
+          addMenuRow('Limeira News', 'fa-regular fa-newspaper', '#4d82ff', 'https://www.limeiranews.com/');
+          addSocialRow('fa-brands fa-instagram', 'https://instagram.com/radartvmg');
+        }
+        
+        renderizarListaDeFilmes();
+      });
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+
+    // --- GERENCIAMENTO DE MENU E SOCIAL ---
+    function addMenuRow(title = '', icon = 'fa-solid fa-link', color = '#ffffff', url = '') {
+      const container = document.getElementById('menuContainer');
+      const row = document.createElement('div');
+      row.className = 'dynamic-row';
+      row.innerHTML = `
+        <input type="text" class="menu-title" placeholder="Nome do Botão" value="${title}" style="flex:1;">
+        <input type="text" class="menu-icon" placeholder="Ícone" value="${icon}" style="flex:1;">
+        <input type="color" class="menu-color" value="${color}" style="width:50px; height:45px; padding:0; cursor:pointer;" title="Cor do Ícone">
+        <input type="url" class="menu-url" placeholder="Link de destino" value="${url}" style="flex:2;">
+        <button class="btn-remove" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash"></i></button>
+      `;
+      container.appendChild(row);
+    }
+
+    function addSocialRow(icon = 'fa-brands fa-instagram', url = '') {
+      const container = document.getElementById('socialContainer');
+      const row = document.createElement('div');
+      row.className = 'dynamic-row';
+      row.innerHTML = `
+        <input type="text" class="social-icon" placeholder="Ícone FontAwesome" value="${icon}">
+        <input type="url" class="social-url" placeholder="Link da Rede Social" value="${url}">
+        <button class="btn-remove" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash"></i></button>
+      `;
+      container.appendChild(row);
+    }
+
+    // --- GERENCIAMENTO DO CATÁLOGO DE FILMES (LISTA + MODAL) ---
+    function renderizarListaDeFilmes() {
+      const container = document.getElementById('moviesListContainer');
+      container.innerHTML = '';
+      
+      if(filmesAdmin.length === 0) {
+        container.innerHTML = '<li style="color:#8a8f9d; padding:20px; text-align:center;">Nenhum filme cadastrado.</li>';
+        return;
+      }
+
+      filmesAdmin.forEach((f, index) => {
+        const li = document.createElement('li');
+        li.className = 'admin-catalog-item';
+        let badgeHashtags = f.hashtags ? f.hashtags : (f.genre ? f.genre : '#SemCategoria');
+        
+        li.innerHTML = `
+          <div class="admin-item-info">
+            <img src="${f.poster || ''}" class="admin-item-poster" onerror="this.src='https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1080.png'">
+            <div>
+              <div class="admin-item-title">${f.title || 'Sem Título'}</div>
+              <span class="admin-item-tags">${badgeHashtags}</span>
+            </div>
+          </div>
+          <div style="display:flex; gap: 5px;">
+            <button class="btn-icon" onclick="abrirModalEdicao(${index})" title="Editar"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn-icon delete" onclick="excluirFilme(${index})" title="Excluir"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        `;
+        container.appendChild(li);
+      });
+    }
+
+    function abrirModalEdicao(index) {
+      indiceEdicao = index;
+      const modal = document.getElementById('movieModal');
+      modal.classList.add('active');
+
+      if(index >= 0) {
+        const f = filmesAdmin[index];
+        document.getElementById('modalTitleText').innerText = "Editar Título";
+        document.getElementById('md-title').value = f.title || '';
+        document.getElementById('md-url').value = f.url || '';
+        document.getElementById('md-poster').value = f.poster || '';
+        document.getElementById('md-rating').value = f.rating || '';
+        document.getElementById('md-duration').value = f.duration || '';
+        document.getElementById('md-genre').value = f.genre || '';
+        document.getElementById('md-desc').value = f.desc || '';
+        document.getElementById('md-hashtags').value = f.hashtags || '';
+        document.getElementById('md-atores').value = f.atores || '';
+      } else {
+        document.getElementById('modalTitleText').innerText = "Novo Filme/Série";
+        document.getElementById('md-title').value = '';
+        document.getElementById('md-url').value = '';
+        document.getElementById('md-poster').value = '';
+        document.getElementById('md-rating').value = '';
+        document.getElementById('md-duration').value = '';
+        document.getElementById('md-genre').value = '';
+        document.getElementById('md-desc').value = '';
+        document.getElementById('md-hashtags').value = '';
+        document.getElementById('md-atores').value = '';
+      }
+    }
+
+    function fecharModalEdicao() {
+      document.getElementById('movieModal').classList.remove('active');
+    }
+
+    function salvarFilmeNoArray() {
+      const title = document.getElementById('md-title').value.trim();
+      const url = document.getElementById('md-url').value.trim();
+      
+      if(!title || !url) {
+        alert("Os campos Título e Link do Vídeo são obrigatórios.");
+        return;
+      }
+
+      const filmeObjeto = {
+        title: title,
+        url: url,
+        poster: document.getElementById('md-poster').value.trim(),
+        rating: document.getElementById('md-rating').value.trim(),
+        duration: document.getElementById('md-duration').value.trim(),
+        genre: document.getElementById('md-genre').value.trim(),
+        desc: document.getElementById('md-desc').value.trim(),
+        hashtags: document.getElementById('md-hashtags').value.trim(),
+        atores: document.getElementById('md-atores').value.trim()
+      };
+
+      if(indiceEdicao >= 0) {
+        filmesAdmin[indiceEdicao] = filmeObjeto;
+      } else {
+        filmesAdmin.push(filmeObjeto);
+      }
+
+      fecharModalEdicao();
+      renderizarListaDeFilmes();
+    }
+
+    function excluirFilme(index) {
+      if(confirm("Tem certeza que deseja remover este filme?")) {
+        filmesAdmin.splice(index, 1);
+        renderizarListaDeFilmes();
+      }
+    }
+
+    // --- SALVAMENTO FINAL NO FIREBASE ---
+    function saveAllData() {
+      const btn = document.querySelector('.btn-save');
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> SALVANDO...';
+
+      const settingsData = {
+        wixUrl: document.getElementById('conf-wixUrl').value,
+        m3uUrl: document.getElementById('conf-m3uUrl').value,
+        epgUrl: document.getElementById('conf-epgUrl').value,
+        playlistBaldanza: document.getElementById('conf-playlistBaldanza').value,
+        appVersion: document.getElementById('conf-appVer').value,
+        tabHomeText: document.getElementById('conf-tabHomeText').value,
+        tabHomeIcon: document.getElementById('conf-tabHomeIcon').value,
+        tabPlayText: document.getElementById('conf-tabPlayText').value,
+        tabPlayIcon: document.getElementById('conf-tabPlayIcon').value
+      };
+
+      const menuData = [];
+      document.querySelectorAll('#menuContainer .dynamic-row').forEach(row => {
+        const title = row.querySelector('.menu-title').value;
+        const icon = row.querySelector('.menu-icon').value;
+        const color = row.querySelector('.menu-color').value;
+        const url = row.querySelector('.menu-url').value;
+        if(title && url) menuData.push({ title, icon, color, url });
+      });
+
+      const socialData = [];
+      document.querySelectorAll('#socialContainer .dynamic-row').forEach(row => {
+        const icon = row.querySelector('.social-icon').value;
+        const url = row.querySelector('.social-url').value;
+        if(icon && url) socialData.push({ icon, url });
+      });
+
+      // Aqui utilizamos a array filmesAdmin diretamente para salvar o estado atualizado
+      const fullConfig = { settings: settingsData, menu: menuData, social: socialData, movies: filmesAdmin };
+
+      db.ref('appConfig').set(fullConfig)
+        .then(() => {
+          showMsg("✅ Sucesso! O aplicativo foi atualizado.", "#2ecc71");
+          btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> SALVAR NO APLICATIVO';
+        })
+        .catch((error) => {
+          showMsg("❌ Erro ao salvar: " + error.message, "#e74c3c");
+          btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> TENTAR NOVAMENTE';
+        });
+    }
+
+    function showMsg(text, color) {
+      const msg = document.getElementById('statusMsg');
+      msg.innerText = text;
+      msg.style.color = color;
+      setTimeout(() => msg.innerText = '', 5000);
+    }
+  </script>
 </body>
 </html>
