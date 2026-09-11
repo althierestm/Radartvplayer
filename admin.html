@@ -181,13 +181,14 @@
         <div class="form-group"><label>Capa do Filme (URL Imagem)</label><input type="url" id="md-poster"></div>
       </div>
       <div class="movie-grid">
-        <div class="form-group"><label>Hashtags (Ex: #Lançamento, #Ação)</label><input type="text" id="md-hashtags"></div>
-        <div class="form-group"><label>Atores</label><input type="text" id="md-atores"></div>
+        <div class="form-group"><label>Hashtags (Filas/Prateleiras) Ex: #Ação, #Lançamento</label><input type="text" id="md-hashtags"></div>
+        <div class="form-group"><label>Atores (Separados por vírgula)</label><input type="text" id="md-atores"></div>
       </div>
       <div class="movie-grid">
+        <div class="form-group"><label>Gênero de Exibição (Ex: Ação e Aventura)</label><input type="text" id="md-genre"></div>
         <div class="form-group"><label>Classificação (Ex: L, 10, 12, 14, 16, 18)</label><input type="text" id="md-rating"></div>
-        <div class="form-group"><label>Duração</label><input type="text" id="md-duration"></div>
       </div>
+      <div class="form-group"><label>Duração (Ex: 2h 44m)</label><input type="text" id="md-duration"></div>
       <div class="form-group"><label>Sinopse</label><textarea id="md-desc" rows="3"></textarea></div>
 
       <button class="btn-modal-save" onclick="salvarFilmeNoArray()"><i class="fa-solid fa-check"></i> Concluir</button>
@@ -246,7 +247,7 @@
           if(data.movies) filmesAdmin = data.movies;
           if(data.highlights) highlightsAdmin = data.highlights;
         }
-        renderizarListaDeFilmes();
+        renderizarListaDeFilmes(true); // TRUE para puxar os selects do banco na primeira vez
       });
     }
 
@@ -269,19 +270,19 @@
       document.getElementById('socialContainer').appendChild(row);
     }
 
-    function renderizarListaDeFilmes() {
+    function renderizarListaDeFilmes(primeiroLoad = false) {
       const container = document.getElementById('moviesListContainer'); container.innerHTML = '';
       if(filmesAdmin.length === 0) { container.innerHTML = '<li style="color:#8a8f9d; padding:20px; text-align:center;">Nenhum filme cadastrado.</li>'; }
       filmesAdmin.forEach((f, i) => {
         const li = document.createElement('li'); li.className = 'admin-catalog-item';
         let badgeHashtags = f.hashtags ? f.hashtags : '#SemCategoria';
-        li.innerHTML = `<div class="admin-item-info"><img src="${f.poster}" class="admin-item-poster"><div><div class="admin-item-title">${f.title}</div><span class="admin-item-tags">${badgeHashtags}</span></div></div><div style="display:flex; gap: 5px;"><button class="btn-icon" onclick="abrirModalEdicao(${i})"><i class="fa-solid fa-pen"></i></button><button class="btn-icon delete" onclick="excluirFilme(${i})"><i class="fa-solid fa-trash"></i></button></div>`;
+        li.innerHTML = `<div class="admin-item-info"><img src="${f.poster}" class="admin-item-poster" onerror="this.src='https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1080.png'"><div><div class="admin-item-title">${f.title}</div><span class="admin-item-tags">${badgeHashtags}</span></div></div><div style="display:flex; gap: 5px;"><button class="btn-icon" onclick="abrirModalEdicao(${i})"><i class="fa-solid fa-pen"></i></button><button class="btn-icon delete" onclick="excluirFilme(${i})"><i class="fa-solid fa-trash"></i></button></div>`;
         container.appendChild(li);
       });
-      atualizarSelectsDestaque(true);
+      atualizarSelectsDestaque(primeiroLoad);
     }
 
-    function atualizarSelectsDestaque(primeiroLoad = false) {
+    function atualizarSelectsDestaque(primeiroLoad) {
         const selFeat = document.getElementById('sel-featured');
         const selTops = [document.getElementById('sel-top1'), document.getElementById('sel-top2'), document.getElementById('sel-top3'), document.getElementById('sel-top4'), document.getElementById('sel-top5')];
         
@@ -304,7 +305,7 @@
                 selTops[4].value = highlightsAdmin.top5[4] || '';
             }
         } else {
-            selFeat.value = curFeat;
+            selFeat.value = curFeat; // Mantém a seleção ao fechar modal de novo filme
             selTops.forEach((sel, i) => sel.value = curTops[i]);
         }
     }
@@ -314,10 +315,26 @@
       if(index >= 0) {
         const f = filmesAdmin[index];
         document.getElementById('modalTitleText').innerText = "Editar Filme";
-        document.getElementById('md-title').value = f.title || ''; document.getElementById('md-url').value = f.url || ''; document.getElementById('md-poster').value = f.poster || ''; document.getElementById('md-rating').value = f.rating || ''; document.getElementById('md-duration').value = f.duration || ''; document.getElementById('md-desc').value = f.desc || ''; document.getElementById('md-hashtags').value = f.hashtags || ''; document.getElementById('md-atores').value = f.atores || '';
+        document.getElementById('md-title').value = f.title || ''; 
+        document.getElementById('md-url').value = f.url || ''; 
+        document.getElementById('md-poster').value = f.poster || ''; 
+        document.getElementById('md-rating').value = f.rating || ''; 
+        document.getElementById('md-duration').value = f.duration || ''; 
+        document.getElementById('md-genre').value = f.genre || ''; // Gênero restaurado
+        document.getElementById('md-desc').value = f.desc || ''; 
+        document.getElementById('md-hashtags').value = f.hashtags || ''; 
+        document.getElementById('md-atores').value = f.atores || '';
       } else {
         document.getElementById('modalTitleText').innerText = "Novo Filme";
-        document.getElementById('md-title').value = ''; document.getElementById('md-url').value = ''; document.getElementById('md-poster').value = ''; document.getElementById('md-rating').value = ''; document.getElementById('md-duration').value = ''; document.getElementById('md-desc').value = ''; document.getElementById('md-hashtags').value = ''; document.getElementById('md-atores').value = '';
+        document.getElementById('md-title').value = ''; 
+        document.getElementById('md-url').value = ''; 
+        document.getElementById('md-poster').value = ''; 
+        document.getElementById('md-rating').value = ''; 
+        document.getElementById('md-duration').value = ''; 
+        document.getElementById('md-genre').value = ''; // Gênero restaurado
+        document.getElementById('md-desc').value = ''; 
+        document.getElementById('md-hashtags').value = ''; 
+        document.getElementById('md-atores').value = '';
       }
     }
 
@@ -326,12 +343,24 @@
     function salvarFilmeNoArray() {
       const t = document.getElementById('md-title').value.trim(); const u = document.getElementById('md-url').value.trim();
       if(!t || !u) return alert("Título e Link são obrigatórios.");
-      const obj = { title: t, url: u, poster: document.getElementById('md-poster').value.trim(), rating: document.getElementById('md-rating').value.trim(), duration: document.getElementById('md-duration').value.trim(), desc: document.getElementById('md-desc').value.trim(), hashtags: document.getElementById('md-hashtags').value.trim(), atores: document.getElementById('md-atores').value.trim() };
+      
+      const obj = { 
+          title: t, 
+          url: u, 
+          poster: document.getElementById('md-poster').value.trim(), 
+          rating: document.getElementById('md-rating').value.trim(), 
+          duration: document.getElementById('md-duration').value.trim(), 
+          genre: document.getElementById('md-genre').value.trim(), // Salvando Gênero
+          desc: document.getElementById('md-desc').value.trim(), 
+          hashtags: document.getElementById('md-hashtags').value.trim(), 
+          atores: document.getElementById('md-atores').value.trim() 
+      };
+      
       if(indiceEdicao >= 0) filmesAdmin[indiceEdicao] = obj; else filmesAdmin.push(obj);
-      fecharModalEdicao(); renderizarListaDeFilmes();
+      fecharModalEdicao(); renderizarListaDeFilmes(false); // FALSE para não resetar os selects
     }
 
-    function excluirFilme(i) { if(confirm("Remover filme?")) { filmesAdmin.splice(i, 1); renderizarListaDeFilmes(); } }
+    function excluirFilme(i) { if(confirm("Remover filme?")) { filmesAdmin.splice(i, 1); renderizarListaDeFilmes(false); } }
 
     function saveAllData() {
       const btn = document.querySelector('.btn-save'); btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> SALVANDO...';
