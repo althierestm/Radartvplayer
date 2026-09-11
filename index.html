@@ -82,19 +82,15 @@
     .view-panel { width: 100%; display: none; flex-direction: column; gap: 20px; padding: 0; padding-bottom: 30px; }
     .view-panel.active { display: flex; }
 
-    /* Barra Superior Fixa Restaurada (Azul) */
     .sticky-player-area { position: -webkit-sticky; position: sticky; top: 0; z-index: 1000; background: var(--primary); width: 100%; box-shadow: 0 4px 20px rgba(0,0,0,0.6); }
     .player-header { display: flex; align-items: center; justify-content: space-between; padding: calc(12px + env(safe-area-inset-top, 0px)) 18px 12px 18px; background: var(--primary); width: 100%; }
     .header-left { display: flex; align-items: center; gap: 14px; }
     .hamburger-btn { background: none; border: none; color: #ffffff; font-size: 1.4rem; cursor: pointer; }
     .brand img { height: 32px; width: auto; object-fit: contain; display: block; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
-    
-    /* Tag Ao Vivo Restaurada */
     .live-badge { background-color: var(--primary-light); color: #ffffff; border: 1px solid rgba(255,255,255,0.2); font-size: 0.75rem; font-weight: bold; padding: 5px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
     .live-badge::before { content: ''; width: 8px; height: 8px; background-color: #ff0000; border-radius: 50%; box-shadow: 0 0 8px #ff0000; animation: pulseLiveBadge 1.5s infinite; }
     @keyframes pulseLiveBadge { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
 
-    /* Player Ao Vivo */
     .video-wrapper { position: relative; width: 100%; padding-top: 56.25%; background: #000; overflow: hidden; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,0.1); }
     .video-wrapper video, .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; object-fit: contain; pointer-events: none; }
     #ytPlayer { pointer-events: auto; }
@@ -128,10 +124,9 @@
     
     .carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 10px; padding: 0 15px 15px 15px; scroll-behavior: smooth; }
 
-    /* EFEITO ELÁSTICO TOP 5 */
-    .top5-item { display: flex; align-items: center; position: relative; flex: 0 0 auto; width: 150px; height: 180px; cursor: pointer; scroll-snap-align: start; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    /* TOP 5 NATIVO (Sem elástico) */
+    .top5-item { display: flex; align-items: center; position: relative; flex: 0 0 auto; width: 150px; height: 180px; cursor: pointer; scroll-snap-align: start; }
     .top5-item:active { transform: scale(0.96); }
-    .top5-item:hover { transform: translateY(-5px) scale(1.02); }
     .top5-rank { font-size: 8rem; font-weight: 900; font-family: Impact, sans-serif; color: var(--bg-color); -webkit-text-stroke: 1px rgba(255, 255, 255, 0.5); position: absolute; left: -10px; bottom: -20px; z-index: 1; letter-spacing: -4px; user-select: none; text-shadow: 0 4px 10px rgba(0,0,0,0.8); }
     .top5-poster { width: 110px; height: 165px; border-radius: 6px; object-fit: cover; position: absolute; right: 0; bottom: 5px; z-index: 2; box-shadow: -4px 4px 15px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.1); }
 
@@ -139,7 +134,6 @@
     .vod-card { flex: 0 0 130px; aspect-ratio: 2/3; scroll-snap-align: start; border-radius: 6px; overflow: hidden; position: relative; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: transform 0.2s ease, box-shadow 0.2s; background: #222; }
     .vod-card:active { transform: scale(0.96); }
     .vod-img { width: 100%; height: 100%; object-fit: cover; }
-    /* Opacidade no hover para indicar clique */
     .vod-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); opacity: 0; transition: opacity 0.2s; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 2rem; }
     .vod-card:hover .vod-overlay { opacity: 1; }
 
@@ -148,6 +142,8 @@
     .news-img { width: 100%; height: 135px; object-fit: cover; background: #222; }
     .news-content { padding: 12px; display: flex; flex-direction: column; gap: 6px; }
     .news-text { font-size: 0.85rem; color: #fff; font-weight: 600; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    .see-more-card { flex: 0 0 120px; background: rgba(255,255,255,0.03); border: 1px dashed var(--border); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--primary-light); }
+    .see-more-card i { font-size: 1.5rem; }
 
     .app-footer { width: 100%; max-width: 800px; padding: 20px 15px calc(30px + env(safe-area-inset-bottom, 0px)) 15px; display: flex; flex-direction: column; align-items: center; gap: 16px; border-top: 1px solid var(--border); margin-top: auto; }
     .social-buttons { display: flex; gap: 25px; width: 100%; justify-content: center; }
@@ -171,16 +167,13 @@
     .schedule-time { color: var(--text-muted); font-size: 0.8rem; font-weight: bold; }
     .schedule-name { font-weight: bold; color: #fff; font-size: 1rem; }
 
-    /* MODAL VOD PREMIUM (Paramount+ Aesthetic) */
-    .vod-modal-content { background: var(--bg-color); height: 100vh; max-height: 100vh; border-radius: 0; border: none; padding-bottom: 0; }
-    .vod-close-float { position: absolute; top: calc(15px + env(safe-area-inset-top, 0px)); right: 15px; z-index: 50; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); color: #fff; border: 1px solid rgba(255,255,255,0.2); width: 35px; height: 35px; border-radius: 50%; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; cursor: pointer; }
+    /* MODAL VOD PREMIUM */
+    .vod-modal-content { background: #000; height: 100vh; max-height: 100vh; border-radius: 0; border: none; padding-bottom: 0; }
     .vod-hero-bg { position: relative; width: 100%; height: 50vh; background-size: cover; background-position: top center; }
-    .vod-hero-bg::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, var(--bg-color) 2%, rgba(15,17,21,0.8) 40%, transparent); }
+    .vod-hero-bg::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, #000 5%, rgba(0,0,0,0.6) 50%, transparent); }
     .vod-premium-content { position: relative; z-index: 10; padding: 0 20px 20px 20px; margin-top: -80px; flex: 1; }
     .vod-premium-title { font-size: 2.2rem; font-weight: 900; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.8); line-height: 1.1; margin-bottom: 12px; }
-    
-    .rating-badge { color: #fff; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(0,0,0,0.5); }
-    
+    .rating-badge { color: #fff; padding: 3px 8px; border-radius: 4px; font-weight: bold; font-size: 0.85rem; box-shadow: 0 2px 4px rgba(0,0,0,0.5); }
     .vod-nav-tabs { display: flex; gap: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin: 25px 0 15px 0; }
     .vod-tab-btn { background: none; border: none; color: var(--text-muted); font-size: 0.95rem; font-weight: bold; padding-bottom: 10px; cursor: pointer; text-transform: uppercase; }
     .vod-tab-btn.active { color: #fff; border-bottom: 3px solid #fff; }
@@ -189,26 +182,13 @@
     .related-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding-bottom: 30px; }
     .related-item { width: 100%; aspect-ratio: 2/3; border-radius: 6px; object-fit: cover; cursor: pointer; transition: transform 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
     .related-item:active { transform: scale(0.95); }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    /* CUSTOM VOD PLAYER */
+    /* NOVO PLAYER NATIVO VOD */
     #vodPlayerScreen { display: none; width: 100%; height: 100%; background: #000; position: relative; }
-    .seek-zone { flex: 1; height: 100%; z-index: 10; }
-    .vod-custom-controls { position: absolute; bottom: 0; left: 0; width: 100%; padding: 40px 20px 20px 20px; background: linear-gradient(to top, rgba(0,0,0,0.9), transparent); z-index: 20; display: flex; flex-direction: column; gap: 10px; transition: opacity 0.3s; }
-    .vod-custom-controls.hidden { opacity: 0; pointer-events: none; }
-    
-    .vod-progress { width: 100%; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px; cursor: pointer; position: relative; }
-    .vod-progress-filled { height: 100%; background: #fff; border-radius: 2px; width: 0%; position: relative; }
-    .vod-progress-filled::after { content: ''; position: absolute; right: -5px; top: -4px; width: 12px; height: 12px; background: #fff; border-radius: 50%; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
-    
-    .vod-controls-row { display: flex; align-items: center; gap: 15px; color: #fff; font-size: 1.2rem; }
-    .vod-controls-row button { background: none; border: none; color: #fff; font-size: 1.2rem; cursor: pointer; padding: 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); transition: color 0.2s; }
-    .vod-controls-row button:hover { color: var(--text-muted); }
-    .vod-time { font-size: 0.9rem; font-weight: bold; font-family: monospace; }
-    .seek-indicator { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); color: #fff; padding: 15px 25px; border-radius: 30px; font-weight: bold; font-size: 1.2rem; z-index: 15; pointer-events: none; opacity: 0; transition: opacity 0.2s; display: flex; align-items: center; gap: 10px; }
-    .seek-indicator.left { left: 15%; }
-    .seek-indicator.right { right: 15%; }
-    .seek-indicator.show { opacity: 1; }
+    .vod-custom-ui { transition: opacity 0.3s ease; }
+    .vod-custom-ui.hidden { opacity: 0; pointer-events: none !important; }
+    google-cast-launcher { --disconnected-color: white; --connected-color: var(--primary-light); cursor: pointer; }
+    .btn-vod-pill { background: rgba(255,255,255,0.15); border: none; border-radius: 30px; color: #fff; font-size: 1.2rem; cursor: pointer; backdrop-filter: blur(10px); display: flex; align-items: center; justify-content: center; }
   </style>
 </head>
 <body>
@@ -318,14 +298,14 @@
       </div>
 
       <section id="heroDestaque" style="position: relative; width: 100%; padding-top: 130%; background-size: cover; background-position: center top; background-color: #000; cursor: pointer;">
-        <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to top, var(--bg-color) 2%, rgba(15,17,21,0.5) 40%, transparent); display: flex; flex-direction: column; justify-content: flex-end; padding: 25px;">
+        <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to top, transparent 10%, rgba(0,0,0,0.8) 80%, #000 100%); display: flex; flex-direction: column; justify-content: flex-end; padding: 25px;">
           <h2 id="heroTitle" style="font-size: 2.5rem; font-weight: 900; color: #fff; margin: 0 0 10px 0; text-shadow: 0 2px 10px rgba(0,0,0,0.8); line-height: 1.1; text-transform: uppercase;">Carregando...</h2>
           <div style="display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: #ccc; font-weight: bold; margin-bottom: 20px;">
             <span id="heroRating" class="rating-badge">L</span>
             <span id="heroGenre">Categoria</span>
             <span id="heroDuration">--</span>
           </div>
-          <button id="btnHeroPlay" style="background: #fff; color: #000; border: none; padding: 12px 30px; border-radius: 4px; font-weight: 900; font-size: 1.1rem; width: fit-content; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+          <button id="btnHeroPlay" style="background: #fff; color: #000; border: none; padding: 12px 30px; border-radius: 6px; font-weight: 900; font-size: 1.1rem; width: fit-content; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
             <i class="fa-solid fa-play"></i> ASSISTIR
           </button>
         </div>
@@ -342,7 +322,7 @@
 
   </div>
 
-  <!-- MODAL DE PROGRAMAÇÃO -->
+  <!-- MODAIS GENÉRICOS (Programação, Timer) -->
   <div class="modal" id="scheduleModal">
     <div class="modal-content">
       <div class="modal-header-top">
@@ -357,7 +337,6 @@
     </div>
   </div>
 
-  <!-- MODAL DE TIMER -->
   <div class="modal" id="timerModal">
     <div class="modal-content">
       <div class="modal-header-top">
@@ -375,13 +354,13 @@
     </div>
   </div>
 
-  <!-- MODAL VOD PREMIUM -->
+  <!-- MODAL VOD PREMIUM (Filmes) -->
   <div class="modal" id="vodModal">
     <div class="modal-content vod-modal-content">
-      <button class="vod-close-float" onclick="closeVODModal()"><i class="fa-solid fa-xmark"></i></button>
-
+      
       <!-- TELA DE DETALHES -->
       <div id="vodDetailsScreen" style="display: flex; flex-direction: column; height: 100%; overflow-y: auto;">
+        <button onclick="closeVODModal()" style="position: absolute; top: calc(15px + env(safe-area-inset-top, 0px)); right: 15px; z-index: 50; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); color: #fff; border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
         <div id="vodHeroBg" class="vod-hero-bg"></div>
         
         <div class="vod-premium-content">
@@ -391,7 +370,7 @@
             <span id="vodGenre">Gênero</span> &bull; <span id="vodDuration">--</span>
           </div>
 
-          <button id="btnPlayNative" style="background: #fff; color: #000; border: none; padding: 14px; border-radius: 4px; font-weight: 900; font-size: 1.1rem; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px;">
+          <button id="btnPlayNative" style="background: #fff; color: #000; border: none; padding: 14px; border-radius: 6px; font-weight: 900; font-size: 1.1rem; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px;">
             <i class="fa-solid fa-play"></i> ASSISTIR AGORA
           </button>
 
@@ -411,37 +390,66 @@
         </div>
       </div>
 
-      <!-- TELA DO PLAYER CUSTOMIZADO -->
+      <!-- NOVO PLAYER NATIVO VOD -->
       <div id="vodPlayerScreen">
-        <!-- Zonas Invisíveis de Clique Duplo (Avançar/Voltar) -->
-        <div id="vodClickZones" style="position:absolute; top:0; left:0; width:100%; height:100%; display:flex; z-index:10;">
-            <div class="seek-zone" onclick="handleVodSeek(event, 'left')"></div>
-            <div class="seek-zone" onclick="handleVodSeek(event, 'right')"></div>
-        </div>
-        
-        <!-- Indicadores de Pulo (10s) -->
-        <div id="seekIndLeft" class="seek-indicator left"><i class="fa-solid fa-backward"></i> 10s</div>
-        <div id="seekIndRight" class="seek-indicator right">10s <i class="fa-solid fa-forward"></i></div>
-        
-        <!-- Controles Inferiores -->
-        <div id="vodCustomControls" class="vod-custom-controls">
-            <div class="vod-progress" id="vodProgressContainer" onclick="seekVodProgress(event)">
-                <div class="vod-progress-filled" id="vodProgressBar"></div>
-            </div>
-            <div class="vod-controls-row">
-               <button onclick="toggleVodPlay()"><i class="fa-solid fa-play" id="vodPlayIcon"></i></button>
-               <span id="vodTimeDisplay" class="vod-time">00:00 / 00:00</span>
-               <div style="flex:1;"></div>
-               <button onclick="toggleCC()" title="Legendas" id="btnCC"><i class="fa-regular fa-closed-captioning"></i></button>
-               <button onclick="toggleVodPiP()" title="Picture-in-Picture"><i class="fa-solid fa-clone"></i></button>
-               <button onclick="toggleVodAirPlay()" title="AirPlay"><i class="fa-solid fa-tv"></i></button>
-               <google-cast-launcher style="cursor:pointer;"></google-cast-launcher>
-               <button onclick="toggleVodFullscreen()" title="Tela Cheia"><i class="fa-solid fa-expand"></i></button>
-            </div>
-        </div>
-
-        <video id="vodVideo" playsinline preload="auto" style="width: 100%; height: 100%; object-fit: contain; position:absolute; top:0; left:0; z-index:1;"></video>
+        <video id="vodVideo" playsinline webkit-playsinline preload="auto" style="width: 100%; height: 100%; object-fit: contain; position:absolute; top:0; left:0; z-index:1; background:#000;"></video>
         <iframe id="vodIframe" allow="autoplay; fullscreen" allowfullscreen style="width: 100%; height: 100%; border: 0; display: none; position:absolute; top:0; left:0; z-index:30;"></iframe>
+
+        <!-- Zonas de clique para ocultar/mostrar a UI ou duplo clique para avançar/voltar -->
+        <div id="vodClickZones" style="position:absolute; top:0; left:0; width:100%; height:100%; display:flex; z-index:10;">
+            <div style="flex:1; height:100%;" onclick="handleVodZoneClick(event, 'left')"></div>
+            <div style="flex:1; height:100%;" onclick="handleVodZoneClick(event, 'right')"></div>
+        </div>
+        
+        <!-- UI Overlay do Player -->
+        <div id="vodCustomUI" class="vod-custom-ui hidden" style="position:absolute; top:0; left:0; width:100%; height:100%; z-index:20; pointer-events:none; display:flex; flex-direction:column; justify-content:space-between; background:rgba(0,0,0,0.4);">
+            
+            <!-- Close Button (Top Right) -->
+            <div style="padding: 15px; display:flex; justify-content:flex-end; pointer-events:auto;">
+                <button onclick="closeVODModal()" style="background:rgba(0,0,0,0.5); border:none; width:35px; height:35px; border-radius:50%; color:#fff; font-size:1.2rem; cursor:pointer;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- Botões Centrais -->
+            <div style="display:flex; justify-content:center; align-items:center; gap: 40px; pointer-events:auto;">
+                <button onclick="handleVodSeek(event, 'left')" style="background:none; border:none; color:#fff; font-size:2rem; cursor:pointer;"><i class="fa-solid fa-rotate-left"></i><span style="font-size:0.8rem; display:block;">10</span></button>
+                <button onclick="toggleVodPlay()" style="background:none; border:none; color:#fff; font-size:3.5rem; cursor:pointer;"><i class="fa-solid fa-pause" id="vodCenterPlayIcon"></i></button>
+                <button onclick="handleVodSeek(event, 'right')" style="background:none; border:none; color:#fff; font-size:2rem; cursor:pointer;"><i class="fa-solid fa-rotate-right"></i><span style="font-size:0.8rem; display:block;">10</span></button>
+            </div>
+
+            <!-- Controles Inferiores -->
+            <div style="padding: 15px 20px; padding-bottom:calc(15px + env(safe-area-inset-bottom, 0px)); pointer-events:auto; display:flex; flex-direction:column; gap:15px; background: linear-gradient(to top, rgba(0,0,0,0.9) 20%, transparent);">
+                
+                <!-- Barra de Progresso -->
+                <div class="vod-progress" id="vodProgressContainer" onclick="seekVodProgress(event)" style="width:100%; height:4px; background:rgba(255,255,255,0.3); border-radius:2px; cursor:pointer;">
+                    <div class="vod-progress-filled" id="vodProgressBar" style="height:100%; background:#fff; width:0%; border-radius:2px; position:relative;">
+                        <div style="position:absolute; right:-6px; top:-4px; width:12px; height:12px; background:#fff; border-radius:50%;"></div>
+                    </div>
+                </div>
+
+                <!-- Botões Pílula (Play e Tempo) -->
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <button class="btn-vod-pill" onclick="toggleVodPlay()" style="padding:12px 30px;"><i class="fa-solid fa-pause" id="vodBottomPlayIcon"></i></button>
+                    
+                    <div class="btn-vod-pill" style="padding:12px 20px; display:flex; gap:15px;">
+                        <button onclick="handleVodSeek(event, 'left')" style="background:none; border:none; color:#fff; font-size:1.1rem; cursor:pointer;"><i class="fa-solid fa-rotate-left"></i></button>
+                        <button onclick="handleVodSeek(event, 'right')" style="background:none; border:none; color:#fff; font-size:1.1rem; cursor:pointer;"><i class="fa-solid fa-rotate-right"></i></button>
+                        <span id="vodTimeDisplay" style="font-size:0.9rem; font-weight:bold; font-family:monospace; margin-left:5px;">0:00 / 0:00</span>
+                    </div>
+                </div>
+
+                <!-- Botões de Ação Inferiores -->
+                <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.1); padding:10px 20px; border-radius:12px; margin-top:5px;">
+                    <button onclick="toggleVodMute()" style="background:none; border:none; color:#fff; font-size:1.1rem; cursor:pointer;"><i class="fa-solid fa-volume-high" id="vodVolIcon"></i></button>
+                    <button onclick="toggleCC()" id="btnCC" style="background:none; border:none; color:rgba(255,255,255,0.5); font-size:1.1rem; cursor:pointer;"><i class="fa-regular fa-closed-captioning"></i></button>
+                    <button onclick="changeVodSpeed()" id="btnVodSpeed" style="background:none; border:none; color:#fff; font-size:0.95rem; font-weight:bold; cursor:pointer;">1x</button>
+                    <button onclick="openVodSettings()" style="background:none; border:none; color:#fff; font-size:1.1rem; cursor:pointer;"><i class="fa-solid fa-gear"></i></button>
+                    <button onclick="toggleVodPiP()" style="background:none; border:none; color:#fff; font-size:1.1rem; cursor:pointer;"><i class="fa-solid fa-clone"></i></button>
+                    <button onclick="toggleVodAirPlay()" style="background:none; border:none; color:#fff; font-size:1.1rem; cursor:pointer;"><i class="fa-solid fa-tv"></i></button>
+                    <google-cast-launcher></google-cast-launcher>
+                    <button onclick="toggleVodFullscreen()" style="background:none; border:none; color:#fff; font-size:1.1rem; cursor:pointer;"><i class="fa-solid fa-expand"></i></button>
+                </div>
+            </div>
+        </div>
       </div>
     </div>
   </div>
@@ -525,12 +533,12 @@
 
     function getBadgeColor(rating) {
       let r = String(rating).toUpperCase().trim();
-      if(r === 'L' || r === 'LIVRE') return '#0a8d48';
-      if(r === '10') return '#00a2ed';
-      if(r === '12') return '#f6c00f';
-      if(r === '14') return '#e65c00';
-      if(r === '16') return '#d90000';
-      if(r === '18') return '#000000';
+      if(r === 'L' || r === 'LIVRE') return '#0a8d48'; // Verde
+      if(r === '10') return '#00a2ed'; // Azul
+      if(r === '12') return '#f6c00f'; // Amarelo
+      if(r === '14') return '#e65c00'; // Laranja
+      if(r === '16') return '#d90000'; // Vermelho
+      if(r === '18') return '#000000'; // Preto
       return '#333333';
     }
 
@@ -660,8 +668,6 @@
 
       document.getElementById('vodDetailsScreen').style.display = 'flex';
       document.getElementById('vodPlayerScreen').style.display = 'none';
-      
-      document.getElementById('vodCustomControls').classList.remove('hidden');
 
       const grid = document.getElementById('relatedMoviesGrid');
       grid.innerHTML = '';
@@ -702,7 +708,7 @@
     const vodVideo = document.getElementById('vodVideo');
     const vodIframe = document.getElementById('vodIframe');
     const vodCustomUI = document.getElementById('vodCustomControls');
-    const vodZones = document.getElementById('vodClickZones');
+    const vodClickZones = document.getElementById('vodClickZones');
     const progressBar = document.getElementById('vodProgressBar');
     const timeDisplay = document.getElementById('vodTimeDisplay');
 
@@ -716,13 +722,16 @@
       if (tipoPlay === 'mp4' && !isDrive) {
         vodIframe.style.display = 'none'; vodIframe.src = '';
         vodVideo.style.display = 'block'; vodVideo.src = url;
-        vodZones.style.display = 'flex'; vodCustomUI.style.display = 'flex';
+        
+        vodClickZones.style.display = 'flex';
+        document.getElementById('vodCustomUI').classList.remove('hidden');
+        
         vodVideo.load(); 
         vodVideo.play().catch(e => console.error("Bloqueado pelo celular:", e));
         resetVodControlsTimeout();
       } else {
         vodVideo.style.display = 'none'; vodVideo.src = ''; vodVideo.pause();
-        vodZones.style.display = 'none'; vodCustomUI.style.display = 'none';
+        vodClickZones.style.display = 'none'; document.getElementById('vodCustomUI').classList.add('hidden');
         vodIframe.style.display = 'block'; 
         
         if(isDrive) {
@@ -735,13 +744,13 @@
     }
 
     function formatTimeStr(seconds) {
-      if(isNaN(seconds)) return "00:00";
+      if(isNaN(seconds)) return "0:00";
       let h = Math.floor(seconds / 3600);
       let m = Math.floor((seconds % 3600) / 60);
       let s = Math.floor(seconds % 60);
       let res = "";
-      if(h > 0) res += h.toString().padStart(2, '0') + ":";
-      res += m.toString().padStart(2, '0') + ":" + s.toString().padStart(2, '0');
+      if(h > 0) res += h + ":";
+      res += (h > 0 ? m.toString().padStart(2, '0') : m) + ":" + s.toString().padStart(2, '0');
       return res;
     }
 
@@ -752,10 +761,20 @@
       timeDisplay.innerText = `${formatTimeStr(vodVideo.currentTime)} / ${formatTimeStr(vodVideo.duration)}`;
     });
 
-    vodVideo.addEventListener('play', () => { document.getElementById('vodPlayIcon').className = 'fa-solid fa-pause'; });
-    vodVideo.addEventListener('pause', () => { document.getElementById('vodPlayIcon').className = 'fa-solid fa-play'; });
+    vodVideo.addEventListener('play', () => { 
+      document.getElementById('vodCenterPlayIcon').className = 'fa-solid fa-pause'; 
+      document.getElementById('vodBottomPlayIcon').className = 'fa-solid fa-pause'; 
+      resetVodControlsTimeout();
+    });
+    
+    vodVideo.addEventListener('pause', () => { 
+      document.getElementById('vodCenterPlayIcon').className = 'fa-solid fa-play'; 
+      document.getElementById('vodBottomPlayIcon').className = 'fa-solid fa-play'; 
+      document.getElementById('vodCustomUI').classList.remove('hidden');
+      clearTimeout(vodControlsTimeout);
+    });
 
-    function toggleVodPlay() { if(vodVideo.paused) vodVideo.play(); else vodVideo.pause(); resetVodControlsTimeout(); }
+    function toggleVodPlay() { if(vodVideo.paused) vodVideo.play(); else vodVideo.pause(); }
     
     function seekVodProgress(e) {
       const container = document.getElementById('vodProgressContainer');
@@ -765,29 +784,51 @@
       resetVodControlsTimeout();
     }
 
-    let lastClickTime = 0;
-    function handleVodSeek(e, side) {
-      const now = new Date().getTime();
-      if(now - lastClickTime < 300) {
-        if(side === 'left') vodVideo.currentTime -= 10;
-        else vodVideo.currentTime += 10;
-        
-        let ind = side === 'left' ? document.getElementById('seekIndLeft') : document.getElementById('seekIndRight');
-        ind.classList.add('show');
-        setTimeout(() => ind.classList.remove('show'), 500);
+    let lastVodClick = 0;
+    function handleVodZoneClick(e, side) {
+      const now = Date.now();
+      if(now - lastVodClick < 300) {
+        handleVodSeek(e, side);
+        lastVodClick = 0;
       } else {
-        if(vodCustomUI.classList.contains('hidden')) { vodCustomUI.classList.remove('hidden'); resetVodControlsTimeout(); }
-        else { vodCustomUI.classList.add('hidden'); clearTimeout(vodControlsTimeout); }
+        const ui = document.getElementById('vodCustomUI');
+        if(ui.classList.contains('hidden')) { ui.classList.remove('hidden'); resetVodControlsTimeout(); }
+        else { ui.classList.add('hidden'); clearTimeout(vodControlsTimeout); }
+        lastVodClick = now;
       }
-      lastClickTime = now;
+    }
+
+    function handleVodSeek(e, side) {
+      if(e) e.stopPropagation();
+      if(side === 'left') vodVideo.currentTime -= 10;
+      else vodVideo.currentTime += 10;
+      resetVodControlsTimeout();
     }
 
     function resetVodControlsTimeout() {
       clearTimeout(vodControlsTimeout);
-      vodCustomUI.classList.remove('hidden');
+      document.getElementById('vodCustomUI').classList.remove('hidden');
       if(!vodVideo.paused) {
-        vodControlsTimeout = setTimeout(() => { vodCustomUI.classList.add('hidden'); }, 3500);
+        vodControlsTimeout = setTimeout(() => { document.getElementById('vodCustomUI').classList.add('hidden'); }, 3500);
       }
+    }
+
+    let vodSpeed = 1;
+    function changeVodSpeed() {
+      const speeds = [1, 1.25, 1.5, 2];
+      let idx = (speeds.indexOf(vodSpeed) + 1) % speeds.length;
+      vodSpeed = speeds[idx];
+      vodVideo.playbackRate = vodSpeed;
+      document.getElementById('btnVodSpeed').innerText = vodSpeed + 'x';
+      resetVodControlsTimeout();
+    }
+
+    function openVodSettings() { alert("Opções de qualidade serão implementadas em breve."); resetVodControlsTimeout(); }
+    
+    function toggleVodMute() {
+      vodVideo.muted = !vodVideo.muted;
+      document.getElementById('vodVolIcon').className = vodVideo.muted ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high';
+      resetVodControlsTimeout();
     }
 
     async function toggleVodPiP() { try { if(vodVideo !== document.pictureInPictureElement) await vodVideo.requestPictureInPicture(); else await document.exitPictureInPicture(); } catch(e){} resetVodControlsTimeout(); }
@@ -797,8 +838,8 @@
       let btn = document.getElementById('btnCC');
       if(vodVideo.textTracks.length > 0) {
         let track = vodVideo.textTracks[0];
-        if(track.mode === 'showing') { track.mode = 'hidden'; btn.style.color = '#fff'; } 
-        else { track.mode = 'showing'; btn.style.color = 'var(--primary-light)'; }
+        if(track.mode === 'showing') { track.mode = 'hidden'; btn.style.color = 'rgba(255,255,255,0.5)'; } 
+        else { track.mode = 'showing'; btn.style.color = '#fff'; }
       } else { alert("Sem legendas embutidas neste vídeo."); }
       resetVodControlsTimeout();
     }
@@ -870,6 +911,12 @@
             card.innerHTML = `<img src="${imgUrl}" class="news-img"><div class="news-content"><div class="news-text">${item.title}</div></div>`;
             carousel.appendChild(card);
           });
+
+          // Restaura botão de ir pro site como pedido
+          const seeMore = document.createElement('a'); seeMore.className = 'news-card see-more-card'; seeMore.href = MAIN_SITE_URL; seeMore.target = '_blank';
+          seeMore.innerHTML = `<i class="fa-solid fa-arrow-right"></i><span style="font-size:0.85rem; font-weight:bold;">Acessar Site</span>`;
+          carousel.appendChild(seeMore);
+
         } else { carousel.innerHTML = '<div style="padding:15px; color:#8a8f9d;">Nenhuma notícia.</div>'; }
       } catch (err) { carousel.innerHTML = '<div style="padding:15px; color:#8a8f9d;">Erro no feed.</div>'; }
     }
