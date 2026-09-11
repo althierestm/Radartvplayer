@@ -125,7 +125,7 @@
     .block-title { font-size: 1.1rem; font-weight: 700; color: #e0e0e0; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
     .carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 10px; padding: 0 15px 15px 15px; scroll-behavior: smooth; }
 
-    /* TOP 5 NATIVO (Sem elástico) */
+    /* TOP 5 NATIVO */
     .top5-item { display: flex; align-items: center; position: relative; flex: 0 0 auto; width: 150px; height: 180px; cursor: pointer; scroll-snap-align: start; }
     .top5-item:active { transform: scale(0.96); }
     .top5-rank { font-size: 8rem; font-weight: 900; font-family: Impact, sans-serif; color: var(--bg-color); -webkit-text-stroke: 1px rgba(255, 255, 255, 0.5); position: absolute; left: -10px; bottom: -20px; z-index: 1; letter-spacing: -4px; user-select: none; text-shadow: 0 4px 10px rgba(0,0,0,0.8); }
@@ -733,6 +733,8 @@
       const video = document.getElementById('vodVideo');
       video.pause(); video.src = '';
       clearTimeout(vodControlsTimeout);
+      
+      updateEPG(); // Restaura o metadata do Ao Vivo na Central de Controle
     }
 
     /* ----------------------------------------------------
@@ -752,6 +754,14 @@
       document.getElementById('vodPlayerScreen').style.display = 'flex';
       
       document.getElementById('vodPlayerTopTitle').innerText = titleText || 'Reproduzindo';
+
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: titleText || 'RadarTV Play',
+          artist: 'Radar TV',
+          artwork: [{ src: 'https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1080.png', sizes: '1080x1080', type: 'image/png' }]
+        });
+      }
 
       let isDrive = url.includes('drive.google.com');
       let tipoPlay = type || 'mp4';
@@ -1005,6 +1015,14 @@
       
       let pct = ((now.getTime() - p.start.getTime()) / (p.end.getTime() - p.start.getTime())) * 100;
       document.getElementById('progBar').style.width = `${Math.max(0, Math.min(pct, 100))}%`;
+
+      if ('mediaSession' in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: p.title,
+          artist: 'Radar TV',
+          artwork: [{ src: 'https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1080.png', sizes: '1080x1080', type: 'image/png' }]
+        });
+      }
     }
 
     function openScheduleModal() { generateDays(); selectedScheduleDate = next7Days[0].dateObj; updateDateSelectorUI(); renderScheduleList(); document.getElementById('scheduleModal').classList.add('active'); }
