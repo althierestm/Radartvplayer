@@ -42,8 +42,8 @@
     
     .form-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
     label { font-size: 0.9rem; font-weight: 600; color: #a0a5b5; }
-    input[type="text"], input[type="url"], input[type="color"], textarea { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: #12141a; color: #fff; font-size: 0.95rem; outline: none; transition: 0.2s; }
-    input:focus, textarea:focus { border-color: var(--primary); }
+    input[type="text"], input[type="url"], input[type="color"], textarea, select.admin-select { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: #12141a; color: #fff; font-size: 0.95rem; outline: none; transition: 0.2s; }
+    input:focus, textarea:focus, select.admin-select:focus { border-color: var(--primary); }
     
     .dynamic-list { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
     .dynamic-row { display: flex; gap: 10px; align-items: center; background: #12141a; padding: 15px; border-radius: 8px; border: 1px solid var(--border); }
@@ -103,7 +103,8 @@
       <div class="sidebar-header"><i class="fa-solid fa-satellite-dish"></i> Admin RadarTV</div>
       <button class="nav-btn active" onclick="switchTab('tab-links')"><i class="fa-solid fa-link"></i> Config. de Sistema</button>
       <button class="nav-btn" onclick="switchTab('tab-movies')"><i class="fa-solid fa-film"></i> Catálogo de Filmes</button>
-      <button class="nav-btn" onclick="switchTab('tab-menu')"><i class="fa-solid fa-bars-staggered"></i> Menu e Abas do App</button>
+      <button class="nav-btn" onclick="switchTab('tab-destaques')"><i class="fa-solid fa-star"></i> Destaques e Top 5</button>
+      <button class="nav-btn" onclick="switchTab('tab-menu')"><i class="fa-solid fa-bars-staggered"></i> Menu e Abas</button>
       <button class="nav-btn" onclick="switchTab('tab-social')"><i class="fa-solid fa-hashtag"></i> Redes Sociais</button>
     </div>
 
@@ -111,50 +112,42 @@
       
       <div id="tab-links" class="tab-content active">
         <h2><i class="fa-solid fa-link"></i> Configurações do Sistema</h2>
-        <div class="form-group">
-          <label>Versão do Aplicativo</label>
-          <input type="text" id="conf-appVer" placeholder="Ex: 1.0">
-        </div>
-        <div class="form-group">
-          <label>URL do Feed RSS do Wix (Notícias)</label>
-          <input type="url" id="conf-wixUrl" placeholder="https://www.limeiranews.com/blog-feed.xml">
-        </div>
-        <div class="form-group">
-          <label>URL da Lista M3U (GitHub - Ao Vivo)</label>
-          <input type="url" id="conf-m3uUrl" placeholder="https://raw.githubusercontent.com/.../lista.m3u">
-        </div>
-        <div class="form-group">
-          <label>URL do EPG XML (Programação)</label>
-          <input type="url" id="conf-epgUrl" placeholder="https://raw.githubusercontent.com/.../epg.xml">
-        </div>
-        <div class="form-group">
-          <label>ID da Playlist YouTube: Copa Baldanza / Local</label>
-          <input type="text" id="conf-playlistBaldanza" placeholder="Ex: PLzfuSmZBMwIpRXDvRQPzJbIGcpGImYr4n">
-        </div>
+        <div class="form-group"><label>Versão do Aplicativo</label><input type="text" id="conf-appVer" placeholder="Ex: 1.0"></div>
+        <div class="form-group"><label>URL do Feed RSS Wix (Notícias)</label><input type="url" id="conf-wixUrl" placeholder="https://www.limeiranews.com/blog-feed.xml"></div>
+        <div class="form-group"><label>URL da Lista M3U (Ao Vivo)</label><input type="url" id="conf-m3uUrl"></div>
+        <div class="form-group"><label>URL do EPG XML</label><input type="url" id="conf-epgUrl"></div>
       </div>
 
       <div id="tab-movies" class="tab-content">
-        <h2><i class="fa-solid fa-film"></i> Catálogo de Filmes (RadarTV Play)</h2>
-        <p style="color:#a0a5b5; font-size:0.9rem; margin-bottom:20px;">O primeiro filme da lista será exibido no Banner Principal Gigante do App.</p>
-        
-        <ul class="admin-catalog-list" id="moviesListContainer" style="margin-bottom: 25px;">
-          <!-- A lista será gerada aqui pelo JS -->
-        </ul>
-
+        <h2><i class="fa-solid fa-film"></i> Catálogo de Filmes</h2>
+        <ul class="admin-catalog-list" id="moviesListContainer" style="margin-bottom: 25px;"></ul>
         <button class="btn-add" onclick="abrirModalEdicao(-1)"><i class="fa-solid fa-plus"></i> Adicionar Novo Filme</button>
+      </div>
+
+      <div id="tab-destaques" class="tab-content">
+        <h2><i class="fa-solid fa-star"></i> Destaques e Top 5</h2>
+        <p style="color:#a0a5b5; font-size:0.9rem; margin-bottom:20px;">Selecione os filmes para aparecerem na página inicial. Se deixar em branco, o sistema usará o modo automático.</p>
+        
+        <div class="form-group">
+          <label style="color: #4d82ff; font-size:1rem;"><i class="fa-solid fa-image"></i> Filme Destaque (Capa Principal RadarTV Play)</label>
+          <select id="sel-featured" class="admin-select"></select>
+        </div>
+
+        <div class="section-title"><i class="fa-solid fa-fire"></i> Top 5 (Aba Ao Vivo)</div>
+        <div class="movie-grid">
+            <div class="form-group"><label>1º Lugar</label><select id="sel-top1" class="admin-select"></select></div>
+            <div class="form-group"><label>2º Lugar</label><select id="sel-top2" class="admin-select"></select></div>
+            <div class="form-group"><label>3º Lugar</label><select id="sel-top3" class="admin-select"></select></div>
+            <div class="form-group"><label>4º Lugar</label><select id="sel-top4" class="admin-select"></select></div>
+            <div class="form-group"><label>5º Lugar</label><select id="sel-top5" class="admin-select"></select></div>
+        </div>
       </div>
 
       <div id="tab-menu" class="tab-content">
         <h2><i class="fa-solid fa-bars-staggered"></i> Abas e Menus do App</h2>
-        <div class="section-title">Telas Principais (Fixas)</div>
-        <div class="dynamic-row" style="margin-bottom:10px;">
-          <input type="text" id="conf-tabHomeText" placeholder="Texto (ex: Ao Vivo Agora)">
-          <input type="text" id="conf-tabHomeIcon" placeholder="Ícone (ex: fa-solid fa-tv)">
-        </div>
-        <div class="dynamic-row" style="margin-bottom:20px;">
-          <input type="text" id="conf-tabPlayText" placeholder="Texto (ex: RadarTV Play)">
-          <input type="text" id="conf-tabPlayIcon" placeholder="Ícone (ex: fa-brands fa-youtube)">
-        </div>
+        <div class="section-title">Telas Principais</div>
+        <div class="dynamic-row" style="margin-bottom:10px;"><input type="text" id="conf-tabHomeText" placeholder="Texto (ex: Ao Vivo)"><input type="text" id="conf-tabHomeIcon" placeholder="Ícone"></div>
+        <div class="dynamic-row" style="margin-bottom:20px;"><input type="text" id="conf-tabPlayText" placeholder="Texto (ex: RadarPlay)"><input type="text" id="conf-tabPlayIcon" placeholder="Ícone"></div>
         <div class="section-title">Menu Customizável</div>
         <div id="menuContainer" class="dynamic-list"></div>
         <button class="btn-add" onclick="addMenuRow()"><i class="fa-solid fa-plus"></i> Adicionar Novo Botão</button>
@@ -172,7 +165,6 @@
       <div id="statusMsg"></div>
       <button class="btn-save" onclick="saveAllData()"><i class="fa-solid fa-cloud-arrow-up"></i> SALVAR NO APLICATIVO</button>
     </div>
-
   </div>
 
   <!-- MODAL DE EDIÇÃO DO FILME -->
@@ -183,76 +175,42 @@
         <button class="btn-close" onclick="fecharModalEdicao()"><i class="fa-solid fa-xmark"></i></button>
       </div>
       
-      <div class="form-group">
-        <label>Título do Filme / Série</label>
-        <input type="text" id="md-title" placeholder="Ex: Missão Impossível">
+      <div class="form-group"><label>Título do Filme / Série</label><input type="text" id="md-title"></div>
+      <div class="movie-grid">
+        <div class="form-group"><label>Link do Vídeo</label><input type="url" id="md-url"></div>
+        <div class="form-group"><label>Capa do Filme (URL Imagem)</label><input type="url" id="md-poster"></div>
       </div>
       <div class="movie-grid">
-        <div class="form-group">
-          <label>Link do Vídeo (Drive, MP4, YouTube)</label>
-          <input type="url" id="md-url" placeholder="https://...">
-        </div>
-        <div class="form-group">
-          <label>Capa do Filme (URL Imagem)</label>
-          <input type="url" id="md-poster" placeholder="https://...">
-        </div>
+        <div class="form-group"><label>Hashtags (Ex: #Lançamento, #Ação)</label><input type="text" id="md-hashtags"></div>
+        <div class="form-group"><label>Atores</label><input type="text" id="md-atores"></div>
       </div>
       <div class="movie-grid">
-        <div class="form-group">
-          <label>Hashtags (Categorias e Abas)</label>
-          <input type="text" id="md-hashtags" placeholder="Ex: #Ação, #Lançamento">
-        </div>
-        <div class="form-group">
-          <label>Atores (Separados por vírgula)</label>
-          <input type="text" id="md-atores" placeholder="Ex: Tom Cruise, Ving Rhames">
-        </div>
+        <div class="form-group"><label>Classificação (Ex: L, 10, 12, 14, 16, 18)</label><input type="text" id="md-rating"></div>
+        <div class="form-group"><label>Duração</label><input type="text" id="md-duration"></div>
       </div>
-      <div class="movie-grid">
-        <div class="form-group">
-          <label>Gênero (Legado)</label>
-          <input type="text" id="md-genre" placeholder="Ex: Ação e Aventura">
-        </div>
-        <div class="form-group">
-          <label>Classificação</label>
-          <input type="text" id="md-rating" placeholder="Ex: 12">
-        </div>
-      </div>
-      <div class="form-group">
-        <label>Duração</label>
-        <input type="text" id="md-duration" placeholder="Ex: 2H 44MIN">
-      </div>
-      <div class="form-group">
-        <label>Sinopse</label>
-        <textarea id="md-desc" rows="3" placeholder="Resumo do filme..."></textarea>
-      </div>
+      <div class="form-group"><label>Sinopse</label><textarea id="md-desc" rows="3"></textarea></div>
 
       <button class="btn-modal-save" onclick="salvarFilmeNoArray()"><i class="fa-solid fa-check"></i> Concluir</button>
     </div>
   </div>
 
   <script>
-    // ESTADO LOCAL DOS FILMES
     let filmesAdmin = [];
+    let highlightsAdmin = { featured: '', top5: [] };
     let indiceEdicao = -1;
 
     function autenticar() {
       const u = document.getElementById('userInp').value.trim();
       const p = document.getElementById('passInp').value.trim();
-      const err = document.getElementById('loginError');
-
       if (btoa(u) === "QWx0aGllcmVz" && btoa(p) === "QHJhZGFydHYyNg==") {
         document.getElementById('loginScreen').style.display = 'none';
         document.getElementById('adminPanel').style.display = 'flex';
         document.getElementById('saveBar').style.display = 'flex';
         carregarBanco(); 
-      } else {
-        err.innerText = "Usuário ou senha incorretos!";
-      }
+      } else { document.getElementById('loginError').innerText = "Credenciais inválidas."; }
     }
 
-    document.getElementById('passInp').addEventListener('keypress', function (e) {
-      if (e.key === 'Enter') autenticar();
-    });
+    document.getElementById('passInp').addEventListener('keypress', function (e) { if (e.key === 'Enter') autenticar(); });
 
     let db;
     function carregarBanco() {
@@ -276,7 +234,6 @@
             document.getElementById('conf-wixUrl').value = data.settings.wixUrl || '';
             document.getElementById('conf-m3uUrl').value = data.settings.m3uUrl || '';
             document.getElementById('conf-epgUrl').value = data.settings.epgUrl || '';
-            document.getElementById('conf-playlistBaldanza').value = data.settings.playlistBaldanza || '';
             document.getElementById('conf-appVer').value = data.settings.appVersion || '1.0';
             document.getElementById('conf-tabHomeText').value = data.settings.tabHomeText || 'Ao Vivo Agora';
             document.getElementById('conf-tabHomeIcon').value = data.settings.tabHomeIcon || 'fa-solid fa-tv';
@@ -284,31 +241,11 @@
             document.getElementById('conf-tabPlayIcon').value = data.settings.tabPlayIcon || 'fa-brands fa-youtube';
           }
           
-          if(data.menu && data.menu.length > 0) {
-            data.menu.forEach(item => addMenuRow(item.title, item.icon, item.color, item.url));
-          } else {
-            addMenuRow('Limeira News', 'fa-regular fa-newspaper', '#4d82ff', 'https://www.limeiranews.com/');
-          }
-
-          if(data.social && data.social.length > 0) {
-            data.social.forEach(item => addSocialRow(item.icon, item.url));
-          } else {
-            addSocialRow('fa-brands fa-instagram', 'https://instagram.com/radartvmg');
-          }
-
-          if(data.movies && data.movies.length > 0) {
-            filmesAdmin = data.movies;
-          }
-        } else {
-          document.getElementById('conf-tabHomeText').value = 'Ao Vivo Agora';
-          document.getElementById('conf-tabHomeIcon').value = 'fa-solid fa-tv';
-          document.getElementById('conf-tabPlayText').value = 'RadarTV Play';
-          document.getElementById('conf-tabPlayIcon').value = 'fa-brands fa-youtube';
-          document.getElementById('conf-appVer').value = '1.0';
-          addMenuRow('Limeira News', 'fa-regular fa-newspaper', '#4d82ff', 'https://www.limeiranews.com/');
-          addSocialRow('fa-brands fa-instagram', 'https://instagram.com/radartvmg');
+          if(data.menu && data.menu.length > 0) data.menu.forEach(i => addMenuRow(i.title, i.icon, i.color, i.url));
+          if(data.social && data.social.length > 0) data.social.forEach(i => addSocialRow(i.icon, i.url));
+          if(data.movies) filmesAdmin = data.movies;
+          if(data.highlights) highlightsAdmin = data.highlights;
         }
-        
         renderizarListaDeFilmes();
       });
     }
@@ -320,191 +257,102 @@
       event.currentTarget.classList.add('active');
     }
 
-    // --- GERENCIAMENTO DE MENU E SOCIAL ---
-    function addMenuRow(title = '', icon = 'fa-solid fa-link', color = '#ffffff', url = '') {
-      const container = document.getElementById('menuContainer');
-      const row = document.createElement('div');
-      row.className = 'dynamic-row';
-      row.innerHTML = `
-        <input type="text" class="menu-title" placeholder="Nome do Botão" value="${title}" style="flex:1;">
-        <input type="text" class="menu-icon" placeholder="Ícone" value="${icon}" style="flex:1;">
-        <input type="color" class="menu-color" value="${color}" style="width:50px; height:45px; padding:0; cursor:pointer;" title="Cor do Ícone">
-        <input type="url" class="menu-url" placeholder="Link de destino" value="${url}" style="flex:2;">
-        <button class="btn-remove" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash"></i></button>
-      `;
-      container.appendChild(row);
+    function addMenuRow(t='', i='fa-solid fa-link', c='#ffffff', u='') {
+      const row = document.createElement('div'); row.className = 'dynamic-row';
+      row.innerHTML = `<input type="text" class="menu-title" value="${t}" placeholder="Nome"><input type="text" class="menu-icon" value="${i}" placeholder="Ícone"><input type="color" class="menu-color" value="${c}"><input type="url" class="menu-url" value="${u}" placeholder="Link"><button class="btn-remove" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash"></i></button>`;
+      document.getElementById('menuContainer').appendChild(row);
     }
 
-    function addSocialRow(icon = 'fa-brands fa-instagram', url = '') {
-      const container = document.getElementById('socialContainer');
-      const row = document.createElement('div');
-      row.className = 'dynamic-row';
-      row.innerHTML = `
-        <input type="text" class="social-icon" placeholder="Ícone FontAwesome" value="${icon}">
-        <input type="url" class="social-url" placeholder="Link da Rede Social" value="${url}">
-        <button class="btn-remove" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash"></i></button>
-      `;
-      container.appendChild(row);
+    function addSocialRow(i='fa-brands fa-instagram', u='') {
+      const row = document.createElement('div'); row.className = 'dynamic-row';
+      row.innerHTML = `<input type="text" class="social-icon" value="${i}" placeholder="Ícone"><input type="url" class="social-url" value="${u}" placeholder="Link"><button class="btn-remove" onclick="this.parentElement.remove()"><i class="fa-solid fa-trash"></i></button>`;
+      document.getElementById('socialContainer').appendChild(row);
     }
 
-    // --- GERENCIAMENTO DO CATÁLOGO DE FILMES (LISTA + MODAL) ---
     function renderizarListaDeFilmes() {
-      const container = document.getElementById('moviesListContainer');
-      container.innerHTML = '';
-      
-      if(filmesAdmin.length === 0) {
-        container.innerHTML = '<li style="color:#8a8f9d; padding:20px; text-align:center;">Nenhum filme cadastrado.</li>';
-        return;
-      }
-
-      filmesAdmin.forEach((f, index) => {
-        const li = document.createElement('li');
-        li.className = 'admin-catalog-item';
-        let badgeHashtags = f.hashtags ? f.hashtags : (f.genre ? f.genre : '#SemCategoria');
-        
-        li.innerHTML = `
-          <div class="admin-item-info">
-            <img src="${f.poster || ''}" class="admin-item-poster" onerror="this.src='https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1080.png'">
-            <div>
-              <div class="admin-item-title">${f.title || 'Sem Título'}</div>
-              <span class="admin-item-tags">${badgeHashtags}</span>
-            </div>
-          </div>
-          <div style="display:flex; gap: 5px;">
-            <button class="btn-icon" onclick="abrirModalEdicao(${index})" title="Editar"><i class="fa-solid fa-pen"></i></button>
-            <button class="btn-icon delete" onclick="excluirFilme(${index})" title="Excluir"><i class="fa-solid fa-trash"></i></button>
-          </div>
-        `;
+      const container = document.getElementById('moviesListContainer'); container.innerHTML = '';
+      if(filmesAdmin.length === 0) { container.innerHTML = '<li style="color:#8a8f9d; padding:20px; text-align:center;">Nenhum filme cadastrado.</li>'; }
+      filmesAdmin.forEach((f, i) => {
+        const li = document.createElement('li'); li.className = 'admin-catalog-item';
+        let badgeHashtags = f.hashtags ? f.hashtags : '#SemCategoria';
+        li.innerHTML = `<div class="admin-item-info"><img src="${f.poster}" class="admin-item-poster"><div><div class="admin-item-title">${f.title}</div><span class="admin-item-tags">${badgeHashtags}</span></div></div><div style="display:flex; gap: 5px;"><button class="btn-icon" onclick="abrirModalEdicao(${i})"><i class="fa-solid fa-pen"></i></button><button class="btn-icon delete" onclick="excluirFilme(${i})"><i class="fa-solid fa-trash"></i></button></div>`;
         container.appendChild(li);
       });
+      atualizarSelectsDestaque(true);
+    }
+
+    function atualizarSelectsDestaque(primeiroLoad = false) {
+        const selFeat = document.getElementById('sel-featured');
+        const selTops = [document.getElementById('sel-top1'), document.getElementById('sel-top2'), document.getElementById('sel-top3'), document.getElementById('sel-top4'), document.getElementById('sel-top5')];
+        
+        let curFeat = selFeat.value;
+        let curTops = selTops.map(s => s.value);
+
+        let options = '<option value="">Automático / Padrão</option>';
+        filmesAdmin.forEach(f => { if(f.title) options += `<option value="${f.title}">${f.title}</option>`; });
+
+        selFeat.innerHTML = options;
+        selTops.forEach(sel => sel.innerHTML = options);
+
+        if(primeiroLoad && highlightsAdmin) {
+            selFeat.value = highlightsAdmin.featured || '';
+            if(highlightsAdmin.top5) {
+                selTops[0].value = highlightsAdmin.top5[0] || '';
+                selTops[1].value = highlightsAdmin.top5[1] || '';
+                selTops[2].value = highlightsAdmin.top5[2] || '';
+                selTops[3].value = highlightsAdmin.top5[3] || '';
+                selTops[4].value = highlightsAdmin.top5[4] || '';
+            }
+        } else {
+            selFeat.value = curFeat;
+            selTops.forEach((sel, i) => sel.value = curTops[i]);
+        }
     }
 
     function abrirModalEdicao(index) {
-      indiceEdicao = index;
-      const modal = document.getElementById('movieModal');
-      modal.classList.add('active');
-
+      indiceEdicao = index; document.getElementById('movieModal').classList.add('active');
       if(index >= 0) {
         const f = filmesAdmin[index];
-        document.getElementById('modalTitleText').innerText = "Editar Título";
-        document.getElementById('md-title').value = f.title || '';
-        document.getElementById('md-url').value = f.url || '';
-        document.getElementById('md-poster').value = f.poster || '';
-        document.getElementById('md-rating').value = f.rating || '';
-        document.getElementById('md-duration').value = f.duration || '';
-        document.getElementById('md-genre').value = f.genre || '';
-        document.getElementById('md-desc').value = f.desc || '';
-        document.getElementById('md-hashtags').value = f.hashtags || '';
-        document.getElementById('md-atores').value = f.atores || '';
+        document.getElementById('modalTitleText').innerText = "Editar Filme";
+        document.getElementById('md-title').value = f.title || ''; document.getElementById('md-url').value = f.url || ''; document.getElementById('md-poster').value = f.poster || ''; document.getElementById('md-rating').value = f.rating || ''; document.getElementById('md-duration').value = f.duration || ''; document.getElementById('md-desc').value = f.desc || ''; document.getElementById('md-hashtags').value = f.hashtags || ''; document.getElementById('md-atores').value = f.atores || '';
       } else {
-        document.getElementById('modalTitleText').innerText = "Novo Filme/Série";
-        document.getElementById('md-title').value = '';
-        document.getElementById('md-url').value = '';
-        document.getElementById('md-poster').value = '';
-        document.getElementById('md-rating').value = '';
-        document.getElementById('md-duration').value = '';
-        document.getElementById('md-genre').value = '';
-        document.getElementById('md-desc').value = '';
-        document.getElementById('md-hashtags').value = '';
-        document.getElementById('md-atores').value = '';
+        document.getElementById('modalTitleText').innerText = "Novo Filme";
+        document.getElementById('md-title').value = ''; document.getElementById('md-url').value = ''; document.getElementById('md-poster').value = ''; document.getElementById('md-rating').value = ''; document.getElementById('md-duration').value = ''; document.getElementById('md-desc').value = ''; document.getElementById('md-hashtags').value = ''; document.getElementById('md-atores').value = '';
       }
     }
 
-    function fecharModalEdicao() {
-      document.getElementById('movieModal').classList.remove('active');
-    }
+    function fecharModalEdicao() { document.getElementById('movieModal').classList.remove('active'); }
 
     function salvarFilmeNoArray() {
-      const title = document.getElementById('md-title').value.trim();
-      const url = document.getElementById('md-url').value.trim();
-      
-      if(!title || !url) {
-        alert("Os campos Título e Link do Vídeo são obrigatórios.");
-        return;
-      }
-
-      const filmeObjeto = {
-        title: title,
-        url: url,
-        poster: document.getElementById('md-poster').value.trim(),
-        rating: document.getElementById('md-rating').value.trim(),
-        duration: document.getElementById('md-duration').value.trim(),
-        genre: document.getElementById('md-genre').value.trim(),
-        desc: document.getElementById('md-desc').value.trim(),
-        hashtags: document.getElementById('md-hashtags').value.trim(),
-        atores: document.getElementById('md-atores').value.trim()
-      };
-
-      if(indiceEdicao >= 0) {
-        filmesAdmin[indiceEdicao] = filmeObjeto;
-      } else {
-        filmesAdmin.push(filmeObjeto);
-      }
-
-      fecharModalEdicao();
-      renderizarListaDeFilmes();
+      const t = document.getElementById('md-title').value.trim(); const u = document.getElementById('md-url').value.trim();
+      if(!t || !u) return alert("Título e Link são obrigatórios.");
+      const obj = { title: t, url: u, poster: document.getElementById('md-poster').value.trim(), rating: document.getElementById('md-rating').value.trim(), duration: document.getElementById('md-duration').value.trim(), desc: document.getElementById('md-desc').value.trim(), hashtags: document.getElementById('md-hashtags').value.trim(), atores: document.getElementById('md-atores').value.trim() };
+      if(indiceEdicao >= 0) filmesAdmin[indiceEdicao] = obj; else filmesAdmin.push(obj);
+      fecharModalEdicao(); renderizarListaDeFilmes();
     }
 
-    function excluirFilme(index) {
-      if(confirm("Tem certeza que deseja remover este filme?")) {
-        filmesAdmin.splice(index, 1);
-        renderizarListaDeFilmes();
-      }
-    }
+    function excluirFilme(i) { if(confirm("Remover filme?")) { filmesAdmin.splice(i, 1); renderizarListaDeFilmes(); } }
 
-    // --- SALVAMENTO FINAL NO FIREBASE ---
     function saveAllData() {
-      const btn = document.querySelector('.btn-save');
-      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> SALVANDO...';
-
-      const settingsData = {
-        wixUrl: document.getElementById('conf-wixUrl').value,
-        m3uUrl: document.getElementById('conf-m3uUrl').value,
-        epgUrl: document.getElementById('conf-epgUrl').value,
-        playlistBaldanza: document.getElementById('conf-playlistBaldanza').value,
-        appVersion: document.getElementById('conf-appVer').value,
-        tabHomeText: document.getElementById('conf-tabHomeText').value,
-        tabHomeIcon: document.getElementById('conf-tabHomeIcon').value,
-        tabPlayText: document.getElementById('conf-tabPlayText').value,
-        tabPlayIcon: document.getElementById('conf-tabPlayIcon').value
+      const btn = document.querySelector('.btn-save'); btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> SALVANDO...';
+      const settings = { wixUrl: document.getElementById('conf-wixUrl').value, m3uUrl: document.getElementById('conf-m3uUrl').value, epgUrl: document.getElementById('conf-epgUrl').value, appVersion: document.getElementById('conf-appVer').value, tabHomeText: document.getElementById('conf-tabHomeText').value, tabHomeIcon: document.getElementById('conf-tabHomeIcon').value, tabPlayText: document.getElementById('conf-tabPlayText').value, tabPlayIcon: document.getElementById('conf-tabPlayIcon').value };
+      
+      const menu = []; document.querySelectorAll('#menuContainer .dynamic-row').forEach(row => { const title = row.querySelector('.menu-title').value, icon = row.querySelector('.menu-icon').value, color = row.querySelector('.menu-color').value, url = row.querySelector('.menu-url').value; if(title && url) menu.push({ title, icon, color, url }); });
+      const social = []; document.querySelectorAll('#socialContainer .dynamic-row').forEach(row => { const icon = row.querySelector('.social-icon').value, url = row.querySelector('.social-url').value; if(icon && url) social.push({ icon, url }); });
+      
+      const highlights = {
+          featured: document.getElementById('sel-featured').value,
+          top5: [document.getElementById('sel-top1').value, document.getElementById('sel-top2').value, document.getElementById('sel-top3').value, document.getElementById('sel-top4').value, document.getElementById('sel-top5').value]
       };
 
-      const menuData = [];
-      document.querySelectorAll('#menuContainer .dynamic-row').forEach(row => {
-        const title = row.querySelector('.menu-title').value;
-        const icon = row.querySelector('.menu-icon').value;
-        const color = row.querySelector('.menu-color').value;
-        const url = row.querySelector('.menu-url').value;
-        if(title && url) menuData.push({ title, icon, color, url });
-      });
+      const fullConfig = { settings, menu, social, movies: filmesAdmin, highlights };
 
-      const socialData = [];
-      document.querySelectorAll('#socialContainer .dynamic-row').forEach(row => {
-        const icon = row.querySelector('.social-icon').value;
-        const url = row.querySelector('.social-url').value;
-        if(icon && url) socialData.push({ icon, url });
-      });
-
-      // Aqui utilizamos a array filmesAdmin diretamente para salvar o estado atualizado
-      const fullConfig = { settings: settingsData, menu: menuData, social: socialData, movies: filmesAdmin };
-
-      db.ref('appConfig').set(fullConfig)
-        .then(() => {
-          showMsg("✅ Sucesso! O aplicativo foi atualizado.", "#2ecc71");
-          btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> SALVAR NO APLICATIVO';
-        })
-        .catch((error) => {
-          showMsg("❌ Erro ao salvar: " + error.message, "#e74c3c");
-          btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> TENTAR NOVAMENTE';
-        });
+      db.ref('appConfig').set(fullConfig).then(() => {
+          showMsg("✅ Sucesso!", "#2ecc71"); btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> SALVAR NO APLICATIVO';
+      }).catch((e) => { showMsg("❌ Erro: " + e.message, "#e74c3c"); btn.innerHTML = 'TENTAR NOVAMENTE'; });
     }
 
-    function showMsg(text, color) {
-      const msg = document.getElementById('statusMsg');
-      msg.innerText = text;
-      msg.style.color = color;
-      setTimeout(() => msg.innerText = '', 5000);
-    }
+    function showMsg(text, color) { const msg = document.getElementById('statusMsg'); msg.innerText = text; msg.style.color = color; setTimeout(() => msg.innerText = '', 5000); }
   </script>
 </body>
 </html>
