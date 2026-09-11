@@ -125,17 +125,13 @@
     
     .carousel { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: 14px; padding: 0 15px 15px 15px; scroll-behavior: smooth; }
 
-    /* ========================================================
-       TOP 5 VERTICAL (ESTILO NETFLIX)
-       ======================================================== */
-    .top5-item { display: flex; align-items: center; position: relative; flex: 0 0 auto; width: 180px; height: 210px; cursor: pointer; scroll-snap-align: start; }
+    /* EFEITO ELÁSTICO TOP 5 */
+    .top5-item { display: flex; align-items: center; position: relative; flex: 0 0 auto; width: 180px; height: 210px; cursor: pointer; scroll-snap-align: start; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
     .top5-item:active { transform: scale(0.96); }
+    .top5-item:hover { transform: translateY(-5px) scale(1.02); }
     .top5-rank { font-size: 10rem; font-weight: 900; font-family: Impact, 'Arial Black', sans-serif; color: var(--surface); -webkit-text-stroke: 2px rgba(255, 255, 255, 0.75); position: absolute; left: -12px; bottom: -30px; z-index: 1; letter-spacing: -6px; user-select: none; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-    .top5-poster { width: 135px; height: 200px; border-radius: 8px; object-fit: cover; position: absolute; right: 0; bottom: 5px; z-index: 2; box-shadow: -4px 4px 15px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); transition: transform 0.2s; }
+    .top5-poster { width: 135px; height: 200px; border-radius: 8px; object-fit: cover; position: absolute; right: 0; bottom: 5px; z-index: 2; box-shadow: -4px 4px 15px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); }
 
-    /* ========================================================
-       VOD CARDS E NOTÍCIAS
-       ======================================================== */
     .vod-card { flex: 0 0 240px; scroll-snap-align: start; border-radius: 12px; overflow: hidden; position: relative; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.5); transition: transform 0.2s ease; border: 1px solid var(--border); }
     .vod-card:active { transform: scale(0.96); }
     .vod-card::after { content: ''; display: block; padding-top: 56.25%; }
@@ -174,12 +170,22 @@
     .schedule-time { color: var(--primary-light); font-size: 0.8rem; font-weight: bold; }
     .schedule-name { font-weight: bold; color: #fff; font-size: 1rem; }
 
+    /* MODAL VOD PREMIUM (Paramount+) */
     .vod-modal-content { background: var(--bg-color); height: 100vh; max-height: 100vh; border-radius: 0; border: none; padding-bottom: 0; }
     .vod-close-float { position: absolute; top: calc(15px + env(safe-area-inset-top, 0px)); right: 15px; z-index: 50; background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); color: #fff; border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; cursor: pointer; }
-    #vodDetailsScreen { display: flex; flex-direction: column; height: 100%; overflow-y: auto; }
-    #vodPlayerScreen { display: none; width: 100%; height: 100%; background: #000; flex-direction: column; justify-content: center; }
-    #vodIframe { width: 100%; height: 100%; border: 0; pointer-events: auto; }
-    #vodVideo { width: 100%; max-height: 100%; border: 0; object-fit: contain; background: #000; }
+    .vod-hero-bg { position: relative; width: 100%; height: 55vh; background-size: cover; background-position: top center; }
+    .vod-hero-bg::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, var(--bg-color) 5%, rgba(15,17,21,0.6) 50%, transparent); }
+    .vod-premium-content { position: relative; z-index: 10; padding: 0 20px 20px 20px; margin-top: -120px; flex: 1; }
+    .vod-premium-title { font-size: 2rem; font-weight: 900; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.8); line-height: 1.1; margin-bottom: 10px; }
+    .vod-nav-tabs { display: flex; gap: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin: 25px 0 15px 0; }
+    .vod-tab-btn { background: none; border: none; color: var(--text-muted); font-size: 0.95rem; font-weight: bold; padding-bottom: 10px; cursor: pointer; text-transform: uppercase; }
+    .vod-tab-btn.active { color: #fff; border-bottom: 3px solid #fff; }
+    .vod-tab-content { display: none; }
+    .vod-tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+    .related-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding-bottom: 30px; }
+    .related-item { width: 100%; aspect-ratio: 2/3; border-radius: 8px; object-fit: cover; cursor: pointer; transition: transform 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+    .related-item:active { transform: scale(0.95); }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     @media (max-width: 600px) {
       .brand img { height: 28px; }
@@ -283,7 +289,6 @@
           <div style="padding: 20px; color: #8a8f9d;">Buscando do Limeira News...</div>
         </div>
       </section>
-
     </div>
 
     <!-- ABA 2: RADARTV PLAY -->
@@ -303,34 +308,21 @@
       <section id="heroDestaque" style="position: relative; width: 100%; padding-top: 115%; background-size: cover; background-position: center top; background-color: #000; cursor: pointer;">
         <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to top, var(--bg-color) 2%, rgba(15,17,21,0.4) 50%, transparent); display: flex; flex-direction: column; justify-content: flex-end; padding: 25px;">
           <h2 id="heroTitle" style="font-size: 2.2rem; font-weight: 900; color: #fff; margin: 0 0 10px 0; text-shadow: 0 2px 10px rgba(0,0,0,0.8); line-height: 1.1;">Carregando...</h2>
-          <div style="display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: #ccc; font-weight: bold; margin-bottom: 15px; text-shadow: 0 1px 4px rgba(0,0,0,0.8);">
-            <span id="heroRating" style="background: #e50914; color: #fff; padding: 2px 6px; border-radius: 4px;">--</span>
-            <span id="heroGenre">--</span>
-            <span id="heroDuration">--</span>
-          </div>
           <button id="btnHeroPlay" style="background: #fff; color: #000; border: none; padding: 12px 25px; border-radius: 6px; font-weight: 900; font-size: 1.1rem; width: fit-content; cursor: pointer; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
             <i class="fa-solid fa-play"></i> Assistir
           </button>
         </div>
       </section>
 
-      <section class="block-section" style="margin-top: 15px;">
-        <div class="block-header">
-          <div class="block-title">Em Alta na RadarTV</div>
-        </div>
-        <div class="carousel" id="carousel-recent">
-          <div style="padding: 20px; color: #8a8f9d;">Carregando catálogo...</div>
-        </div>
-      </section>
+      <!-- Container Dinâmico para as Hashtags -->
+      <div id="dynamicCategoriesContainer" style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;"></div>
 
-      <section class="block-section">
-        <div class="block-header">
-          <div class="block-title">Produções Originais RadarTV</div>
-        </div>
-        <div class="carousel" id="carousel-baldanza">
-          <div style="padding: 20px; color: #8a8f9d;">Carregando catálogo...</div>
-        </div>
-      </section>
+      <!-- Botão Retornar -->
+      <div style="padding: 30px 20px; text-align: center; border-top: 1px solid var(--border); margin-top: 20px;">
+        <button onclick="switchView('home')" style="background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #fff; padding: 14px 30px; border-radius: 30px; font-weight: bold; cursor: pointer; transition: background 0.3s; width: 100%; max-width: 300px;">
+          <i class="fa-solid fa-tv"></i> Entrar na Ao Vivo
+        </button>
+      </div>
 
     </div>
 
@@ -372,28 +364,38 @@
     </div>
   </div>
 
+  <!-- NOVO MODAL PREMIUM -->
   <div class="modal" id="vodModal">
-    <div class="modal-content vod-modal-content" style="background: var(--bg-color);">
+    <div class="modal-content vod-modal-content">
       <button class="vod-close-float" onclick="closeVODModal()"><i class="fa-solid fa-xmark"></i></button>
 
       <div id="vodDetailsScreen" style="display: flex; flex-direction: column; height: 100%; overflow-y: auto;">
-        <div style="position: relative; width: 100%; padding-top: 56.25%;">
-          <img id="vodBackdrop" src="" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.5;">
-          <div style="position: absolute; bottom: 15px; left: 15px; right: 15px;">
-            <h2 id="vodTitleDetails" style="font-size: 1.6rem; font-weight: 900; color: #fff; margin: 0; text-shadow: 0 2px 4px rgba(0,0,0,0.8); line-height: 1.1;">Título do Vídeo</h2>
+        <div id="vodHeroBg" class="vod-hero-bg"></div>
+        
+        <div class="vod-premium-content">
+          <h2 id="vodTitleDetails" class="vod-premium-title">Título</h2>
+          <div style="display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: #a0a5b5; font-weight: bold; margin-bottom: 20px;">
+            <span id="vodRating" style="background: #e50914; color: #fff; padding: 2px 6px; border-radius: 4px;">L</span>
+            <span id="vodGenre">Gênero</span> &bull; <span id="vodDuration">--</span>
           </div>
-        </div>
-        <div style="padding: 20px; display: flex; flex-direction: column; gap: 15px;">
-          <button id="btnPlayNative" style="background: #fff; color: #000; border: none; padding: 12px; border-radius: 6px; font-weight: 900; font-size: 1.1rem; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;">
-            <i class="fa-solid fa-play"></i> Assistir Agora
+
+          <button id="btnPlayNative" style="background: #fff; color: #000; border: none; padding: 14px; border-radius: 6px; font-weight: 900; font-size: 1.1rem; width: 100%; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 20px;">
+            <i class="fa-solid fa-play"></i> ASSISTA AGORA
           </button>
-          <div style="display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: #a0a5b5; font-weight: bold;">
-            <span id="vodRating" style="background: #333; color: #fff; padding: 2px 6px; border-radius: 4px;">L</span>
-            <span id="vodDuration">--</span>
-            <span>&bull;</span>
-            <span id="vodGenre">--</span>
+
+          <div class="vod-nav-tabs">
+            <button class="vod-tab-btn active" onclick="switchVodTab('sugestoes', event)">Você também pode gostar</button>
+            <button class="vod-tab-btn" onclick="switchVodTab('sobre', event)">Sobre</button>
           </div>
-          <p id="vodDescDetails" style="font-size: 0.95rem; color: #ccc; line-height: 1.5; margin: 0;">Descrição do filme.</p>
+
+          <div id="tab-sugestoes" class="vod-tab-content active">
+            <div class="related-grid" id="relatedMoviesGrid"></div>
+          </div>
+
+          <div id="tab-sobre" class="vod-tab-content">
+            <p id="vodDescDetails" style="font-size: 0.95rem; color: #ccc; line-height: 1.5;"></p>
+            <p style="margin-top:15px; color:#8a8f9d; font-size: 0.85rem;"><strong>Elenco:</strong> <span id="vodActors">Informação não disponível</span></p>
+          </div>
         </div>
       </div>
 
@@ -489,57 +491,68 @@
       }
     });
 
+    // Exemplo de Banco Fixo (com Hashtags e Atores adicionados)
     const filmesFixos = [
-      { title: 'Deadpool & Wolverine', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt6263850.mp4', poster: 'https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg', desc: 'Wade Wilson deixa o Deadpool para trás para uma vida pacífica, mas quando uma ameaça existencial paira sobre seu universo, ele precisa vestir o traje novamente e convencer um relutante Wolverine a ajudá-lo.', rating: '18', duration: '2h 08m', genre: 'Ação/Comédia' },
-      { title: 'Divertida Mente 2', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt22022452.mp4', poster: 'https://image.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzRxO8lCGY.jpg', desc: 'O centro de controle na mente da Riley passa por uma demolição para dar espaço a algo totalmente inesperado: novas Emoções! Alegria, Tristeza, Raiva, Medo e Nojinho precisam lidar com a Ansiedade.', rating: 'L', duration: '1h 36m', genre: 'Animação' },
-      { title: 'Moana 2', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt13622970.mp4', poster: 'https://image.tmdb.org/t/p/w500/yh64qw9mgSm1D0B7a1409z7w2yU.jpg', desc: 'Após receber um chamado inesperado de seus ancestrais, Moana embarca em uma aventura por mares distantes e perigosos da Oceania, enfrentando um antigo deus do mal.', rating: 'L', duration: '1h 40m', genre: 'Animação/Aventura' },
-      { title: 'Venom: A Última Rodada', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt16366836.mp4', poster: 'https://image.tmdb.org/t/p/w500/uXzQ0Hn2qGgXnZzR3B1A2b1wXQo.jpg', desc: 'Eddie e Venom estão em fuga. Perseguidos pelos dois mundos, a dupla é forçada a tomar uma decisão devastadora que fechará as cortinas para a última dança de Venom e Eddie.', rating: '14', duration: '1h 50m', genre: 'Ação/Ficção' },
-      { title: 'Robô Selvagem', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt29623480.mp4', poster: 'https://image.tmdb.org/t/p/w500/7I9A3Wf4G09WlH63O8037bE87nU.jpg', desc: 'A épica jornada de uma robô inteligente que naufraga em uma ilha desabitada e precisa aprender a se adaptar ao ambiente hostil e construir relações com os animais locais.', rating: 'L', duration: '1h 42m', genre: 'Animação' },
-      { title: 'Terrifier 3', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt27911000.mp4', poster: 'https://image.tmdb.org/t/p/w500/3A3D2D3R74Wd9B4rZqB4N4wTfF.jpg', desc: 'O palhaço assassino Art está pronto para espalhar o caos e o terror entre os moradores desprevenidos do Condado de Miles enquanto eles adormecem pacificamente na véspera de Natal.', rating: '18', duration: '2h 05m', genre: 'Terror' },
-      { title: 'O Auto da Compadecida 2', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt28696532.mp4', poster: 'https://image.tmdb.org/t/p/w500/r5z7L3fDqA2W2ZqRz3A5G6W8Y1.jpg', desc: 'João Grilo e Chicó se reencontram vinte e cinco anos depois na lendária cidade de Taperoá, no sertão da Paraíba. Eles embarcam em uma nova e inesquecível aventura.', rating: '12', duration: '1h 55m', genre: 'Comédia Nacional' },
-      { title: 'Rebel Ridge', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt11301886.mp4', poster: 'https://image.tmdb.org/t/p/w500/A313x5zEYwF77x2M98o7qYnU8GZ.jpg', desc: 'Um ex-fuzileiro naval tenta pagar a fiança de seu primo, mas entra em um violento conflito com o chefe de polícia local e decide fazer a justiça com as próprias mãos.', rating: '16', duration: '2h 11m', genre: 'Ação/Suspense' },
-      { title: 'A Substância', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt17526714.mp4', poster: 'https://image.tmdb.org/t/p/w500/z0GZ7i9oR9A1lE7E91JvTzY9m5K.jpg', desc: 'Você já sonhou com uma versão melhor de si mesmo? Mais jovem, mais bela, mais perfeita. Com A Substância, você pode. Mas há regras a seguir.', rating: '18', duration: '2h 21m', genre: 'Terror/Drama' },
-      { title: 'Bad Boys: Até o Fim', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt4919268.mp4', poster: 'https://image.tmdb.org/t/p/w500/hYtU16n03hG7GkZz6b9Zt2nLp1e.jpg', desc: 'Os Bad Boys preferidos do mundo estão de volta com a icônica mistura de ação eletrizante e comédia.', rating: '16', duration: '1h 55m', genre: 'Ação/Comédia' }
+      { title: 'Deadpool & Wolverine', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt6263850.mp4', poster: 'https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg', desc: 'Wade Wilson deixa o Deadpool para trás...', rating: '18', duration: '2h 08m', genre: 'Ação/Comédia', hashtags: '#Ação, #Comédia', atores: 'Ryan Reynolds, Hugh Jackman' },
+      { title: 'Divertida Mente 2', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt22022452.mp4', poster: 'https://image.tmdb.org/t/p/w500/vpnVM9B6NMmQpWeZvzRxO8lCGY.jpg', desc: 'O centro de controle na mente da Riley...', rating: 'L', duration: '1h 36m', genre: 'Animação', hashtags: '#Animação, #Lançamentos', atores: 'Amy Poehler, Maya Hawke' },
+      { title: 'Moana 2', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt13622970.mp4', poster: 'https://image.tmdb.org/t/p/w500/yh64qw9mgSm1D0B7a1409z7w2yU.jpg', desc: 'Após receber um chamado inesperado...', rating: 'L', duration: '1h 40m', genre: 'Animação/Aventura', hashtags: '#Animação, #Lançamentos', atores: 'Auliʻi Cravalho, Dwayne Johnson' },
+      { title: 'Venom: A Última Rodada', url: 'http://fhd4.oneplayer.site/343rt342wtg34wetg34retg4rgh5kh4/FHD4/tt16366836.mp4', poster: 'https://image.tmdb.org/t/p/w500/uXzQ0Hn2qGgXnZzR3B1A2b1wXQo.jpg', desc: 'Eddie e Venom estão em fuga...', rating: '14', duration: '1h 50m', genre: 'Ação/Ficção', hashtags: '#Ação, #Ficção', atores: 'Tom Hardy, Chiwetel Ejiofor' }
     ];
 
     function atualizarCatalogoDeFilmes() {
-      let listaOficial = filmesDoBanco.length > 0 ? filmesDoBanco : (typeof filmesFallback !== 'undefined' ? filmesFallback : []);
-      
+      let listaOficial = filmesDoBanco.length > 0 ? filmesDoBanco : (typeof filmesFallback !== 'undefined' ? filmesFallback : filmesFixos);
       if (listaOficial.length > 0) {
         const hero = listaOficial[0];
         document.getElementById('heroDestaque').style.backgroundImage = `url('${hero.poster}')`;
         document.getElementById('heroTitle').innerText = hero.title;
-        document.getElementById('heroRating').innerText = hero.rating || "L";
-        document.getElementById('heroGenre').innerText = hero.genre || "Filme";
-        document.getElementById('heroDuration').innerText = hero.duration || "--";
-        document.getElementById('btnHeroPlay').onclick = () => openVODModal(hero.url, hero.title, hero.desc, 'mp4', hero.poster, hero.rating, hero.duration, hero.genre);
+        document.getElementById('btnHeroPlay').onclick = () => openVODModal(hero);
 
-        renderNativeCarousel(listaOficial.slice(1), 'carousel-recent');
+        renderizarCategoriasDinamicas(listaOficial);
 
         let clicks = JSON.parse(localStorage.getItem('radar_vod_clicks')) || {};
-        let sortedVideos = [...listaOficial].sort((a, b) => {
-          let clicksA = clicks[a.url] || 0;
-          let clicksB = clicks[b.url] || 0;
-          return clicksB - clicksA;
-        });
+        let sortedVideos = [...listaOficial].sort((a, b) => (clicks[b.url] || 0) - (clicks[a.url] || 0));
         renderNativeTop5(sortedVideos.slice(0, 5));
       }
     }
 
-    function renderNativeCarousel(items, containerId) {
-      const carousel = document.getElementById(containerId);
-      carousel.innerHTML = '';
-      items.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'vod-card';
-        card.onclick = () => openVODModal(item.url, item.title, item.desc, 'mp4', item.poster, item.rating, item.duration, item.genre);
-        card.innerHTML = `
-          <img src="${item.poster}" class="vod-img" onerror="this.src='https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1080.png'">
-          <div class="vod-overlay"><div class="vod-title">${item.title}</div></div>
-          <i class="fa-solid fa-circle-play play-icon-overlay"></i>
-        `;
-        carousel.appendChild(card);
+    function renderizarCategoriasDinamicas(filmes) {
+      const container = document.getElementById('dynamicCategoriesContainer');
+      container.innerHTML = '';
+      let categorias = {};
+
+      filmes.forEach(f => {
+        let tags = f.hashtags ? f.hashtags.split(',') : (f.genre ? f.genre.split(',') : ['#Geral']);
+        tags.forEach(t => {
+          let tagLimpa = t.trim();
+          if(!categorias[tagLimpa]) categorias[tagLimpa] = [];
+          categorias[tagLimpa].push(f);
+        });
       });
+
+      for (let cat in categorias) {
+        let nomeExibicao = cat.startsWith('#') ? cat.substring(1) : cat;
+        let section = document.createElement('section');
+        section.className = 'block-section';
+        let idUnico = 'cat-' + nomeExibicao.replace(/\s+/g, '');
+        section.innerHTML = `
+          <div class="block-header"><div class="block-title">${nomeExibicao}</div></div>
+          <div class="carousel" id="${idUnico}"></div>
+        `;
+        container.appendChild(section);
+        
+        const carousel = document.getElementById(idUnico);
+        categorias[cat].forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'vod-card';
+          card.onclick = () => openVODModal(item);
+          card.innerHTML = `
+            <img src="${item.poster}" class="vod-img">
+            <div class="vod-overlay"><div class="vod-title">${item.title}</div></div>
+            <i class="fa-solid fa-circle-play play-icon-overlay"></i>
+          `;
+          carousel.appendChild(card);
+        });
+      }
     }
 
     function renderNativeTop5(items) {
@@ -548,7 +561,7 @@
       items.forEach((item, index) => {
         const card = document.createElement('div');
         card.className = 'top5-item';
-        card.onclick = () => openVODModal(item.url, item.title, item.desc, 'mp4', item.poster, item.rating, item.duration, item.genre);
+        card.onclick = () => openVODModal(item);
         card.innerHTML = `
           <div class="top5-rank">${index + 1}</div>
           <img src="${item.poster}" class="top5-poster" alt="${item.title}" onerror="this.src='https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1080.png'">
@@ -561,26 +574,111 @@
       let clicks = JSON.parse(localStorage.getItem('radar_vod_clicks')) || {};
       clicks[urlId] = (clicks[urlId] || 0) + 1;
       localStorage.setItem('radar_vod_clicks', JSON.stringify(clicks));
-      atualizarCatalogoDeFilmes();
+    }
+
+    function switchVodTab(tabId, event) {
+      document.querySelectorAll('.vod-tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.vod-tab-content').forEach(c => c.classList.remove('active'));
+      if(event) event.target.classList.add('active');
+      document.getElementById('tab-' + tabId).classList.add('active');
+    }
+
+    function openVODModal(filme) {
+      registerClick(filme.url);
+
+      const hlsVideo = document.getElementById('hlsPlayer');
+      const ytLive = document.getElementById('ytPlayer');
+      if (hlsVideo && !hlsVideo.paused) hlsVideo.pause();
+      if (ytLive && isYtLiveActive) {
+        try { ytLive.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*'); } catch(e){}
+      }
+
+      document.getElementById('vodModal').classList.add('active');
+      
+      // Reseta as abas
+      document.querySelectorAll('.vod-tab-btn')[0].classList.add('active');
+      document.querySelectorAll('.vod-tab-btn')[1].classList.remove('active');
+      document.getElementById('tab-sugestoes').classList.add('active');
+      document.getElementById('tab-sobre').classList.remove('active');
+
+      document.getElementById('vodTitleDetails').innerText = filme.title;
+      document.getElementById('vodDescDetails').innerText = filme.desc || "Nenhuma descrição informada na plataforma.";
+      document.getElementById('vodHeroBg').style.backgroundImage = `url('${filme.poster || 'https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1080.png'}')`;
+      document.getElementById('vodRating').innerText = filme.rating || "L";
+      document.getElementById('vodDuration').innerText = filme.duration || "--";
+      document.getElementById('vodGenre').innerText = filme.genre || "Categoria";
+      document.getElementById('vodActors').innerText = filme.atores || "Informação não disponível";
+
+      document.getElementById('vodDetailsScreen').style.display = 'flex';
+      document.getElementById('vodPlayerScreen').style.display = 'none';
+
+      // Popula grid de sugestões
+      const grid = document.getElementById('relatedMoviesGrid');
+      grid.innerHTML = '';
+      
+      let listaDeRelacionados = filmesDoBanco.length > 0 ? filmesDoBanco : filmesFixos;
+      let tagPrincipal = filme.hashtags ? filme.hashtags.split(',')[0].trim() : (filme.genre ? filme.genre.split(',')[0].trim() : null);
+      
+      let relacionados = listaDeRelacionados.filter(f => f.title !== filme.title && (
+        (f.hashtags && f.hashtags.includes(tagPrincipal)) || (f.genre && f.genre.includes(tagPrincipal))
+      )).slice(0, 6);
+
+      // Se não achar nada da mesma hashtag, preenche com aleatórios
+      if(relacionados.length === 0) {
+        relacionados = listaDeRelacionados.filter(f => f.title !== filme.title).slice(0, 6);
+      }
+
+      relacionados.forEach(rel => {
+        let img = document.createElement('img');
+        img.src = rel.poster;
+        img.className = 'related-item';
+        img.onclick = () => openVODModal(rel);
+        grid.appendChild(img);
+      });
+
+      document.getElementById('btnPlayNative').onclick = () => {
+        document.getElementById('vodDetailsScreen').style.display = 'none';
+        document.getElementById('vodPlayerScreen').style.display = 'flex';
+
+        const iframe = document.getElementById('vodIframe');
+        const video = document.getElementById('vodVideo');
+        let tipoPlay = filme.type || 'mp4';
+        let sourceUrl = filme.url;
+        let isDrive = sourceUrl.includes('drive.google.com');
+
+        if (tipoPlay === 'mp4' && !isDrive) {
+          iframe.style.display = 'none'; iframe.src = '';
+          video.style.display = 'block'; video.src = sourceUrl;
+          video.load(); 
+          video.play().catch(e => { console.error("Bloqueado pelo celular:", e); });
+        } else if (isDrive) {
+          let driveId = sourceUrl.match(/[-\w]{25,}/);
+          let embedUrl = driveId ? `https://drive.google.com/file/d/${driveId[0]}/preview` : sourceUrl;
+          video.style.display = 'none'; video.src = ''; video.pause();
+          iframe.style.display = 'block'; iframe.src = embedUrl;
+        } else {
+          video.style.display = 'none'; video.src = ''; video.pause();
+          iframe.style.display = 'block'; iframe.src = `https://www.youtube.com/embed/${sourceUrl}?autoplay=1&enablejsapi=1`;
+        }
+      };
+    }
+
+    function closeVODModal() {
+      document.getElementById('vodModal').classList.remove('active');
+      document.getElementById('vodIframe').src = '';
+      const video = document.getElementById('vodVideo');
+      video.pause();
+      video.src = '';
     }
 
     let wakeLock = null;
     async function requestWakeLock() {
-      try {
-        if ('wakeLock' in navigator) {
-          wakeLock = await navigator.wakeLock.request('screen');
-        }
-      } catch (err) {}
+      try { if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); } catch (err) {}
     }
-    function releaseWakeLock() {
-      if (wakeLock !== null) { wakeLock.release(); wakeLock = null; }
-    }
-    document.addEventListener('visibilitychange', () => {
-      if (wakeLock !== null && document.visibilityState === 'visible') { requestWakeLock(); }
-    });
+    function releaseWakeLock() { if (wakeLock !== null) { wakeLock.release(); wakeLock = null; } }
+    document.addEventListener('visibilitychange', () => { if (wakeLock !== null && document.visibilityState === 'visible') requestWakeLock(); });
 
     let sleepTimerTimeout = null;
-    
     function openTimerModal() { document.getElementById('timerModal').classList.add('active'); closeMenu(); }
     function closeTimerModal() { document.getElementById('timerModal').classList.remove('active'); }
     
@@ -588,7 +686,6 @@
       clearTimeout(sleepTimerTimeout);
       closeTimerModal();
       const display = document.getElementById('timerDisplay');
-      
       if(mins === 0) { display.innerText = ''; return; }
       display.innerText = `${mins} min`;
       
@@ -596,9 +693,7 @@
         const hls = document.getElementById('hlsPlayer');
         const yt = document.getElementById('ytPlayer');
         if(hls && !hls.paused) hls.pause();
-        if(yt && isYtLiveActive) {
-          try{ yt.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*'); } catch(e){}
-        }
+        if(yt && isYtLiveActive) { try{ yt.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*'); } catch(e){} }
         display.innerText = '';
       }, mins * 60000);
     }
@@ -607,9 +702,7 @@
       const splash = document.getElementById('splashScreen');
       const introSound = document.getElementById('splashSound');
       try { if (introSound) { introSound.volume = 0.6; introSound.play().catch(()=>{}); } } catch (err) {}
-      
       atualizarCatalogoDeFilmes();
-
       setTimeout(() => { if(splash) splash.classList.add('hidden'); resetControlsTimeout(); }, 2200);
     });
 
@@ -626,123 +719,12 @@
       document.getElementById(`view-${viewName}`).classList.add('active');
       document.getElementById(`nav-${viewName}`).classList.add('active');
       
-      if (viewName === 'play') {
-        const hlsVideo = document.getElementById('hlsPlayer');
-        if (hlsVideo && !hlsVideo.paused) hlsVideo.pause();
-      }
-      
-      closeMenu();
-      document.getElementById('appWrapper').scrollTo(0, 0); 
-    }
-
-    function openVODModal(sourceUrl, title, desc, type, poster, rating, duration, genre) {
-      registerClick(sourceUrl);
-
-      const hlsVideo = document.getElementById('hlsPlayer');
-      const ytLive = document.getElementById('ytPlayer');
-      if (hlsVideo && !hlsVideo.paused) hlsVideo.pause();
-      if (ytLive && isYtLiveActive) {
-        try { ytLive.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*'); } catch(e){}
-      }
-
-      document.getElementById('vodModal').classList.add('active');
-
-      document.getElementById('vodTitleDetails').innerText = title;
-      document.getElementById('vodDescDetails').innerText = desc || "Nenhuma descrição informada na plataforma.";
-      document.getElementById('vodBackdrop').src = poster || 'https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1080.png';
-      document.getElementById('vodRating').innerText = rating || "L";
-      document.getElementById('vodDuration').innerText = duration || "--";
-      document.getElementById('vodGenre').innerText = genre || "Gênero não informado";
-
-      document.getElementById('vodDetailsScreen').style.display = 'flex';
-      document.getElementById('vodPlayerScreen').style.display = 'none';
-
-      document.getElementById('btnPlayNative').onclick = () => {
-        document.getElementById('vodDetailsScreen').style.display = 'none';
-        document.getElementById('vodPlayerScreen').style.display = 'flex';
-
-        const iframe = document.getElementById('vodIframe');
-        const video = document.getElementById('vodVideo');
-
-        let isDrive = sourceUrl.includes('drive.google.com');
-
-        if (type === 'mp4' && !isDrive) {
-          iframe.style.display = 'none';
-          iframe.src = '';
-          video.style.display = 'block';
-          
-          video.src = sourceUrl;
-          video.load(); 
-          video.play().catch(e => {
-              console.error("Bloqueado pelo celular:", e);
-              alert("Aviso do Sistema: Seu aparelho bloqueou a reprodução deste servidor.");
-          });
-        } else if (isDrive) {
-          let driveId = sourceUrl.match(/[-\w]{25,}/);
-          let embedUrl = driveId ? `https://drive.google.com/file/d/${driveId[0]}/preview` : sourceUrl;
-          
-          video.style.display = 'none';
-          video.src = '';
-          video.pause();
-          iframe.style.display = 'block';
-          iframe.src = embedUrl;
-        } else {
-          video.style.display = 'none';
-          video.src = '';
-          video.pause();
-          iframe.style.display = 'block';
-          iframe.src = `https://www.youtube.com/embed/${sourceUrl}?autoplay=1&enablejsapi=1`;
-        }
-      };
-    }
-
-    function closeVODModal() {
-      document.getElementById('vodModal').classList.remove('active');
-      document.getElementById('vodIframe').src = '';
-      const video = document.getElementById('vodVideo');
-      video.pause();
-      video.src = '';
-    }
-
-    async function fetchCatalogPlaylists() {
-      fetchPlaylistRow(PLAYLIST_BALDANZA, 'carousel-baldanza');
+      if (viewName === 'play') { const hlsVideo = document.getElementById('hlsPlayer'); if (hlsVideo && !hlsVideo.paused) hlsVideo.pause(); }
+      closeMenu(); document.getElementById('appWrapper').scrollTo(0, 0); 
     }
 
     function renderYoutubeCarousel(items, containerId) {
-      const carousel = document.getElementById(containerId);
-      carousel.innerHTML = '';
-      items.forEach(item => {
-        const snippet = item.snippet;
-        const videoId = snippet.resourceId.videoId;
-        const title = snippet.title;
-        const desc = snippet.description;
-        const thumb = snippet.thumbnails.maxres?.url || snippet.thumbnails.high?.url || snippet.thumbnails.medium?.url;
-
-        const card = document.createElement('div');
-        card.className = 'vod-card';
-        const safeTitle = title.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-        const safeDesc = desc.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, '\\n');
-
-        card.onclick = () => openVODModal(videoId, safeTitle, safeDesc, 'youtube', thumb, 'L', '--', 'YouTube');
-        card.innerHTML = `
-          <img src="${thumb}" class="vod-img">
-          <div class="vod-overlay"><div class="vod-title">${title}</div></div>
-          <i class="fa-solid fa-circle-play play-icon-overlay"></i>
-        `;
-        carousel.appendChild(card);
-      });
-    }
-
-    async function fetchPlaylistRow(playlistId, containerId) {
-      const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=15&playlistId=${playlistId}&key=${YOUTUBE_API_KEY}`;
-      const carousel = document.getElementById(containerId);
-      
-      try {
-        const response = await fetch(url); const data = await response.json();
-        if (data.error) { carousel.innerHTML = `<div style="padding:15px; color:#ff3333; font-weight:bold;">Limite atingido.</div>`; return; }
-        if (data.items && data.items.length > 0) { renderYoutubeCarousel(data.items, containerId); } 
-        else { carousel.innerHTML = '<div style="padding:15px; color:#8a8f9d;">Catálogo vazio.</div>'; }
-      } catch (e) { carousel.innerHTML = '<div style="padding:15px; color:#8a8f9d;">Erro ao carregar vídeos.</div>'; }
+      // Como removemos os carrosséis hardcoded (baldanza), caso utilize isso futuramente, basta usar o dynamicCategoriesContainer ou re-inserir a tag
     }
 
     async function fetchLimeiraNews() {
@@ -754,31 +736,18 @@
         if (data.status === 'ok' && data.items) {
           carousel.innerHTML = ''; 
           const latestNews = data.items.slice(0, 5);
-          
           latestNews.forEach(item => {
             let imgUrl = item.thumbnail || item.enclosure?.link;
-            if (!imgUrl && item.content) {
-              const match = item.content.match(/<img[^>]+src="([^">]+)"/);
-              if (match) imgUrl = match[1];
-            }
+            if (!imgUrl && item.content) { const match = item.content.match(/<img[^>]+src="([^">]+)"/); if (match) imgUrl = match[1]; }
             if(!imgUrl) imgUrl = 'https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1080.png';
 
-            const card = document.createElement('a');
-            card.className = 'news-card'; card.href = item.link; card.target = '_blank';
-            card.innerHTML = `
-              <img src="${imgUrl}" class="news-img">
-              <div class="news-content">
-                <div class="news-text">${item.title}</div>
-              </div>
-            `;
+            const card = document.createElement('a'); card.className = 'news-card'; card.href = item.link; card.target = '_blank';
+            card.innerHTML = `<img src="${imgUrl}" class="news-img"><div class="news-content"><div class="news-text">${item.title}</div></div>`;
             carousel.appendChild(card);
           });
-
-          const seeMore = document.createElement('a');
-          seeMore.className = 'news-card see-more-card'; seeMore.href = MAIN_SITE_URL; seeMore.target = '_blank';
+          const seeMore = document.createElement('a'); seeMore.className = 'news-card see-more-card'; seeMore.href = MAIN_SITE_URL; seeMore.target = '_blank';
           seeMore.innerHTML = `<i class="fa-solid fa-arrow-right"></i><span style="font-size:0.85rem; font-weight:bold;">Acessar Site</span>`;
           carousel.appendChild(seeMore);
-
         } else { carousel.innerHTML = '<div style="padding:15px; color:#8a8f9d;">Nenhuma notícia.</div>'; }
       } catch (err) { carousel.innerHTML = '<div style="padding:15px; color:#8a8f9d;">Erro no feed.</div>'; }
     }
@@ -790,7 +759,6 @@
       const d = date.getDate(); const m = monthsPt[date.getMonth()]; 
       if (offsetIndex === 0) return `Hoje, ${d} de ${m}`; if (offsetIndex === 1) return `Amanhã, ${d} de ${m}`; return `${d} de ${m}`; 
     }
-
     function generateDays() {
       const today = new Date(); next7Days = [];
       for (let i = 0; i < 7; i++) { 
@@ -798,14 +766,12 @@
         next7Days.push({ dateObj: loopDate, label: formatUIDate(loopDate, i) }); 
       }
     }
-
     function parseXMLTVDate(d) {
       if(!d) return new Date();
       let tz = d.length > 15 ? d.substring(15).trim() : "-03:00";
       if(tz.length === 5) tz = tz.substring(0,3)+":"+tz.substring(3,5);
       return new Date(`${d.substring(0,4)}-${d.substring(4,6)}-${d.substring(6,8)}T${d.substring(8,10)}:${d.substring(10,12)}:${d.substring(12,14)}${tz}`);
     }
-    
     function formatTime(d) { return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
 
     async function fetchEPG() {
@@ -816,10 +782,8 @@
         for (let i=0; i<programs.length; i++) {
           let p = programs[i];
           newSchedule.push({ 
-            start: parseXMLTVDate(p.getAttribute('start')), 
-            end: parseXMLTVDate(p.getAttribute('stop')), 
-            title: p.getElementsByTagName('title')[0]?.textContent || 'Sem título', 
-            desc: p.getElementsByTagName('desc')[0]?.textContent || '' 
+            start: parseXMLTVDate(p.getAttribute('start')), end: parseXMLTVDate(p.getAttribute('stop')), 
+            title: p.getElementsByTagName('title')[0]?.textContent || 'Sem título', desc: p.getElementsByTagName('desc')[0]?.textContent || '' 
           });
         }
         scheduleData = newSchedule.sort((a, b) => a.start - b.start); updateEPG(); 
@@ -840,26 +804,14 @@
 
       if ('mediaSession' in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
-          title: p.title,
-          artist: 'Radar TV',
-          artwork: [
-            { src: 'https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1080.png', sizes: '1080x1080', type: 'image/png' }
-          ]
+          title: p.title, artist: 'Radar TV',
+          artwork: [{ src: 'https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20RadarTV%201080x1080.png', sizes: '1080x1080', type: 'image/png' }]
         });
       }
     }
 
-    function openScheduleModal() { 
-      generateDays(); selectedScheduleDate = next7Days[0].dateObj; updateDateSelectorUI(); 
-      renderScheduleList(); document.getElementById('scheduleModal').classList.add('active'); 
-    }
-    
-    function closeScheduleModal() { 
-      document.getElementById('scheduleModal').classList.remove('active'); 
-      document.getElementById('dateDropdown').classList.remove('active'); 
-      document.getElementById('btnDateSelector').classList.remove('open'); 
-    }
-    
+    function openScheduleModal() { generateDays(); selectedScheduleDate = next7Days[0].dateObj; updateDateSelectorUI(); renderScheduleList(); document.getElementById('scheduleModal').classList.add('active'); }
+    function closeScheduleModal() { document.getElementById('scheduleModal').classList.remove('active'); document.getElementById('dateDropdown').classList.remove('active'); document.getElementById('btnDateSelector').classList.remove('open'); }
     function toggleDateMenu() {
       const dropdown = document.getElementById('dateDropdown'); const btn = document.getElementById('btnDateSelector'); 
       dropdown.classList.toggle('active'); btn.classList.toggle('open');
@@ -872,22 +824,12 @@
         });
       }
     }
-    
-    function selectScheduleDate(dayIndex) { 
-      selectedScheduleDate = next7Days[dayIndex].dateObj; updateDateSelectorUI(); renderScheduleList(); 
-      document.getElementById('dateDropdown').classList.remove('active'); document.getElementById('btnDateSelector').classList.remove('open'); 
-    }
-    
-    function updateDateSelectorUI() { 
-      const dayInfo = next7Days.find(d => d.dateObj.getDate() === selectedScheduleDate.getDate()); 
-      document.getElementById('btnDateSelector').innerHTML = `${dayInfo.label} <i class="fa-solid fa-chevron-down"></i>`; 
-    }
-    
+    function selectScheduleDate(dayIndex) { selectedScheduleDate = next7Days[dayIndex].dateObj; updateDateSelectorUI(); renderScheduleList(); document.getElementById('dateDropdown').classList.remove('active'); document.getElementById('btnDateSelector').classList.remove('open'); }
+    function updateDateSelectorUI() { const dayInfo = next7Days.find(d => d.dateObj.getDate() === selectedScheduleDate.getDate()); document.getElementById('btnDateSelector').innerHTML = `${dayInfo.label} <i class="fa-solid fa-chevron-down"></i>`; }
     function renderScheduleList() {
       const now = new Date();
       const list = scheduleData.filter(i => i.start.getDate() === selectedScheduleDate.getDate() && i.start.getMonth() === selectedScheduleDate.getMonth());
       const container = document.getElementById('fullScheduleList'); container.innerHTML = '';
-      
       if(list.length === 0) container.innerHTML = '<div style="padding:20px; color:#8a8f9d;">Nenhuma programação cadastrada.</div>';
       list.forEach(item => {
         let isCurrent = (now >= item.start && now < item.end);
@@ -958,7 +900,6 @@
 
     initHLS(); 
     fetchEPG(); 
-    fetchCatalogPlaylists(); 
     fetchLimeiraNews(); 
     
     setInterval(updateEPG, 60000); 
