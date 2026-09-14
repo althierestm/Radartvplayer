@@ -29,6 +29,7 @@
   <link rel="apple-touch-icon" href="Logo%20RadarTV%201080x1080.png">
 
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script src="filmes.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
   <style>
@@ -87,8 +88,6 @@
     .header-left { display: flex; align-items: center; gap: 14px; }
     .hamburger-btn { background: none; border: none; color: #ffffff; font-size: 1.4rem; cursor: pointer; }
     .brand img { height: 32px; width: auto; object-fit: contain; display: block; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
-    
-    /* Selo Ao Vivo */
     .live-badge { background-color: var(--primary-light); color: #ffffff; border: 1px solid rgba(255,255,255,0.2); font-size: 0.75rem; font-weight: bold; padding: 5px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
     .live-badge::before { content: ''; width: 8px; height: 8px; background-color: #ff0000; border-radius: 50%; box-shadow: 0 0 8px #ff0000; animation: pulseLiveBadge 1.5s infinite; }
     @keyframes pulseLiveBadge { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
@@ -125,14 +124,15 @@
     .epg-live-badge { background: #ff0000; color: #fff; font-size: 0.65rem; font-weight: bold; padding: 2px 6px; border-radius: 4px; animation: pulseSoft 2s infinite; letter-spacing: 0.5px; display: inline-block; }
     @keyframes pulseSoft { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 
-    /* Blocos e Carrosseis: Overflow Y Hidden e Touch Action Pan-Y */
+    /* Blocos e Carrosseis: Overflow Y Hidden e Touch Action Pan-Y REMOVIDO para consertar rolagem */
     .block-section { padding: 5px 0; display: flex; flex-direction: column; width: 100%; }
     .block-header { padding: 0 15px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
     .block-title { font-size: 1.1rem; font-weight: 700; color: #e0e0e0; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
     
-    .carousel { display: flex; overflow-x: auto; overflow-y: hidden; touch-action: pan-y; gap: 14px; padding: 0 15px 15px 15px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
+    /* Carrossel: Livre apenas na horizontal, sem bloqueios verticais agressivos */
+    .carousel { display: flex; overflow-x: auto; overflow-y: hidden; gap: 14px; padding: 0 15px 15px 15px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; overscroll-behavior-x: none; }
     
-    /* Fogo Degradê */
+    /* Fogo Degradê Restaurado */
     .fire-gradient { background: linear-gradient(to top, #ff0000, #ff8c00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
     /* TOP 5 NATIVO (Sem elástico) */
@@ -143,7 +143,7 @@
     .top5-poster { width: 110px; height: 165px; border-radius: 6px; object-fit: cover; position: absolute; right: 0; bottom: 5px; z-index: 2; box-shadow: -4px 4px 15px rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.1); transition: transform 0.2s; }
 
     /* CARD VOD (Retrato 2/3) */
-    .vod-card { flex: 0 0 130px; aspect-ratio: 2/3; scroll-snap-align: start; border-radius: 6px; overflow: hidden; position: relative; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: transform 0.2s ease, box-shadow 0.2s; background: #222; }
+    .vod-card { flex: 0 0 130px; aspect-ratio: 2/3; scroll-snap-align: start; border-radius: 6px; overflow: hidden; position: relative; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.5); transition: transform 0.2s ease; background: #222; }
     .vod-card:active { transform: scale(0.96); }
     .vod-img { width: 100%; height: 100%; object-fit: cover; background: #000; }
     .vod-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); opacity: 0; transition: opacity 0.2s; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 2rem; }
@@ -292,10 +292,8 @@
 
       <section class="block-section">
         <div class="block-header">
-          <!-- Fogo Degradê Adicionado -->
           <div class="block-title"><i class="fa-solid fa-fire fire-gradient"></i> Top 5 Mais Assistidos</div>
         </div>
-        <!-- Efeito elástico removido (overscroll-y hidden e touch-action pan-y) -->
         <div class="carousel" id="top5Carousel">
           <div style="padding: 20px; color: #8a8f9d;">Carregando Top 5...</div>
         </div>
@@ -895,7 +893,7 @@
       resetVodControlsTimeout();
     }
 
-    /* PiP NATIVO CORRIGIDO (IOS E ANDROID) */
+    /* PiP NATIVO CORRIGIDO (APPLE WEBKIT) */
     async function toggleVodPiP(e) { 
       if (e) e.stopPropagation();
       const video = document.getElementById('vodVideo');
