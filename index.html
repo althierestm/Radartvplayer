@@ -29,7 +29,6 @@
   <link rel="apple-touch-icon" href="Logo%20RadarTV%201080x1080.png">
 
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-  <script src="filmes.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 
   <style>
@@ -58,7 +57,7 @@
     @keyframes spin { to { transform: rotate(360deg); } }
     @keyframes pulseLogo { 0% { transform: scale(0.96); opacity: 0.9; } 100% { transform: scale(1.04); opacity: 1; } }
 
-    /* Botões da Splash Screen: Ajustados para não quebrar linha */
+    /* Botões da Splash Screen */
     .splash-buttons { display: flex; flex-direction: row; justify-content: center; gap: 15px; margin-top: 10px; opacity: 0; pointer-events: none; transition: opacity 0.8s ease; align-items: center; width: 100%; }
     .splash-buttons.visible { opacity: 1; pointer-events: auto; }
     .btn-splash { background: rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.4); color: #fff; padding: 12px 10px; border-radius: 30px; font-size: 0.85rem; font-weight: bold; cursor: pointer; backdrop-filter: blur(5px); transition: all 0.3s; text-transform: uppercase; letter-spacing: 0.5px; width: 100%; max-width: 135px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); white-space: nowrap; }
@@ -88,6 +87,8 @@
     .header-left { display: flex; align-items: center; gap: 14px; }
     .hamburger-btn { background: none; border: none; color: #ffffff; font-size: 1.4rem; cursor: pointer; }
     .brand img { height: 32px; width: auto; object-fit: contain; display: block; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+    
+    /* Selo Ao Vivo */
     .live-badge { background-color: var(--primary-light); color: #ffffff; border: 1px solid rgba(255,255,255,0.2); font-size: 0.75rem; font-weight: bold; padding: 5px 12px; border-radius: 20px; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
     .live-badge::before { content: ''; width: 8px; height: 8px; background-color: #ff0000; border-radius: 50%; box-shadow: 0 0 8px #ff0000; animation: pulseLiveBadge 1.5s infinite; }
     @keyframes pulseLiveBadge { 0% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.2); } 100% { opacity: 1; transform: scale(1); } }
@@ -120,22 +121,22 @@
     .btn-schedule-pill { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: #fff; padding: 12px 24px; border-radius: 30px; font-size: 0.9rem; font-weight: bold; cursor: pointer; transition: background 0.2s; width: 100%; }
     .btn-schedule-pill:active { background: rgba(255,255,255,0.2); }
 
-    /* EPG Badge No Ar Animado Suavemente */
+    /* EPG Badge No Ar Animado Suavemente - Ajustado para opacidade 0.6 */
     .epg-live-badge { background: #ff0000; color: #fff; font-size: 0.65rem; font-weight: bold; padding: 2px 6px; border-radius: 4px; animation: pulseSoft 2s infinite; letter-spacing: 0.5px; display: inline-block; }
-    @keyframes pulseSoft { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+    @keyframes pulseSoft { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 
-    /* Blocos e Carrosseis com OVERSCROLL REMOVIDO para matar o efeito elástico no iOS */
+    /* Blocos e Carrosseis: Overflow Y Hidden e Touch Action Pan-Y */
     .block-section { padding: 5px 0; display: flex; flex-direction: column; width: 100%; }
     .block-header { padding: 0 15px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
     .block-title { font-size: 1.1rem; font-weight: 700; color: #e0e0e0; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
     
-    .carousel { display: flex; overflow-x: auto; gap: 14px; padding: 0 15px 15px 15px; scroll-behavior: smooth; overscroll-behavior-x: none; -webkit-overflow-scrolling: touch; }
+    .carousel { display: flex; overflow-x: auto; overflow-y: hidden; touch-action: pan-y; gap: 14px; padding: 0 15px 15px 15px; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
     
-    /* Fogo Degradê Restaurado */
+    /* Fogo Degradê */
     .fire-gradient { background: linear-gradient(to top, #ff0000, #ff8c00); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
     /* TOP 5 NATIVO (Sem elástico) */
-    #top5Carousel { scroll-snap-type: none; overscroll-behavior-x: none; }
+    #top5Carousel { scroll-snap-type: none; }
     .top5-item { display: flex; align-items: center; position: relative; flex: 0 0 auto; width: 180px; height: 210px; cursor: pointer; }
     .top5-item:active { transform: scale(0.96); }
     .top5-rank { font-size: 10rem; font-weight: 900; font-family: Impact, sans-serif; color: var(--bg-color); -webkit-text-stroke: 1px rgba(255, 255, 255, 0.5); position: absolute; left: -10px; bottom: -20px; z-index: 1; letter-spacing: -4px; user-select: none; text-shadow: 0 4px 10px rgba(0,0,0,0.8); }
@@ -272,7 +273,6 @@
               <button onclick="toggleAirPlay(event)"><i class="fa-solid fa-tv"></i></button>
               <google-cast-launcher class="cast-btn"></google-cast-launcher>
             </div>
-            <!-- O botão de volume foi corrigido para não sofrer bloqueios de Z-index -->
             <button class="volume-btn" id="volumeBtn" onclick="toggleSound(event)"><i class="fa-solid fa-volume-high"></i> Mudo</button>
             <button class="fullscreen-btn" onclick="toggleFullscreenAction(event)"><i class="fa-solid fa-expand"></i></button>
           </div>
@@ -295,7 +295,7 @@
           <!-- Fogo Degradê Adicionado -->
           <div class="block-title"><i class="fa-solid fa-fire fire-gradient"></i> Top 5 Mais Assistidos</div>
         </div>
-        <!-- Efeito elástico removido nativamente com CSS overscroll-behavior-x: none -->
+        <!-- Efeito elástico removido (overscroll-y hidden e touch-action pan-y) -->
         <div class="carousel" id="top5Carousel">
           <div style="padding: 20px; color: #8a8f9d;">Carregando Top 5...</div>
         </div>
@@ -895,19 +895,21 @@
       resetVodControlsTimeout();
     }
 
-    // PiP NATIVO VOD CORRIGIDO
-    function toggleVodPiP(e) { 
+    /* PiP NATIVO CORRIGIDO (IOS E ANDROID) */
+    async function toggleVodPiP(e) { 
       if (e) e.stopPropagation();
       const video = document.getElementById('vodVideo');
-      if (video.webkitSupportsPresentationMode && typeof video.webkitSetPresentationMode === "function") {
-        video.webkitSetPresentationMode(video.webkitPresentationMode === "picture-in-picture" ? "inline" : "picture-in-picture");
-      } else if (document.pictureInPictureEnabled) {
-        if (document.pictureInPictureElement !== video) {
-          video.requestPictureInPicture().catch(e => console.log("PiP bloqueado:", e));
-        } else {
-          document.exitPictureInPicture().catch(e => console.log("PiP bloqueado:", e));
+      try { 
+        if (video.webkitSetPresentationMode && typeof video.webkitSetPresentationMode === "function") {
+          video.webkitSetPresentationMode(video.webkitPresentationMode === "picture-in-picture" ? "inline" : "picture-in-picture");
+        } else if (document.pictureInPictureEnabled) {
+          if (document.pictureInPictureElement !== video) {
+            await video.requestPictureInPicture();
+          } else {
+            await document.exitPictureInPicture();
+          }
         }
-      }
+      } catch(err) { console.log("PiP indisponível:", err); } 
       resetVodControlsTimeout(); 
     }
     
@@ -923,6 +925,9 @@
       resetVodControlsTimeout();
     }
 
+    /* ----------------------------------------------------
+       FUNÇÕES GERAIS DO APP & LÓGICA DA SPLASH SCREEN
+       ---------------------------------------------------- */
     let wakeLock = null;
     async function requestWakeLock() { try { if ('wakeLock' in navigator) wakeLock = await navigator.wakeLock.request('screen'); } catch (err) {} }
     function releaseWakeLock() { if (wakeLock !== null) { wakeLock.release(); wakeLock = null; } }
@@ -1104,56 +1109,6 @@
       });
     }
 
-    /* PLAYER AO VIVO E CORREÇÃO DO PIP NATIVO */
-    function toggleSound(e) { 
-      if(e) e.stopPropagation(); 
-      resetControlsTimeout(); 
-      const video = document.getElementById('hlsPlayer');
-      if (video) { video.muted = !video.muted; }
-    }
-
-    document.getElementById('hlsPlayer').addEventListener('volumechange', function() {
-      const b = document.getElementById('volumeBtn');
-      if(this.muted || this.volume === 0) { 
-        b.innerHTML='<i class="fa-solid fa-volume-xmark"></i> Som'; 
-        b.style.background='rgba(0,0,0,0.6)'; 
-      } else { 
-        b.innerHTML='<i class="fa-solid fa-volume-high"></i> Mudo'; 
-        b.style.background='rgba(13,71,230,0.6)'; 
-      }
-    });
-
-    const hlsVideo = document.getElementById('hlsPlayer'); 
-    const ytIframe = document.getElementById('ytPlayer'); 
-    const centerPlayBtn = document.getElementById('centerPlayBtn');
-    let hlsInstance = null; let isYtLiveActive = false; let controlsTimeout;
-
-    hlsVideo.addEventListener('play', () => { centerPlayBtn.classList.add('hidden'); requestWakeLock(); });
-    hlsVideo.addEventListener('pause', () => { centerPlayBtn.classList.remove('hidden'); releaseWakeLock(); });
-
-    function resumePlay(e) { if(e) e.stopPropagation(); hlsVideo.play(); resetControlsTimeout(); }
-    function resetControlsTimeout() { clearTimeout(controlsTimeout); controlsTimeout = setTimeout(() => { document.getElementById('customControls').classList.add('hidden'); }, 3500); }
-    function toggleControls() { const c = document.getElementById('customControls'); if(c.classList.contains('hidden')){ c.classList.remove('hidden'); resetControlsTimeout(); } else { c.classList.add('hidden'); clearTimeout(controlsTimeout); } }
-    function toggleFullscreenAction(e) { if(e) e.stopPropagation(); resetControlsTimeout(); const vw = document.getElementById('videoWrapper'); if (!document.fullscreenElement) { vw.requestFullscreen?.() || hlsVideo.webkitEnterFullscreen?.(); } else { document.exitFullscreen?.(); } }
-    
-    // PiP Nativo para Apple Safari e demais navegadores no Ao Vivo
-    function togglePiP(e) { 
-      if (e) e.stopPropagation();
-      const video = document.getElementById('hlsPlayer');
-      if (video.webkitSupportsPresentationMode && typeof video.webkitSetPresentationMode === "function") {
-        video.webkitSetPresentationMode(video.webkitPresentationMode === "picture-in-picture" ? "inline" : "picture-in-picture");
-      } else if (document.pictureInPictureEnabled) {
-        if (document.pictureInPictureElement !== video) {
-          video.requestPictureInPicture().catch(err => console.log("PiP bloqueado:", err));
-        } else {
-          document.exitPictureInPicture().catch(err => console.log("PiP bloqueado:", err));
-        }
-      }
-      resetControlsTimeout(); 
-    }
-
-    function toggleAirPlay(e) { if(e) e.stopPropagation(); if(window.WebKitPlaybackTargetAvailabilityEvent) hlsVideo.webkitShowPlaybackTargetPicker(); }
-    
     async function initHLS() { 
       let streamUrl = 'https://video01.logicahost.com.br/fcvtv/fcvtv/playlist.m3u8'; 
       try {
@@ -1164,6 +1119,7 @@
         }
       } catch (e) {}
       
+      const hlsVideo = document.getElementById('hlsPlayer');
       if (Hls.isSupported()) { hlsInstance = new Hls(); hlsInstance.loadSource(streamUrl); hlsInstance.attachMedia(hlsVideo); } 
       else if (hlsVideo.canPlayType('application/vnd.apple.mpegurl')) { hlsVideo.src = streamUrl; } 
     }
@@ -1176,6 +1132,9 @@
         if (data.items && data.items.length > 0) {
           if (!isYtLiveActive) {
             isYtLiveActive = true; 
+            const hlsVideo = document.getElementById('hlsPlayer');
+            const ytIframe = document.getElementById('ytPlayer');
+            
             hlsVideo.pause(); hlsVideo.style.display = 'none';
             document.getElementById('customControls').style.display = 'none'; document.getElementById('videoWrapper').onclick = null;
             ytIframe.src = `https://www.youtube.com/embed/${data.items[0].id.videoId}?autoplay=1&playsinline=1&enablejsapi=1`; 
@@ -1184,6 +1143,9 @@
         } else {
           if (isYtLiveActive) {
             isYtLiveActive = false; 
+            const hlsVideo = document.getElementById('hlsPlayer');
+            const ytIframe = document.getElementById('ytPlayer');
+            
             ytIframe.src = ''; ytIframe.style.display = 'none'; hlsVideo.style.display = 'block'; 
             document.getElementById('customControls').style.display = ''; document.getElementById('videoWrapper').onclick = toggleControls;
             document.getElementById('liveTag').innerText = 'AO VIVO';
