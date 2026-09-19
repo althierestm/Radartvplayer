@@ -48,21 +48,22 @@
     ::-webkit-scrollbar { display: none; }
     .app-wrapper { width: 100%; max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; }
 
-    /* Splash Screen */
-    .splash-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(135deg, var(--primary) 0%, #082b8a 100%); display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: calc(40px + env(safe-area-inset-top, 0px)) 20px 40px; z-index: 9999; transition: opacity 0.6s ease, visibility 0.6s ease; }
+    /* Nova Splash Screen com Vinheta MP4 em Background */
+    .splash-screen { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.8s ease, visibility 0.8s ease; overflow: hidden; }
     .splash-screen.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-    .splash-content { display: flex; flex-direction: column; align-items: center; gap: 24px; margin: auto; width: 100%; }
-    .splash-logo { max-width: 200px; height: auto; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3)); animation: pulseLogo 1.5s infinite alternate ease-in-out; }
-    .splash-spinner { width: 36px; height: 36px; border: 3px solid rgba(255, 255, 255, 0.2); border-top-color: #ffffff; border-radius: 50%; animation: spin 0.8s linear infinite; }
-    .splash-footer-credits { font-size: 0.85rem; color: #ffffff; text-align: center; font-weight: 500; opacity: 0.95; padding-bottom: env(safe-area-inset-bottom, 0px); }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @keyframes pulseLogo { 0% { transform: scale(0.96); opacity: 0.9; } 100% { transform: scale(1.04); opacity: 1; } }
-
-    /* Botões da Splash Screen */
-    .splash-buttons { display: flex; flex-direction: row; justify-content: center; gap: 15px; margin-top: 10px; opacity: 0; pointer-events: none; transition: opacity 0.8s ease; align-items: center; width: 100%; }
+    
+    .splash-video-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; opacity: 0.8; }
+    .splash-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.9) 100%); z-index: 2; }
+    
+    .splash-content { position: relative; z-index: 3; display: flex; flex-direction: column; align-items: center; gap: 20px; margin: auto; width: 100%; }
+    
+    /* Botões da Splash Screen: Sobrepostos ao Vídeo */
+    .splash-buttons { display: flex; flex-direction: row; justify-content: center; gap: 15px; margin-top: 20px; opacity: 0; pointer-events: none; transition: opacity 0.8s ease; align-items: center; width: 100%; }
     .splash-buttons.visible { opacity: 1; pointer-events: auto; }
-    .btn-splash { background: rgba(0, 0, 0, 0.1); border: 1px solid rgba(255, 255, 255, 0.4); color: #fff; padding: 12px 10px; border-radius: 30px; font-size: 0.85rem; font-weight: bold; cursor: pointer; backdrop-filter: blur(5px); transition: all 0.3s; text-transform: uppercase; letter-spacing: 0.5px; width: 100%; max-width: 135px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); white-space: nowrap; }
-    .btn-splash:active, .btn-splash:hover { background: rgba(255, 255, 255, 0.15); border-color: #fff; transform: scale(1.05); }
+    .btn-splash { background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.5); color: #fff; padding: 12px 10px; border-radius: 30px; font-size: 0.85rem; font-weight: bold; cursor: pointer; backdrop-filter: blur(10px); transition: all 0.3s; text-transform: uppercase; letter-spacing: 0.5px; width: 100%; max-width: 135px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.5); white-space: nowrap; }
+    .btn-splash:active, .btn-splash:hover { background: rgba(255, 255, 255, 0.2); border-color: #fff; transform: scale(1.05); }
+    
+    .splash-footer-credits { position: relative; z-index: 3; font-size: 0.85rem; color: rgba(255,255,255,0.7); text-align: center; font-weight: 500; padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px)); }
 
     /* Menu lateral */
     .menu-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 2000; opacity: 0; visibility: hidden; transition: all 0.4s ease; }
@@ -124,7 +125,7 @@
     .epg-live-badge { background: #ff0000; color: #fff; font-size: 0.65rem; font-weight: bold; padding: 2px 6px; border-radius: 4px; animation: pulseSoft 2s infinite; letter-spacing: 0.5px; display: inline-block; }
     @keyframes pulseSoft { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
 
-    /* Blocos e Carrosseis: Overflow Y Hidden e Touch Action Pan-Y REMOVIDO para consertar rolagem */
+    /* Blocos e Carrosseis */
     .block-section { padding: 5px 0; display: flex; flex-direction: column; width: 100%; }
     .block-header { padding: 0 15px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
     .block-title { font-size: 1.1rem; font-weight: 700; color: #e0e0e0; display: flex; align-items: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -212,17 +213,19 @@
 </head>
 <body>
 
-  <!-- SPLASH SCREEN & BOTÕES DE ENTRADA -->
-  <audio id="splashSound" src="https://raw.githubusercontent.com/althierestm/Radartvplayer/main/Logo%20Sonora%20RadarTV.mp3" preload="auto"></audio>
-
+  <!-- NOVA SPLASH SCREEN COM VINHETA MP4 DE FUNDO -->
   <div id="splashScreen" class="splash-screen">
-    <div></div>
+    <!-- Vídeo da Vinheta em Loop e Sem Som (Muted) -->
+    <video class="splash-video-bg" autoplay loop muted playsinline>
+        <source src="https://github.com/althierestm/Radartvplayer/raw/refs/heads/main/RadarTV%20Anima%C3%A7%C3%A3o%20Reels.mp4" type="video/mp4">
+    </video>
+    
+    <!-- Camada escura para dar destaque aos botões -->
+    <div class="splash-overlay"></div>
+
     <div class="splash-content">
-      <img src="https://github.com/althierestm/Radartvplayer/blob/main/Logo%20RadarTV%201080x1920.png?raw=true" alt="Radar TV" class="splash-logo">
-      <div class="splash-spinner" id="splashSpinner"></div>
-      
-      <!-- Botões Lado a Lado (Corrigidos para não quebrar linha) -->
-      <div class="splash-buttons" id="splashButtons">
+      <!-- A logo estática e o spinner sumiram para dar lugar ao vídeo, entram só os botões -->
+      <div class="splash-buttons" id="splashButtons" style="margin-top: 50vh;">
         <button class="btn-splash" onclick="enterApp('home')">Radar TV</button>
         <button class="btn-splash" onclick="enterApp('play')">Radar Play</button>
       </div>
@@ -893,7 +896,7 @@
       resetVodControlsTimeout();
     }
 
-    /* PiP NATIVO CORRIGIDO (APPLE WEBKIT) */
+    /* PiP NATIVO CORRIGIDO (IOS E ANDROID) */
     async function toggleVodPiP(e) { 
       if (e) e.stopPropagation();
       const video = document.getElementById('vodVideo');
@@ -947,19 +950,22 @@
       }, mins * 60000);
     }
 
+    // NOVA LÓGICA DE CARREGAMENTO (VINHETA MP4 + BOTÕES)
     window.addEventListener('load', () => {
+      // Toca a vinheta MP3 de fundo normalmente
       const introSound = document.getElementById('splashSound');
       try { if (introSound) { introSound.volume = 0.6; introSound.play().catch(()=>{}); } } catch (err) {}
+      
       atualizarCatalogoDeFilmes();
       
+      // Ao invés de esconder a Splash inteira, revela os botões após 2 segundos
       setTimeout(() => { 
-        const spinner = document.getElementById('splashSpinner');
         const btns = document.getElementById('splashButtons');
-        if (spinner) spinner.style.display = 'none';
         if (btns) btns.classList.add('visible');
       }, 2000); 
     });
 
+    // Função "Chave Mestra" acionada pelo clique do usuário na Splash Screen
     function enterApp(view) {
       const splash = document.getElementById('splashScreen');
       if (splash) splash.classList.add('hidden');
@@ -1107,6 +1113,56 @@
       });
     }
 
+    /* PLAYER AO VIVO E CORREÇÃO DO PIP NATIVO */
+    function toggleSound(e) { 
+      if(e) e.stopPropagation(); 
+      resetControlsTimeout(); 
+      const video = document.getElementById('hlsPlayer');
+      if (video) { video.muted = !video.muted; }
+    }
+
+    document.getElementById('hlsPlayer').addEventListener('volumechange', function() {
+      const b = document.getElementById('volumeBtn');
+      if(this.muted || this.volume === 0) { 
+        b.innerHTML='<i class="fa-solid fa-volume-xmark"></i> Som'; 
+        b.style.background='rgba(0,0,0,0.6)'; 
+      } else { 
+        b.innerHTML='<i class="fa-solid fa-volume-high"></i> Mudo'; 
+        b.style.background='rgba(13,71,230,0.6)'; 
+      }
+    });
+
+    const hlsVideo = document.getElementById('hlsPlayer'); 
+    const ytIframe = document.getElementById('ytPlayer'); 
+    const centerPlayBtn = document.getElementById('centerPlayBtn');
+    let hlsInstance = null; let isYtLiveActive = false; let controlsTimeout;
+
+    hlsVideo.addEventListener('play', () => { centerPlayBtn.classList.add('hidden'); requestWakeLock(); });
+    hlsVideo.addEventListener('pause', () => { centerPlayBtn.classList.remove('hidden'); releaseWakeLock(); });
+
+    function resumePlay(e) { if(e) e.stopPropagation(); hlsVideo.play(); resetControlsTimeout(); }
+    function resetControlsTimeout() { clearTimeout(controlsTimeout); controlsTimeout = setTimeout(() => { document.getElementById('customControls').classList.add('hidden'); }, 3500); }
+    function toggleControls() { const c = document.getElementById('customControls'); if(c.classList.contains('hidden')){ c.classList.remove('hidden'); resetControlsTimeout(); } else { c.classList.add('hidden'); clearTimeout(controlsTimeout); } }
+    function toggleFullscreenAction(e) { if(e) e.stopPropagation(); resetControlsTimeout(); const vw = document.getElementById('videoWrapper'); if (!document.fullscreenElement) { vw.requestFullscreen?.() || hlsVideo.webkitEnterFullscreen?.(); } else { document.exitFullscreen?.(); } }
+    
+    // PiP Nativo para Apple Safari e demais navegadores no Ao Vivo
+    function togglePiP(e) { 
+      if (e) e.stopPropagation();
+      const video = document.getElementById('hlsPlayer');
+      if (video.webkitSupportsPresentationMode && typeof video.webkitSetPresentationMode === "function") {
+        video.webkitSetPresentationMode(video.webkitPresentationMode === "picture-in-picture" ? "inline" : "picture-in-picture");
+      } else if (document.pictureInPictureEnabled) {
+        if (document.pictureInPictureElement !== video) {
+          video.requestPictureInPicture().catch(err => console.log("PiP bloqueado:", err));
+        } else {
+          document.exitPictureInPicture().catch(err => console.log("PiP bloqueado:", err));
+        }
+      }
+      resetControlsTimeout(); 
+    }
+
+    function toggleAirPlay(e) { if(e) e.stopPropagation(); if(window.WebKitPlaybackTargetAvailabilityEvent) hlsVideo.webkitShowPlaybackTargetPicker(); }
+    
     async function initHLS() { 
       let streamUrl = 'https://video01.logicahost.com.br/fcvtv/fcvtv/playlist.m3u8'; 
       try {
@@ -1117,7 +1173,6 @@
         }
       } catch (e) {}
       
-      const hlsVideo = document.getElementById('hlsPlayer');
       if (Hls.isSupported()) { hlsInstance = new Hls(); hlsInstance.loadSource(streamUrl); hlsInstance.attachMedia(hlsVideo); } 
       else if (hlsVideo.canPlayType('application/vnd.apple.mpegurl')) { hlsVideo.src = streamUrl; } 
     }
@@ -1130,9 +1185,6 @@
         if (data.items && data.items.length > 0) {
           if (!isYtLiveActive) {
             isYtLiveActive = true; 
-            const hlsVideo = document.getElementById('hlsPlayer');
-            const ytIframe = document.getElementById('ytPlayer');
-            
             hlsVideo.pause(); hlsVideo.style.display = 'none';
             document.getElementById('customControls').style.display = 'none'; document.getElementById('videoWrapper').onclick = null;
             ytIframe.src = `https://www.youtube.com/embed/${data.items[0].id.videoId}?autoplay=1&playsinline=1&enablejsapi=1`; 
@@ -1141,9 +1193,6 @@
         } else {
           if (isYtLiveActive) {
             isYtLiveActive = false; 
-            const hlsVideo = document.getElementById('hlsPlayer');
-            const ytIframe = document.getElementById('ytPlayer');
-            
             ytIframe.src = ''; ytIframe.style.display = 'none'; hlsVideo.style.display = 'block'; 
             document.getElementById('customControls').style.display = ''; document.getElementById('videoWrapper').onclick = toggleControls;
             document.getElementById('liveTag').innerText = 'AO VIVO';
